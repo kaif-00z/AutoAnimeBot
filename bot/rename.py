@@ -32,9 +32,9 @@ def _rename(name, og=None):
         data = anitopy.parse(name)
         anime_name = data.get("anime_title")
         if anime_name and data.get("episode_number"):
-            return f"[S{data.get('anime_season') or 1}-{data.get('episode_number') or ''}] {get_english(anime_name)} [{data.get('video_resolution').replace('p', 'px246' if og else 'px256') or ''}] @ensembly.{data.get('file_extension') or 'mkv'}"
+            return f"[S{data.get('anime_season') or 1}-{data.get('episode_number') or ''}] {get_english(anime_name)} [{data.get('video_resolution').replace('p', 'px246' if og else 'px256') or ''}].{data.get('file_extension') or 'mkv'}"
         if anime_name:
-            return f"{get_english(anime_name)} [{data.get('video_resolution').replace('p', 'px264' if og else 'px256') or ''}] @ensembly.{data.get('file_extension') or 'mkv'}"
+            return f"{get_english(anime_name)} [{data.get('video_resolution').replace('p', 'px264' if og else 'px256') or ''}].{data.get('file_extension') or 'mkv'}"
         return name
     except BaseException:
         return name
