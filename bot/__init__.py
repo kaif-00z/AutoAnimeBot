@@ -102,7 +102,7 @@ try:
         api_hash=Var.API_HASH,
         bot_token=Var.BOT_TOKEN,
         in_memory=True,
-    ) # for fast ul , mere marze
+    )  # for fast ul , mere marze
     LOGS.info("Succesfully Connected To Telegram...")
 except Exception as ee:
     LOGS.critical("Something Went Wrong...\nExiting...")
@@ -162,7 +162,8 @@ class Reporter:
 reporter = Reporter(bot, Var.LOG_CHANNEL, LOGS)
 
 # RMTP stream in VC
-# streamer = Streamer(Var.RMTP_KEY, Var.RMTP_URL, Var.CHAT, LOGS, reporter) ye wala code nhi dunga 
+# streamer = Streamer(Var.RMTP_KEY, Var.RMTP_URL, Var.CHAT, LOGS,
+# reporter) ye wala code nhi dunga
 
 if Var.GDRIVE_UPLOAD:
     # for index link and main stuffs [auto anime drive]

@@ -40,7 +40,6 @@ from .google_upload import guploader
 from .rename import _rename
 
 
-
 @bot.on(
     events.NewMessage(
         incoming=True, pattern="^/start ?(.*)", func=lambda e: e.is_private
@@ -60,7 +59,15 @@ async def _start(event):
                     msg = await bot.get_messages(Var.CLOUD, ids=id)
                     await event.reply(file=[i for i in msg])
     else:
-        await event.reply(f"Hi {event.sender.first_name}\n**How Are You?**", buttons=[[Button.url("Developer", url="t.me/kaif_00z"), Button.url("Repo", url="https://github.com/kaif-00z/AutoAnimeBot/")]])
+        await event.reply(
+            f"Hi {event.sender.first_name}\n**How Are You?**",
+            buttons=[
+                [
+                    Button.url("Developer", url="t.me/kaif_00z"),
+                    Button.url("Repo", url="https://github.com/kaif-00z/AutoAnimeBot/"),
+                ]
+            ],
+        )
     await xnx.delete()
 
 
@@ -290,15 +297,16 @@ async def _(e):
     await stats(e)
 
 
-async def syst(link1, link2): # work as webhook
+async def syst(link1, link2):  # work as webhook
     for i in count():
         # await asyncio.gather(*[geter(link1, 1), geter(link2, 1)]) don't use this line becoz it will blast ur vps
-        # await asyncio.gather(*[geter(link1), geter(link2)]) don't use this line becoz it will blast ur vps
+        # await asyncio.gather(*[geter(link1), geter(link2)]) don't use this
+        # line becoz it will blast ur vps
         await geter(link1)
         await geter(link2)
 
 
-sch.add_job(shu_msg, "cron", hour=0, minute=30) # 12:30 am IST
+sch.add_job(shu_msg, "cron", hour=0, minute=30)  # 12:30 am IST
 
 LOGS.info("Auto Anime Bot Has Started...")
 
