@@ -1,0 +1,14 @@
+python-decouple
+redis
+aiohttp
+apscheduler
+google-api-python-client
+feedparser
+https://github.com/New-dev0/Telethon/archive/diamond.zip
+pyrogram
+tgcrypto
+qbittorrent-api
+pymalscraper
+anitopy
+pillow
+git+https://github.com/kaif-00z/html-telegraph-poster
