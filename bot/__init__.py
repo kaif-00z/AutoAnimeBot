@@ -126,16 +126,19 @@ except Exception as eo:
     LOGS.critical(str(eo))
     exit()
 
+
 async def notify_about_me():
     try:
         btn = [
             [
                 Button.url("Developer", url="t.me/kaif_00z"),
-                Button.url("Repo", url="https://github.com/kaif-00z/AutoAnimeBot/")
+                Button.url("Repo", url="https://github.com/kaif-00z/AutoAnimeBot/"),
             ]
         ]
-        await bot.send_message(Var.CHAT, "`Hi, Anime Lovers, How Are You!`", buttons=btn)
-    except:
+        await bot.send_message(
+            Var.CHAT, "`Hi, Anime Lovers, How Are You!`", buttons=btn
+        )
+    except BaseException:
         pass
 
 

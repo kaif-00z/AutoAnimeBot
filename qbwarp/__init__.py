@@ -73,6 +73,7 @@ async def get_client(
         _, _ = await subpr.communicate()
         return await get_client(host, port, uname, passw, retry=retry - 1)
 
+
 async def get_torrent_info(client, ehash=None):
 
     if ehash is None:
@@ -81,6 +82,7 @@ async def get_torrent_info(client, ehash=None):
         return await aloop.run_in_executor(
             None, partial(client.torrents_info, torrent_hashes=ehash)
         )
+
 
 async def add_torrent_magnet(magnet):
     """Adds a torrent by its magnet link."""
