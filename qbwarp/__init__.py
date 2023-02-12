@@ -75,7 +75,6 @@ async def get_client(
 
 
 async def get_torrent_info(client, ehash=None):
-
     if ehash is None:
         return await aloop.run_in_executor(None, client.torrents_info)
     else:
