@@ -101,7 +101,12 @@ async def _skiped_ul(event):
     except BaseException:
         index = 1
     xx = await event.reply("`Request Added`")
-    await asyncio.gather(*[geter("https://subsplease.org/rss/?r=720", index), geter("https://subsplease.org/rss/?r=1080p", index)])
+    await asyncio.gather(
+        *[
+            geter("https://subsplease.org/rss/?r=720", index),
+            geter("https://subsplease.org/rss/?r=1080p", index),
+        ]
+    )
     await xx.edit("`Request Completed")
 
 
@@ -147,7 +152,9 @@ async def further_work(msg_id, filename, quality):
         ss_path, sp_path = await gen_ss_sam(hash, filename, LOGS)
         if ss_path and sp_path:
             ss = await bot.send_message(Var.CLOUD, file=glob(f"{ss_path}/*"))
-            sp = await bot.send_message(Var.CLOUD, file=sp_path, thumb="thumb.jpg", force_document=True)
+            sp = await bot.send_message(
+                Var.CLOUD, file=sp_path, thumb="thumb.jpg", force_document=True
+            )
             store_items(hash, [[i.id for i in ss], [sp.id]])
             await reporter.report(
                 "Successfully Generated Screen Shot And Sample.", info=True, log=True
@@ -279,8 +286,10 @@ async def _(e):
 
 async def syst(link1, link2):  # work as webhook
     for i in count():
-        # await asyncio.gather(*[geter(link1, 1), geter(link2, 1)]) to check previous dict
+        # await asyncio.gather(*[geter(link1, 1), geter(link2, 1)]) to check
+        # previous dict
         await asyncio.gather(*[geter(link1), geter(link2)])
+
 
 sch.add_job(shu_msg, "cron", hour=0, minute=30)  # 12:30 am IST
 
@@ -304,6 +313,6 @@ except KeyboardInterrupt:
     LOGS.info("Stopping The Bot...")
     try:
         [os.rmdir(fold) for fold in ["Downloads/", "thumbs/", "encode/"]]
-    except:
+    except BaseException:
         pass
     exit()
