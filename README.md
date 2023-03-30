@@ -15,7 +15,7 @@
 
 ## About
 
-- This Bot Is Currently Running In [This Channel](t.me/Ongoing_Animes_Flares) .
+- This Bot Is Currently Running In [This Channel](https://telegram.dog/Ongoing_Animes_Flares) .
 
 ## Donate
 
