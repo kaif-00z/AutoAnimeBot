@@ -20,15 +20,57 @@ import os
 import subprocess
 from pathlib import Path
 
+import aiofiles
+import aiohttp
 from html_telegraph_poster import TelegraphPoster
 
 OK = {}
 
 
+async def async_searcher(
+    url: str,
+    post: bool = None,
+    headers: dict = None,
+    params: dict = None,
+    json: dict = None,
+    data: dict = None,
+    ssl=None,
+    re_json: bool = False,
+    re_content: bool = False,
+    real: bool = False,
+    *args,
+    **kwargs,
+):
+    async with aiohttp.ClientSession(headers=headers) as client:
+        if post:
+            data = await client.post(
+                url, json=json, data=data, ssl=ssl, *args, **kwargs
+            )
+        else:
+            data = await client.get(url, params=params, ssl=ssl, *args, **kwargs)
+        if re_json:
+            return await data.json()
+        if re_content:
+            return await data.read()
+        if real:
+            return data
+        return await data.text()
+
+
+async def cover_dl(link):
+    image = await async_searcher(link, re_content=True)
+    fn = f"thumbs/{link.split('/')[-1]}"
+    if not fn.endswith((".jpg" or ".png")):
+        fn += ".jpg"
+    async with aiofiles.open(fn, "wb") as file:
+        await file.write(image)
+    return fn
+
+
 async def mediainfo(file, acc):
     try:
         process = await asyncio.create_subprocess_shell(
-            f'mediainfo "{file}" --Output=HTML',
+            f"mediainfo '''{file}''' --Output=HTML",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
@@ -80,8 +122,8 @@ async def stats(e):
         ov = hbs(int(Path(dl).stat().st_size))
         ans = f"Downloaded:\n{ov}\n\nCompressing:\n{ot}"
         await e.answer(ans, cache_time=0, alert=True)
-    except BaseException:
-        await e.answer("Someting Went Wrong!", cache_time=0, alert=True)
+    except Exception as error:
+        await e.answer(f"Someting Went Wrong!\n{error}", cache_time=0, alert=True)
 
 
 async def genss(file):
@@ -140,7 +182,7 @@ async def gen_ss_sam(hash, filename, log):
         ss, dd = await duration_s(filename)
         __ = filename.split(".mkv")[-2]
         out = __ + "_sample.mkv"
-        _ncmd = f'ffmpeg -i "{filename}" -preset ultrafast -ss {ss} -to {dd} -c:v libx265 -crf 27 -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? "{out}" -y'
+        _ncmd = f'ffmpeg -i """{filename}""" -preset ultrafast -ss {ss} -to {dd} -c:v libx265 -crf 27 -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? """{out}""" -y'
         process = await asyncio.create_subprocess_shell(
             _ncmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )

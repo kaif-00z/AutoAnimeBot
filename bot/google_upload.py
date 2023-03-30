@@ -13,12 +13,27 @@
 # License can be found in <
 # https://github.com/kaif-00z/AutoAnimeBOt/blob/main/LICENSE > .
 
+import asyncio
 import json
+import multiprocessing
 import pickle
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial, wraps
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
+
+
+def run_async(function):
+    @wraps(function)
+    async def wrapper(*args, **kwargs):
+        return await asyncio.get_event_loop().run_in_executor(
+            ThreadPoolExecutor(max_workers=multiprocessing.cpu_count() * 5),
+            partial(function, *args, **kwargs),
+        )
+
+    return wrapper
 
 
 def GoogleAuthorizer(name):
@@ -27,7 +42,8 @@ def GoogleAuthorizer(name):
     return build("drive", "v3", credentials=credz, cache_discovery=False)
 
 
-async def guploader(service, dir_id, filename, log):
+@run_async
+def guploader(service, dir_id, filename, log):
     file_metadata = {
         "name": filename.split("/")[-1],
         "description": "Uploaded By github.com/kaif-00z/AutoAnimeBot",

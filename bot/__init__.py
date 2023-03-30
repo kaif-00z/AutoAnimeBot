@@ -51,7 +51,7 @@ LOGS.info(
     """
                         Auto Anime Bot
                 ©️ t.me/kAiF_00z (github.com/kaif-00z)
-                        v0.0.1 (original)
+                        v0.0.2 (original)
                              (2023)
                        [All Rigth Reserved]
 
@@ -59,6 +59,12 @@ LOGS.info(
 )
 
 # sleep(5) #mere marze
+
+if os.cpu_count() < 4:
+    LOGS.warning(
+        "These Bot Atleast Need 4vcpu and 32GB Ram For Proper Functiong...\nExiting..."
+    )
+    exit()
 
 
 def ask_(db: Redis):
@@ -87,11 +93,16 @@ if not os.path.exists("thumb.jpg"):
     os.system(f"wget {Var.THUMB} -O thumb.jpg")
 if not os.path.isdir("encode/"):
     os.mkdir("encode/")
-if not os.path.exists("token.pickle"):
-    if not Var.TOKEN_FILE_LINK:
-        LOGS.critical("Token File Not Found!")
-        exit()
-    os.system(f"wget {Var.TOKEN_FILE_LINK} -O token.pickle")
+if not os.path.isdir("thumbs/"):
+    os.mkdir("thumbs/")
+if not os.path.isdir("Downloads/"):
+    os.mkdir("Downloads/")
+if Var.GDRIVE_UPLOAD:
+    if not os.path.exists("token.pickle"):
+        if not Var.TOKEN_FILE_LINK:
+            LOGS.critical("Token File Not Found!")
+            exit()
+        os.system(f"wget {Var.TOKEN_FILE_LINK} -O token.pickle")
 
 try:
     LOGS.info("Trying to Connect With Telegram...")
@@ -131,8 +142,10 @@ async def notify_about_me():
     try:
         btn = [
             [
-                Button.url("Developer", url="t.me/kaif_00z"),
-                Button.url("Repo", url="https://github.com/kaif-00z/AutoAnimeBot/"),
+                Button.url("Developer 👨‍💻", url="t.me/kaif_00z"),
+                Button.url(
+                    "Source Code 📂", url="https://github.com/kaif-00z/AutoAnimeBot/"
+                ),
             ]
         ]
         await bot.send_message(
@@ -161,7 +174,7 @@ class Reporter:
             else:
                 self.logger.info(txt[0])
         try:
-            await self.client.send_message(self.chat, f"```{txt[0]}```")
+            await self.client.send_message(self.chat, f"```{txt[0][:4096]}```")
         except FloodWaitError as fwerr:
             await self.client.disconnect()
             self.logger.info("Sleeping Becoz Of Floodwait...")
@@ -189,3 +202,4 @@ if Var.GDRIVE_UPLOAD:
 
 # Scheduler For Airtime
 sch = AsyncIOScheduler(timezone="Asia/Kolkata")
+POST_TRACKER = []

@@ -11,20 +11,17 @@
 #    General Public License for more details.
 #
 # License can be found in <
-# https://github.com/kaif-00z/AutoAnimeBOt/blob/main/LICENSE > .
+# https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE > .
 
-import asyncio
 import re
 import secrets
-import shutil
 from glob import glob
 from itertools import count
 from traceback import format_exc
 
 import feedparser
 
-from qbwarp import add_torrent_magnet, delete_torrent_file
-from qbwarp.Hash_Fetch import get_hash_magnet
+from qbwarp import download_magnet
 
 from . import *
 from .database import (
@@ -35,9 +32,9 @@ from .database import (
     store_items,
 )
 from .dts import shu_msg
-from .func import code, gen_ss_sam, mediainfo, stats
+from .func import code, cover_dl, gen_ss_sam, mediainfo, stats
 from .google_upload import guploader
-from .rename import _rename
+from .rename import _rename, get_caption, get_cover, get_poster
 
 
 @bot.on(
@@ -47,7 +44,7 @@ from .rename import _rename
 )
 async def _start(event):
     msg_id = event.pattern_match.group(1)
-    xnx = await event.reply("`Please Wait`")
+    xnx = await event.reply("`Please Wait...`")
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.CHAT, ids=int(msg_id))
@@ -104,50 +101,28 @@ async def _skiped_ul(event):
     except BaseException:
         index = 1
     xx = await event.reply("`Request Added`")
-    await asyncio.gather(
-        *[
-            geter("https://subsplease.org/rss/?r=720", index),
-            geter("https://subsplease.org/rss/?r=1080", index),
-        ]
-    )
+    await asyncio.gather(*[geter("https://subsplease.org/rss/?r=720", index), geter("https://subsplease.org/rss/?r=1080p", index)])
     await xx.edit("`Request Completed")
 
 
 async def further_work(msg_id, filename, quality):
     try:
-        # if quality == "1080":
-        #     qued_in = await streamer.add_stream(filename)
-        # await reporter.report(f"Added In Queue #{qued_in}", info=True,
-        # log=True)
         msg = await bot.get_messages(Var.CHAT, ids=msg_id)
         btn = [
-            [
-                Button.url(
-                    "📲 Send Forwardable Message",
-                    url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
-                )
-            ],
             [],
         ]
-        await msg.edit(buttons=btn)
-        bac_msg = await bot.send_message(Var.BACKUP, msg)
+        bac_msg = await bot.send_message(Var.BACKUP, msg) if Var.BACKUP else None
         if Var.GDRIVE_UPLOAD:
             await reporter.report("Going To Upload in Gdrive...", info=True, log=True)
             _res, _gid = await guploader(mgauth, Var.GDRIVE_FOLDER_ID, filename, LOGS)
             if _res and _gid:
-                btn[1].append(
+                btn[0].append(
                     Button.url(
                         "⚡ Index Link",
                         url=f"{Var.INDEX_LINK}{filename.split('/')[-1].strip().replace(' ', '%20')}",
                     )
                 )
                 btn[0].append(
-                    Button.url(
-                        "▶️ View Link",
-                        url=f"{Var.INDEX_LINK}{filename.split('/')[-1].strip().replace(' ', '%20')}?a=view",
-                    )
-                )
-                btn[1].append(
                     Button.url(
                         "♻️ Gdrive Link",
                         url=f"https://drive.google.com/uc?id={_gid}&export=download",
@@ -172,8 +147,7 @@ async def further_work(msg_id, filename, quality):
         ss_path, sp_path = await gen_ss_sam(hash, filename, LOGS)
         if ss_path and sp_path:
             ss = await bot.send_message(Var.CLOUD, file=glob(f"{ss_path}/*"))
-            await asyncio.sleep(2)
-            sp = await bot.send_message(Var.CLOUD, file=sp_path, thumb="thumb.jpg")
+            sp = await bot.send_message(Var.CLOUD, file=sp_path, thumb="thumb.jpg", force_document=True)
             store_items(hash, [[i.id for i in ss], [sp.id]])
             await reporter.report(
                 "Successfully Generated Screen Shot And Sample.", info=True, log=True
@@ -188,11 +162,12 @@ async def further_work(msg_id, filename, quality):
             )
             await msg.edit(buttons=btn)
             try:
-                shutil.rmtree(hash)
+                os.rmdir(hash + "/")
                 os.remove(sp_path)
+                os.remove(filename)
+                await bac_msg.edit(buttons=btn) if Var.BACKUP else None
             except BaseException:
                 pass
-        await bac_msg.edit(buttons=btn)
     except Exception as err:
         LOGS.exception(str(err))
 
@@ -200,19 +175,19 @@ async def further_work(msg_id, filename, quality):
 async def upload(torrent_link, name, compress=False):
     rename = ""
     try:
-        await add_torrent_magnet(torrent_link)
-        dl = f"Downloads/{name}"
+        await download_magnet(torrent_link, "Downloads")
+        dl = f"""Downloads/{name}"""
         if os.path.exists(dl):
             if compress:
-                rename = _rename(name)
-                out = f"encode/{rename}"
+                rename = await _rename(name)
+                out = f"""encode/{rename}"""
                 _code = code(f"{out};{dl}")
                 com_stat = await bot.send_message(
                     Var.LOG_CHANNEL,
                     f"```New File Downloaded, Named {name}\nNow Going To Commpress```",
                     buttons=[[Button.inline("STATS", data=f"tas_{_code}")]],
                 )
-                cmd = f'{Var.FFMPEG} -i "{dl}" -metadata "Encoded By"="github.com/kaif-00z/AutoAnimeBot" -preset ultrafast -c:v libx265 -crf 27 -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? "{out}" -y'
+                cmd = f"{Var.FFMPEG} -i '''{dl}''' -metadata 'Encoded By'='github.com/kaif-00z/AutoAnimeBot' -preset ultrafast -c:v libx265 -crf 27 -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? '''{out}''' -y"
                 process = await asyncio.create_subprocess_shell(
                     cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
                 )
@@ -221,7 +196,7 @@ async def upload(torrent_link, name, compress=False):
                 await com_stat.edit(buttons=Button.clear())
                 if not os.path.exists(out) or os.path.getsize(out) == 0:
                     await reporter.report(
-                        err[:3250] if err else "Encode Error.", error=True, log=True
+                        err if err else "Encode Error.", error=True, log=True
                     )
                     return (False, None, None)
                 await reporter.report(
@@ -235,24 +210,23 @@ async def upload(torrent_link, name, compress=False):
                 )
                 rename = _rename(name, og=True)
                 out = f"encode/{rename}"
-                os.system(f'cp "{dl}" "{out}"')
+                os.system(f"cp '''{dl}''' '''{out}'''")
                 await reporter.report(
                     "Successfully Renamed Now Going To Upload...", info=True, log=True
                 )
+            thumb = await cover_dl((await get_cover(name)))
             async with pyro:
                 post = await pyro.send_document(
                     Var.CHAT,
                     out,
                     caption=f"`{rename}`",
                     force_document=True,
-                    thumb="thumb.jpg",
-                    protect_content=True,
+                    thumb=thumb or "thumb.jpg",
                 )
             await reporter.report(
                 "Succesfully Uploaded New Video.", info=True, log=True
             )
-            ext_hash = get_hash_magnet(torrent_link)
-            await delete_torrent_file(ext_hash)
+            os.remove(dl)
             return (True, post.id, out)
         LOGS.error("File Not Found!")
         return (False, None, None)
@@ -264,7 +238,6 @@ async def upload(torrent_link, name, compress=False):
 
 async def geter(link, index=0):
     try:
-        # asyncio.ensure_future(streamer.start_stream())
         feed = feedparser.parse(link)
         info = feed.entries[index]
         name = info.title
@@ -277,16 +250,23 @@ async def geter(link, index=0):
                 await reporter.report(
                     f"New File Found!\nNamed - {name}", info=True, log=True
                 )
-                if is_compress(from_memory=True):
-                    res, msg_id, filename = await upload(magnet, name, compress=True)
-                    if res:
-                        append_name_in_memory(name, quality, in_memory=True)
-                        asyncio.ensure_future(further_work(msg_id, filename, quality))
-                else:
-                    res, msg_id, filename = await upload(magnet, name)
-                    if res:
-                        append_name_in_memory(name, quality, in_memory=True)
-                        asyncio.ensure_future(further_work(msg_id, filename, quality))
+                if quality == "720":
+                    poster = await get_poster(name)
+                    if (poster.split("/")[-1]) not in POST_TRACKER:
+                        thb = await cover_dl(poster)
+                        await bot.send_file(
+                            Var.CHAT,
+                            file=thb,
+                            caption=(await get_caption(name)),
+                            parse_mode="HTML",
+                        )
+                        POST_TRACKER.append(poster.split("/")[-1])
+                res, msg_id, filename = await upload(
+                    magnet, name, compress=is_compress(from_memory=True)
+                )
+                if res:
+                    append_name_in_memory(name, quality, in_memory=True)
+                    asyncio.ensure_future(further_work(msg_id, filename, quality))
     except Exception as error:
         LOGS.exception(format_exc())
         LOGS.exception(str(error))
@@ -299,12 +279,8 @@ async def _(e):
 
 async def syst(link1, link2):  # work as webhook
     for i in count():
-        # await asyncio.gather(*[geter(link1, 1), geter(link2, 1)]) don't use this line becoz it will blast ur vps
-        # await asyncio.gather(*[geter(link1), geter(link2)]) don't use this
-        # line becoz it will blast ur vps
-        await geter(link1)
-        await geter(link2)
-
+        # await asyncio.gather(*[geter(link1, 1), geter(link2, 1)]) to check previous dict
+        await asyncio.gather(*[geter(link1), geter(link2)])
 
 sch.add_job(shu_msg, "cron", hour=0, minute=30)  # 12:30 am IST
 
@@ -313,16 +289,21 @@ LOGS.info("Auto Anime Bot Has Started...")
 # Scheduler Start
 sch.start()
 
-# Streamer Run
-# bot.loop.run_until_complete(streamer.run())
-
 # notify ppl about the repo and dev
 bot.loop.run_until_complete(notify_about_me())
 
 # Webhook for upload and other stuffs
-bot.loop.run_until_complete(
-    syst("https://subsplease.org/rss/?r=720", "https://subsplease.org/rss/?r=1080")
-)
+try:
+    bot.loop.run_until_complete(
+        syst("https://subsplease.org/rss/?r=720", "https://subsplease.org/rss/?r=1080")
+    )
 
-# loop
-bot.loop.run_forever()
+    # loop
+    bot.loop.run_forever()
+except KeyboardInterrupt:
+    LOGS.info("Stopping The Bot...")
+    try:
+        [os.rmdir(fold) for fold in ["Downloads/", "thumbs/", "encode/"]]
+    except:
+        pass
+    exit()

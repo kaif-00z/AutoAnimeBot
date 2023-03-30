@@ -14,27 +14,79 @@
 # https://github.com/kaif-00z/AutoAnimeBOt/blob/main/LICENSE > .
 
 import anitopy
-from pymalscraper.scraper import Scraper
+from AnilistPython import Anilist
+
+from .google_upload import run_async
+
+anilist = Anilist()
+
+CAPTION = """
+<strong>{}</strong>
+
+{}
+"""
 
 
+@run_async
 def get_english(anime_name):
     try:
-        scraper = Scraper()
-        anime = scraper.get_anime(anime_name)
-        x = anime.english_title
+        anime = anilist.get_anime(anime_name)
+        x = anime.get("name_english")
         return x.strip() or anime_name
+    except Exception as error:
+        print(error)
+        return anime_name.strip()
+
+
+@run_async
+def get_poster(name):
+    try:
+        data = anitopy.parse(name)
+        anime_name = data.get("anime_title")
+        if anime_name:
+            anime_id = anilist.get_anime_id(anime_name)
+            return f"https://img.anili.st/media/{anime_id}"
+    except Exception as error:
+        print(error)
+        return None
+
+
+@run_async
+def get_caption(name):
+    try:
+        data = anitopy.parse(name)
+        anime_name = data.get("anime_title")
+        if anime_name:
+            anime = anilist.get_anime(anime_name)
+            return CAPTION.format(
+                anime.get("name_english").strip() or "", anime.get("desc").strip() or ""
+            )
     except BaseException:
-        return anime_name
+        return ""
 
 
-def _rename(name, og=None):
+@run_async
+def get_cover(name):
+    try:
+        data = anitopy.parse(name)
+        anime_name = data.get("anime_title")
+        if anime_name:
+            anime = anilist.get_anime(anime_name)
+            return anime.get("cover_image")
+    except Exception as error:
+        print(error)
+        return None
+
+
+async def _rename(name, og=None):
     try:
         data = anitopy.parse(name)
         anime_name = data.get("anime_title")
         if anime_name and data.get("episode_number"):
-            return f"[S{data.get('anime_season') or 1}-{data.get('episode_number') or ''}] {get_english(anime_name)} [{data.get('video_resolution').replace('p', 'px264' if og else 'px265') or ''}].{data.get('file_extension') or 'mkv'}"
+            return f"[S{data.get('anime_season') or 1}-{data.get('episode_number') or ''}] {(await get_english(anime_name))} [{data.get('video_resolution').replace('p', 'px264' if og else 'px265') or ''}].mkv"
         if anime_name:
-            return f"{get_english(anime_name)} [{data.get('video_resolution').replace('p', 'px264' if og else 'px265') or ''}].{data.get('file_extension') or 'mkv'}"
+            return f"{(await get_english(anime_name))} [{data.get('video_resolution').replace('p', 'px264' if og else 'px265') or ''}].mkv"
         return name
-    except BaseException:
+    except Exception as error:
+        print(error)
         return name

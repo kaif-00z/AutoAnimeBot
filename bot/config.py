@@ -24,10 +24,12 @@ class Var:
     BOT_TOKEN = config("BOT_TOKEN", default=None)
     BACKUP = config("BACKUP", default=0, cast=int)
     FFMPEG = config("FFMPEG", default="ffmpeg")
-    CHAT = config("CHAT", default=0, cast=int)
-    THUMB = config("THUMB", default="https://graph.org/file/37d9d0657d51e01a71f26.jpg")
+    CHAT = config("CHAT", cast=int)
+    THUMB = config(
+        "THUMBNAIL", default="https://graph.org/file/37d9d0657d51e01a71f26.jpg"
+    )
     LOG_CHANNEL = config("LOG_CHANNEL", default=0, cast=int)
-    CLOUD = config("CLOUD", default=0, cast=int)
+    CLOUD = config("CLOUD", cast=int)
     GDRIVE_FOLDER_ID = config("GDRIVE_FOLDER_ID", default=None)
     TOKEN_FILE_LINK = config("TOKEN_FILE_LINK", default=None)
     INDEX_LINK = config("INDEX_LINK", default="https://github.com/")

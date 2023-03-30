@@ -33,7 +33,7 @@ async def shu_msg():
         xxx = xx["schedule"]
         text = "**📆 Anime AirTime Today** `[IST]`\n\n"
         for i in xxx:
-            text += f'`[{i["time"]}]` -  [{get_english(i["title"])}](https://subsplease.org/shows/{i["page"]})\n'
+            text += f'`[{i["time"]}]` -  [{(await get_english(i["title"]))}](https://subsplease.org/shows/{i["page"]})\n'
         mssg = await bot.send_message(Var.CHAT, text)
         await bot.pin_message(mssg.chat_id, mssg.id, notify=True)
     except Exception as err:
