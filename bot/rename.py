@@ -59,7 +59,7 @@ def get_caption(name):
         if anime_name:
             anime = anilist.get_anime(anime_name)
             return CAPTION.format(
-                anime.get("name_english").strip() or "", anime.get("desc").strip() or ""
+                anime.get("name_english").strip() or "", (anime.get("desc").strip() or "")[:760] + "...",
             )
     except BaseException:
         return ""
