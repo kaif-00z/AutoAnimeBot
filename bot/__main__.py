@@ -20,6 +20,7 @@ from itertools import count
 from traceback import format_exc
 
 import feedparser
+from urllib3.util import parse_url
 
 from qbwarp import download_magnet
 
@@ -33,7 +34,7 @@ from .database import (
 )
 from .dts import shu_msg
 from .func import code, cover_dl, gen_ss_sam, mediainfo, stats
-from .google_upload import guploader
+from .google_upload import guploader, run_async
 from .rename import _rename, get_caption, get_cover, get_poster
 
 
@@ -68,7 +69,7 @@ async def _start(event):
     await xnx.delete()
 
 
-@bot.on(events.NewMessage(incoming=True, pattern="^/opt$", func=lambda e: e.is_private))
+@bot.on(events.NewMessage(incoming=True, pattern="/opt$", func=lambda e: e.is_private))
 async def _opt(event):
     if str(event.sender_id) not in Var.OWNERS:
         return
@@ -81,9 +82,7 @@ async def _opt(event):
     return await event.reply("`Successfully On The Compression`")
 
 
-@bot.on(
-    events.NewMessage(incoming=True, pattern="^/logs$", func=lambda e: e.is_private)
-)
+@bot.on(events.NewMessage(incoming=True, pattern="/logs$", func=lambda e: e.is_private))
 async def _logs(event):
     if str(event.sender_id) not in Var.OWNERS:
         return
@@ -91,7 +90,7 @@ async def _logs(event):
 
 
 @bot.on(
-    events.NewMessage(incoming=True, pattern="^/skipul", func=lambda e: e.is_private)
+    events.NewMessage(incoming=True, pattern="/skipul", func=lambda e: e.is_private)
 )
 async def _skiped_ul(event):
     if str(event.sender_id) not in Var.OWNERS:
@@ -121,12 +120,31 @@ async def further_work(msg_id, filename, quality):
             await reporter.report("Going To Upload in Gdrive...", info=True, log=True)
             _res, _gid = await guploader(mgauth, Var.GDRIVE_FOLDER_ID, filename, LOGS)
             if _res and _gid:
-                btn[0].append(
-                    Button.url(
-                        "⚡ Index Link",
-                        url=f"{Var.INDEX_LINK}{filename.split('/')[-1].strip().replace(' ', '%20')}",
+                try:
+                    btn[0].append(
+                        Button.url(
+                            "⚡ Index Link",
+                            url=str(
+                                parse_url(
+                                    f"{Var.INDEX_LINK}{filename.split('/')[-1].strip()}"
+                                )
+                            ),
+                        )
                     )
-                )
+                except BaseException:  # sometime index return 500
+                    try:
+                        btn[0].append(
+                            Button.url(
+                                "⚡ Index Link",
+                                url=str(
+                                    parse_url(
+                                        f"{Var.INDEX_LINK}{filename.split('/')[-1].strip()}"
+                                    )
+                                ),
+                            )
+                        )
+                    except BaseException:
+                        pass
                 btn[0].append(
                     Button.url(
                         "♻️ Gdrive Link",
@@ -169,7 +187,7 @@ async def further_work(msg_id, filename, quality):
             )
             await msg.edit(buttons=btn)
             try:
-                os.rmdir(hash + "/")
+                os.rmdir(hash)
                 os.remove(sp_path)
                 os.remove(filename)
                 await bac_msg.edit(buttons=btn) if Var.BACKUP else None
@@ -182,7 +200,7 @@ async def further_work(msg_id, filename, quality):
 async def upload(torrent_link, name, compress=False):
     rename = ""
     try:
-        await download_magnet(torrent_link, "Downloads")
+        await download_magnet(torrent_link, "./Downloads")
         dl = f"""Downloads/{name}"""
         if os.path.exists(dl):
             if compress:
@@ -243,10 +261,18 @@ async def upload(torrent_link, name, compress=False):
         return (False, None, None)
 
 
-async def geter(link, index=0):
+@run_async
+def feedp(link, index=0):
     try:
         feed = feedparser.parse(link)
-        info = feed.entries[index]
+        return feed.entries[index]
+    except BaseException:
+        return None
+
+
+async def geter(link, index=0):
+    try:
+        info = await feedp(link, index)
         name = info.title
         magnet = info.link
         quality = link.split("/?r=")[1]
@@ -257,10 +283,13 @@ async def geter(link, index=0):
                 await reporter.report(
                     f"New File Found!\nNamed - {name}", info=True, log=True
                 )
-                if quality == "720":
+                try:
+                    if quality == "1080":
+                        await asyncio.sleep(10)
                     poster = await get_poster(name)
-                    if (poster.split("/")[-1]) not in POST_TRACKER:
-                        thb = await cover_dl(poster)
+                    if poster:
+                        if (poster.split("/")[-1]) not in POST_TRACKER:
+                            thb = await cover_dl(poster)
                         await bot.send_file(
                             Var.CHAT,
                             file=thb,
@@ -268,6 +297,8 @@ async def geter(link, index=0):
                             parse_mode="HTML",
                         )
                         POST_TRACKER.append(poster.split("/")[-1])
+                except BaseException:
+                    pass
                 res, msg_id, filename = await upload(
                     magnet, name, compress=is_compress(from_memory=True)
                 )
@@ -286,8 +317,7 @@ async def _(e):
 
 async def syst(link1, link2):  # work as webhook
     for i in count():
-        # await asyncio.gather(*[geter(link1, 1), geter(link2, 1)]) to check
-        # previous dict
+        #await asyncio.gather(*[geter(link1, 1), geter(link2, 1)])
         await asyncio.gather(*[geter(link1), geter(link2)])
 
 
@@ -312,7 +342,7 @@ try:
 except KeyboardInterrupt:
     LOGS.info("Stopping The Bot...")
     try:
-        [os.rmdir(fold) for fold in ["Downloads/", "thumbs/", "encode/"]]
+        [os.rmdir(fold) for fold in ["Downloads", "thumbs", "encode"]]
     except BaseException:
         pass
     exit()

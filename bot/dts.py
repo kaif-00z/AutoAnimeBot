@@ -18,7 +18,7 @@ import json
 
 import aiohttp
 
-from . import Var, bot, reporter
+from . import Var, bot, reporter, POST_TRACKER
 from .rename import get_english
 
 
@@ -36,5 +36,9 @@ async def shu_msg():
             text += f'`[{i["time"]}]` -  [{(await get_english(i["title"]))}](https://subsplease.org/shows/{i["page"]})\n'
         mssg = await bot.send_message(Var.CHAT, text)
         await bot.pin_message(mssg.chat_id, mssg.id, notify=True)
+        try:
+            POST_TRACKER.clear()
+        except:
+            pass
     except Exception as err:
         await reporter.report(str(err), error=True, log=True)

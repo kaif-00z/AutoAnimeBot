@@ -51,7 +51,7 @@ LOGS.info(
     """
                         Auto Anime Bot
                 ©️ t.me/kAiF_00z (github.com/kaif-00z)
-                        v0.0.2 (original)
+                        v0.0.3 (original)
                              (2023)
                        [All Rigth Reserved]
 

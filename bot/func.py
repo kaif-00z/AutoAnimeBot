@@ -58,13 +58,16 @@ async def async_searcher(
 
 
 async def cover_dl(link):
-    image = await async_searcher(link, re_content=True)
-    fn = f"thumbs/{link.split('/')[-1]}"
-    if not fn.endswith((".jpg" or ".png")):
-        fn += ".jpg"
-    async with aiofiles.open(fn, "wb") as file:
-        await file.write(image)
-    return fn
+    try:
+        image = await async_searcher(link, re_content=True)
+        fn = f"thumbs/{link.split('/')[-1]}"
+        if not fn.endswith((".jpg" or ".png")):
+            fn += ".jpg"
+        async with aiofiles.open(fn, "wb") as file:
+            await file.write(image)
+        return fn
+    except BaseException:
+        return None
 
 
 async def mediainfo(file, acc):
