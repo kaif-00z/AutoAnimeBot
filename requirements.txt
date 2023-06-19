@@ -3,7 +3,6 @@ redis
 aiohttp
 aiofiles
 apscheduler==3.10.1
-google-api-python-client==2.82.0
 feedparser
 https://github.com/New-dev0/Telethon/archive/platy.zip
 pyrogram==2.0.102
