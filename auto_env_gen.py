@@ -1,18 +1,21 @@
-import sys, os, asyncio, random
+import asyncio
+import os
+import random
+import sys
 from traceback import format_exc
 
 try:
     from telethon import TelegramClient
     from telethon.sessions import StringSession
-    from telethon.tl.functions.contacts import UnblockRequest
     from telethon.tl.functions.channels import CreateChannelRequest
+    from telethon.tl.functions.contacts import UnblockRequest
 except ModuleNotFoundError:
     print("Downloading Telethon...")
     os.system(f"{sys.executable} -m pip install telethon")
     from telethon import TelegramClient
     from telethon.sessions import StringSession
-    from telethon.tl.functions.contacts import UnblockRequest
     from telethon.tl.functions.channels import CreateChannelRequest
+    from telethon.tl.functions.contacts import UnblockRequest
 
 DATA = {}
 ENV = """
@@ -25,6 +28,7 @@ REDIS_PASS={}
 OWNERS={}
 """
 
+
 async def generate_session_string():
     api_id = int(input("Enter your API_ID: "))
     api_hash = input("Enter your API_HASH: ")
@@ -33,7 +37,8 @@ async def generate_session_string():
             return (str(client.session.save()), api_id, api_hash)
     print("API_ID and HASH Not Found!")
     sys.exit(1)
-    
+
+
 def get_redis():
     redis_uri = input("Enter your Redis URI: ")
     redis_pass = input("Enter your Redis Password: ")
@@ -44,7 +49,8 @@ def get_redis():
         DATA["redis_uri"] = ""
         DATA["redis_pass"] = ""
         return False
-    
+
+
 async def create_channel(client, title):
     try:
         r = await client(
@@ -61,17 +67,28 @@ async def create_channel(client, title):
         print("Unable to Create Channel...")
         sys.exit(1)
 
+
 def generate_env():
-    txt = ENV.format(DATA["bot_token"], DATA["Ongoing Anime 2023"], DATA["Ongoing Anime Logs"], DATA["Ongoing Anime Samples And SS"], DATA.get("redis_uri") or "", DATA.get("redis_pass") or "", DATA["owner_id"])
+    txt = ENV.format(
+        DATA["bot_token"],
+        DATA["Ongoing Anime 2023"],
+        DATA["Ongoing Anime Logs"],
+        DATA["Ongoing Anime Samples And SS"],
+        DATA.get("redis_uri") or "",
+        DATA.get("redis_pass") or "",
+        DATA["owner_id"],
+    )
     with open(".env", "w") as f:
         f.write(txt.strip())
     print("Succesfully Generated .env File Don't Forget To Save It! For Future Uses.")
 
-    
+
 async def auto_maker():
     string_session, api_id, api_hash = await generate_session_string()
     print(string_session)
-    async with TelegramClient(StringSession(string_session), api_id, api_hash) as client:
+    async with TelegramClient(
+        StringSession(string_session), api_id, api_hash
+    ) as client:
         print("Creating Bot Account...")
         who = await client.get_me()
         DATA["owner_id"] = who.id
@@ -115,7 +132,11 @@ async def auto_maker():
             DATA["bot_token"] = bot_token
             print("Succesfully Created Bot Account...")
         print("Creating Channels...")
-        for ch_name in ["Ongoing Anime Logs", "Ongoing Anime 2023", "Ongoing Anime Samples And SS"]:
+        for ch_name in [
+            "Ongoing Anime Logs",
+            "Ongoing Anime 2023",
+            "Ongoing Anime Samples And SS",
+        ]:
             try:
                 chat_id = await create_channel(client, ch_name)
                 await asyncio.sleep(3)
@@ -137,7 +158,10 @@ async def auto_maker():
         print("Succesfully Created Channel...")
         db = get_redis()
         if not db:
-            print("Generating .env Without Redis URI and Password. Now You Have To Add it Manually!")
+            print(
+                "Generating .env Without Redis URI and Password. Now You Have To Add it Manually!"
+            )
         generate_env()
+
 
 asyncio.run(auto_maker())
