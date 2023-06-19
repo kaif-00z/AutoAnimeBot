@@ -20,7 +20,6 @@ from itertools import count
 from traceback import format_exc
 
 import feedparser
-from urllib3.util import parse_url
 
 from qbwarp import download_magnet
 
@@ -33,7 +32,7 @@ from .database import (
     store_items,
 )
 from .dts import shu_msg
-from .func import code, cover_dl, gen_ss_sam, mediainfo, stats, run_async
+from .func import code, cover_dl, gen_ss_sam, mediainfo, run_async, stats
 from .rename import _rename, get_caption, get_cover, get_poster
 
 
