@@ -33,8 +33,7 @@ from .database import (
     store_items,
 )
 from .dts import shu_msg
-from .func import code, cover_dl, gen_ss_sam, mediainfo, stats
-from .google_upload import guploader, run_async
+from .func import code, cover_dl, gen_ss_sam, mediainfo, stats, run_async
 from .rename import _rename, get_caption, get_cover, get_poster
 
 
@@ -116,45 +115,6 @@ async def further_work(msg_id, filename, quality):
             [],
         ]
         bac_msg = await bot.send_message(Var.BACKUP, msg) if Var.BACKUP else None
-        if Var.GDRIVE_UPLOAD:
-            await reporter.report("Going To Upload in Gdrive...", info=True, log=True)
-            _res, _gid = await guploader(mgauth, Var.GDRIVE_FOLDER_ID, filename, LOGS)
-            if _res and _gid:
-                try:
-                    btn[0].append(
-                        Button.url(
-                            "⚡ Index Link",
-                            url=str(
-                                parse_url(
-                                    f"{Var.INDEX_LINK}{filename.split('/')[-1].strip()}"
-                                )
-                            ),
-                        )
-                    )
-                except BaseException:  # sometime index return 404
-                    try:
-                        btn[0].append(
-                            Button.url(
-                                "⚡ Index Link",
-                                url=str(
-                                    parse_url(
-                                        f"{Var.INDEX_LINK}{filename.split('/')[-1].strip()}"
-                                    )
-                                ),
-                            )
-                        )
-                    except BaseException:
-                        pass
-                btn[0].append(
-                    Button.url(
-                        "♻️ Gdrive Link",
-                        url=f"https://drive.google.com/uc?id={_gid}&export=download",
-                    )
-                )
-                await msg.edit(buttons=btn)
-                await reporter.report(
-                    "Succesfully Uploaded On Gdrive", info=True, log=True
-                )
         link_info = await mediainfo(filename, bot)
         if link_info:
             btn.append(

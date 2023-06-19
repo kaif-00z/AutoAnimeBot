@@ -27,7 +27,6 @@ from telethon import Button, TelegramClient, events
 from telethon.errors.rpcerrorlist import FloodWaitError
 
 from .config import Var
-from .google_upload import GoogleAuthorizer
 
 # from .stream import Streamer
 
@@ -192,13 +191,6 @@ reporter = Reporter(bot, Var.LOG_CHANNEL, LOGS)
 # RMTP stream in VC
 # streamer = Streamer(Var.RMTP_KEY, Var.RMTP_URL, Var.CHAT, LOGS,
 # reporter) ye wala code nhi dunga
-
-if Var.GDRIVE_UPLOAD:
-    # for index link and main stuffs [auto anime drive]
-    if not Var.GDRIVE_FOLDER_ID:
-        LOGS.critical("GDrive Folder ID not Found!")
-        exit()
-    mgauth = GoogleAuthorizer("token.pickle")
 
 # Scheduler For Airtime
 sch = AsyncIOScheduler(timezone="Asia/Kolkata")

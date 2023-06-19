@@ -1,6 +1,6 @@
 from torrentp import TorrentDownloader
 
-from bot.google_upload import run_async
+from bot.func import run_async
 
 
 @run_async

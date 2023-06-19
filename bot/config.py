@@ -30,8 +30,4 @@ class Var:
     )
     LOG_CHANNEL = config("LOG_CHANNEL", default=0, cast=int)
     CLOUD = config("CLOUD", cast=int)
-    GDRIVE_FOLDER_ID = config("GDRIVE_FOLDER_ID", default=None)
-    TOKEN_FILE_LINK = config("TOKEN_FILE_LINK", default=None)
-    INDEX_LINK = config("INDEX_LINK", default="https://github.com/")
     OWNERS = config("OWNERS", default="")
-    GDRIVE_UPLOAD = config("GDRIVE_UPLOAD", default=False, cast=bool)
