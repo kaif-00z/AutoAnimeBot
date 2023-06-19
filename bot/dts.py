@@ -18,7 +18,7 @@ import json
 
 import aiohttp
 
-from . import Var, bot, reporter, POST_TRACKER
+from . import POST_TRACKER, Var, bot, reporter
 from .rename import get_english
 
 
@@ -38,7 +38,7 @@ async def shu_msg():
         await bot.pin_message(mssg.chat_id, mssg.id, notify=True)
         try:
             POST_TRACKER.clear()
-        except:
+        except BaseException:
             pass
     except Exception as err:
         await reporter.report(str(err), error=True, log=True)
