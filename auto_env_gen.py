@@ -62,7 +62,7 @@ async def create_channel(client, title):
         )
 
         created_chat_id = r.chats[0].id
-        return created_chat_id
+        return f"-100{created_chat_id}"
     except BaseException:
         print("Unable to Create Channel...")
         sys.exit(1)
