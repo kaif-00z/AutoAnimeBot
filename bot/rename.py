@@ -16,7 +16,7 @@
 import anitopy
 from AnilistPython import Anilist
 
-from .google_upload import run_async
+from .func import run_async
 
 anilist = Anilist()
 
