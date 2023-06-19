@@ -96,12 +96,6 @@ if not os.path.isdir("thumbs/"):
     os.mkdir("thumbs/")
 if not os.path.isdir("Downloads/"):
     os.mkdir("Downloads/")
-if Var.GDRIVE_UPLOAD:
-    if not os.path.exists("token.pickle"):
-        if not Var.TOKEN_FILE_LINK:
-            LOGS.critical("Token File Not Found!")
-            exit()
-        os.system(f"wget {Var.TOKEN_FILE_LINK} -O token.pickle")
 
 try:
     LOGS.info("Trying to Connect With Telegram...")
