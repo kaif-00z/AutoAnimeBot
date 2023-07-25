@@ -171,7 +171,7 @@ async def upload(torrent_link, name, compress=False):
                     f"```New File Downloaded, Named {name}\nNow Going To Commpress```",
                     buttons=[[Button.inline("STATS", data=f"tas_{_code}")]],
                 )
-                cmd = f"{Var.FFMPEG} -i '''{dl}''' -metadata 'Encoded By'='github.com/kaif-00z/AutoAnimeBot' -preset ultrafast -c:v libx265 -crf 27 -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? '''{out}''' -y"
+                cmd = f"{Var.FFMPEG} -i """{dl}""" -metadata 'Encoded By'='github.com/kaif-00z/AutoAnimeBot' -preset ultrafast -c:v libx265 -crf 27 -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? """{out}""" -y"
                 process = await asyncio.create_subprocess_shell(
                     cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
                 )
