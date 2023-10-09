@@ -11,23 +11,36 @@
 #    General Public License for more details.
 #
 # License can be found in <
-# https://github.com/kaif-00z/AutoAnimeBOt/blob/main/LICENSE > .
+# https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE > .
 
 from decouple import config
 
 
 class Var:
-    REDIS_URI = config("REDIS_URI", default=None)
-    REDIS_PASS = config("REDIS_PASS", default=None)
+    # Telegram Credentials
+
     API_ID = config("API_ID", default=6, cast=int)
     API_HASH = config("API_HASH", default="eb06d4abfb49dc3eeb1aeb98ae0f581e")
     BOT_TOKEN = config("BOT_TOKEN", default=None)
-    BACKUP = config("BACKUP", default=0, cast=int)
-    FFMPEG = config("FFMPEG", default="ffmpeg")
-    CHAT = config("CHAT", cast=int)
+
+    # Database Credentials
+
+    REDIS_URI = config("REDIS_URI", default=None)
+    REDIS_PASS = config("REDIS_PASSWORD", default=None)
+
+    # Channels Ids
+
+    BACKUP_CHANNEL = config("BACKUP_CHANNEL", default=0, cast=int)
+    MAIN_CHANNEL = config("MAIN_CHANNEL", cast=int)
+    LOG_CHANNEL = config("LOG_CHANNEL", default=0, cast=int)
+    CLOUD_CHANNEL = config("CLOUD_CHANNEL", cast=int)
+    OWNER = config("OWNER", default=0, cast=int)
+
+    # Other Configs
+
     THUMB = config(
         "THUMBNAIL", default="https://graph.org/file/37d9d0657d51e01a71f26.jpg"
     )
-    LOG_CHANNEL = config("LOG_CHANNEL", default=0, cast=int)
-    CLOUD = config("CLOUD", cast=int)
-    OWNERS = config("OWNERS", default="")
+    FFMPEG = config("FFMPEG", default="ffmpeg")
+    SEND_SCHEDULE = config("SEND_SCHEDULE", default=False, cast=bool)
+    RESTART_EVERDAY = config("RESTART_EVERDAY", default=True, cast=bool)

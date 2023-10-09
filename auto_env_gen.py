@@ -20,12 +20,12 @@ except ModuleNotFoundError:
 DATA = {}
 ENV = """
 BOT_TOKEN={}
-CHAT={}
+MAIN_CHANNEL={}
 LOG_CHANNEL={}
-CLOUD={}
+CLOUD_CHANNEL={}
 REDIS_URI={}
-REDIS_PASS={}
-OWNERS={}
+REDIS_PASSWORD={}
+OWNER={}
 """
 
 

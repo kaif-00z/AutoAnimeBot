@@ -11,29 +11,27 @@
 #    General Public License for more details.
 #
 # License can be found in <
-# https://github.com/kaif-00z/AutoAnimeBOt/blob/main/LICENSE > .
+# https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE > .
 
 import asyncio
 import logging
 import os
+import sys
 from logging import INFO, FileHandler, StreamHandler, basicConfig, getLogger
-from time import sleep
+from traceback import format_exc
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import Client
 from redis import Redis
-from requests import delete
 from telethon import Button, TelegramClient, events
 from telethon.errors.rpcerrorlist import FloodWaitError
 
 from .config import Var
 
-# from .stream import Streamer
-
 basicConfig(
     format="%(asctime)s || %(name)s [%(levelname)s] : %(message)s",
     handlers=[
-        FileHandler("AutoAnimeBot.txt", mode="w", encoding="utf-8"),
+        FileHandler("AutoAnimeBot.log", mode="w", encoding="utf-8"),
         StreamHandler(),
     ],
     level=INFO,
@@ -50,14 +48,12 @@ LOGS.info(
     """
                         Auto Anime Bot
                 ©️ t.me/kAiF_00z (github.com/kaif-00z)
-                        v0.0.3 (original)
+                        v0.0.4 (original)
                              (2023)
                        [All Rigth Reserved]
 
     """
 )
-
-# sleep(5) #mere marze
 
 if os.cpu_count() < 4:
     LOGS.warning(
@@ -77,15 +73,13 @@ def ask_(db: Redis):
         todo = str(input("Want To Flush Database [Y/N]: "))
         if todo.lower() == "y":
             db.flushall()
-            LOGS.info("Successfully Flushed The Database")
+            LOGS.info("Successfully Flushed The Database!!!")
 
 
 def loader(mem: dict, db: Redis, logger):
     for key in db.keys():
         mem.update({key: eval(db.get(key) or "[]")})
-        logger.info(
-            f"Succesfully Sync Database Key Named '{key}'\nValue: {mem.get(key)}"
-        )
+    logger.info(f"Succesfully Sync Database!!!")
 
 
 if not os.path.exists("thumb.jpg"):
@@ -123,16 +117,19 @@ try:
         charset="utf-8",
         decode_responses=True,
     )
-    LOGS.info("successfully connected to Redis database")
+    LOGS.info("Successfully Connected to Redis database")
     ask_(dB)
     loader(MEM, dB, LOGS)
 except Exception as eo:
+    LOGS.exception(format_exc())
     LOGS.critical(str(eo))
     exit()
 
 
 async def notify_about_me():
     try:
+        if "--no-notify" in sys.argv:
+            return await pyro.start()
         btn = [
             [
                 Button.url("Developer 👨‍💻", url="t.me/kaif_00z"),
@@ -142,10 +139,11 @@ async def notify_about_me():
             ]
         ]
         await bot.send_message(
-            Var.CHAT, "`Hi, Anime Lovers, How Are You!`", buttons=btn
+            Var.MAIN_CHANNEL, "`Hi, Anime Lovers, How Are You?`", buttons=btn
         )
     except BaseException:
         pass
+    await pyro.start()
 
 
 class Reporter:
@@ -182,10 +180,9 @@ class Reporter:
 # Reports Logs in telegram
 reporter = Reporter(bot, Var.LOG_CHANNEL, LOGS)
 
-# RMTP stream in VC
-# streamer = Streamer(Var.RMTP_KEY, Var.RMTP_URL, Var.CHAT, LOGS,
-# reporter) ye wala code nhi dunga
-
 # Scheduler For Airtime
 sch = AsyncIOScheduler(timezone="Asia/Kolkata")
+
+# Cache Data For Operations
 POST_TRACKER = []
+REQUEST = []

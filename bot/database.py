@@ -11,7 +11,7 @@
 #    General Public License for more details.
 #
 # License can be found in <
-# https://github.com/kaif-00z/AutoAnimeBOt/blob/main/LICENSE > .
+# https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE > .
 
 from . import MEM, dB
 
@@ -36,8 +36,13 @@ def append_name_in_memory(name, quality, in_memory=False):
 
 def is_compress(from_memory=False):
     if from_memory:
-        return MEM.get("COMPRESS") or True
-    return eval(dB.get("COMPRESS") or "True")
+        if MEM.get("COMPRESS") is None:
+            return True
+        return MEM.get("COMPRESS")
+    d = eval(dB.get("COMPRESS") or "None")
+    if d is None:
+        return True
+    return d
 
 
 def store_items(hash, list):

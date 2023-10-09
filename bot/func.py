@@ -11,7 +11,8 @@
 #    General Public License for more details.
 #
 # License can be found in <
-# https://github.com/kaif-00z/AutoAnimeBOt/blob/main/LICENSE > .
+# https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE > .
+
 # Also Thanks to Danish here
 
 import asyncio
@@ -208,10 +209,10 @@ async def gen_ss_sam(hash, filename, log):
         try:
             if er:
                 if not os.path.exists(out) or os.path.getsize(out) == 0:
-                    log.exception(str(er))
+                    log.error(str(er))
                     return (ss_path, sp_path)
         except BaseException:
             pass
         return hash, out
     except Exception as err:
-        log.exception(str(err))
+        log.error(str(err))

@@ -15,6 +15,7 @@
 
 import re
 import secrets
+import shutil
 from glob import glob
 from itertools import count
 from traceback import format_exc
@@ -45,14 +46,14 @@ async def _start(event):
     msg_id = event.pattern_match.group(1)
     xnx = await event.reply("`Please Wait...`")
     if msg_id:
-        if msg_id.isdigit():
-            msg = await bot.get_messages(Var.CHAT, ids=int(msg_id))
+        if msg_id.isdigit():  # this is diff thing , just ignore it
+            msg = await bot.get_messages(Var.MAIN_CHANNEL, ids=int(msg_id))
             await event.reply(msg, buttons=Button.clear())
         else:
             items = get_store_items(msg_id)
             if items:
                 for id in items:
-                    msg = await bot.get_messages(Var.CLOUD, ids=id)
+                    msg = await bot.get_messages(Var.CLOUD_CHANNEL, ids=id)
                     await event.reply(file=[i for i in msg])
     else:
         await event.reply(
@@ -69,7 +70,7 @@ async def _start(event):
 
 @bot.on(events.NewMessage(incoming=True, pattern="/opt$", func=lambda e: e.is_private))
 async def _opt(event):
-    if str(event.sender_id) not in Var.OWNERS:
+    if event.sender_id != Var.OWNER:
         return
     if is_compress():
         dB.set("COMPRESS", "False")
@@ -82,38 +83,58 @@ async def _opt(event):
 
 @bot.on(events.NewMessage(incoming=True, pattern="/logs$", func=lambda e: e.is_private))
 async def _logs(event):
-    if str(event.sender_id) not in Var.OWNERS:
+    if event.sender_id != Var.OWNER:
         return
-    await event.reply(file="AutoAnimeBot.txt", thumb="thumb.jpg")
+    await event.reply(file="AutoAnimeBot.log", thumb="thumb.jpg")
+
+
+@bot.on(
+    events.NewMessage(incoming=True, pattern="/restart$", func=lambda e: e.is_private)
+)
+async def _restart(event):
+    if event.sender_id != Var.OWNER:
+        return
+    await event.reply("`Restarting...`")
+    os.execl(sys.executable, sys.executable, "-m", "bot", "--samedb")
 
 
 @bot.on(
     events.NewMessage(incoming=True, pattern="/skipul", func=lambda e: e.is_private)
 )
 async def _skiped_ul(event):
-    if str(event.sender_id) not in Var.OWNERS:
+    if event.sender_id != Var.OWNER:
         return
     try:
         index = int(event.text.split()[1])
     except BaseException:
         index = 1
+    if REQUEST:
+        return await event.reply(
+            "`Already Your 1st Request Is Running!!! So Try Again After Current Request Completed!!!`"
+        )
     xx = await event.reply("`Request Added`")
+    REQUEST.append(True)
     await asyncio.gather(
         *[
             geter("https://subsplease.org/rss/?r=720", index),
             geter("https://subsplease.org/rss/?r=1080p", index),
         ]
     )
-    await xx.edit("`Request Completed")
+    REQUEST.clear()
+    await xx.reply("`Request Completed`")
 
 
 async def further_work(msg_id, filename, quality):
     try:
-        msg = await bot.get_messages(Var.CHAT, ids=msg_id)
+        msg = await bot.get_messages(Var.MAIN_CHANNEL, ids=msg_id)
         btn = [
             [],
         ]
-        bac_msg = await bot.send_message(Var.BACKUP, msg) if Var.BACKUP else None
+        bac_msg = (
+            await bot.send_message(Var.BACKUP_CHANNEL, msg)
+            if Var.BACKUP_CHANNEL
+            else None
+        )
         link_info = await mediainfo(filename, bot)
         if link_info:
             btn.append(
@@ -128,9 +149,9 @@ async def further_work(msg_id, filename, quality):
         hash = secrets.token_hex(nbytes=7)
         ss_path, sp_path = await gen_ss_sam(hash, filename, LOGS)
         if ss_path and sp_path:
-            ss = await bot.send_message(Var.CLOUD, file=glob(f"{ss_path}/*"))
+            ss = await bot.send_message(Var.CLOUD_CHANNEL, file=glob(f"{ss_path}/*"))
             sp = await bot.send_message(
-                Var.CLOUD, file=sp_path, thumb="thumb.jpg", force_document=True
+                Var.CLOUD_CHANNEL, file=sp_path, thumb="thumb.jpg", force_document=True
             )
             store_items(hash, [[i.id for i in ss], [sp.id]])
             await reporter.report(
@@ -146,14 +167,14 @@ async def further_work(msg_id, filename, quality):
             )
             await msg.edit(buttons=btn)
             try:
-                os.rmdir(hash)
+                await bac_msg.edit(buttons=btn) if Var.BACKUP_CHANNEL else None
+                shutil.rmtree(hash)
                 os.remove(sp_path)
                 os.remove(filename)
-                await bac_msg.edit(buttons=btn) if Var.BACKUP else None
             except BaseException:
-                pass
+                LOGS.error(format_exc())
     except Exception as err:
-        LOGS.exception(str(err))
+        LOGS.error(str(err))
 
 
 async def upload(torrent_link, name, compress=False):
@@ -171,7 +192,7 @@ async def upload(torrent_link, name, compress=False):
                     f"```New File Downloaded, Named {name}\nNow Going To Commpress```",
                     buttons=[[Button.inline("STATS", data=f"tas_{_code}")]],
                 )
-                cmd = f'{Var.FFMPEG} -i """{dl}""" -metadata "Encoded By"="github.com/kaif-00z/AutoAnimeBot" -preset ultrafast -c:v libx265 -crf 27 -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? """{out}""" -y'
+                cmd = f'''{Var.FFMPEG} -i """{dl}""" -metadata "Encoded By"="t.me/Anime_Flares" -preset ultrafast -c:v libx265 -crf 25 -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? """{out}""" -y'''
                 process = await asyncio.create_subprocess_shell(
                     cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
                 )
@@ -192,21 +213,27 @@ async def upload(torrent_link, name, compress=False):
                     info=True,
                     log=True,
                 )
-                rename = _rename(name, og=True)
+                rename = await _rename(name, og=True)
                 out = f"encode/{rename}"
-                os.system(f"cp '''{dl}''' '''{out}'''")
+                os.system(f"""cp '''{dl}''' '''{out}'''""")
                 await reporter.report(
                     "Successfully Renamed Now Going To Upload...", info=True, log=True
                 )
             thumb = await cover_dl((await get_cover(name)))
-            async with pyro:
-                post = await pyro.send_document(
-                    Var.CHAT,
-                    out,
-                    caption=f"`{rename}`",
-                    force_document=True,
-                    thumb=thumb or "thumb.jpg",
-                )
+            if not pyro.is_connected:
+                try:
+                    await pyro.connect()
+                    await asyncio.sleep(8)
+                except ConnectionError:
+                    pass
+            # async with pyro:
+            post = await pyro.send_document(
+                Var.MAIN_CHANNEL,
+                out,
+                caption=f"`{rename}`",
+                force_document=True,
+                thumb=thumb or "thumb.jpg",
+            )
             await reporter.report(
                 "Succesfully Uploaded New Video.", info=True, log=True
             )
@@ -215,7 +242,7 @@ async def upload(torrent_link, name, compress=False):
         LOGS.error("File Not Found!")
         return (False, None, None)
     except Exception as er:
-        LOGS.exception(format_exc())
+        LOGS.error(format_exc())
         await reporter.report(str(er), error=True, log=True)
         return (False, None, None)
 
@@ -232,6 +259,8 @@ def feedp(link, index=0):
 async def geter(link, index=0):
     try:
         info = await feedp(link, index)
+        if not info:
+            return
         name = info.title
         magnet = info.link
         quality = link.split("/?r=")[1]
@@ -250,7 +279,7 @@ async def geter(link, index=0):
                         if (poster.split("/")[-1]) not in POST_TRACKER:
                             thb = await cover_dl(poster)
                         await bot.send_file(
-                            Var.CHAT,
+                            Var.MAIN_CHANNEL,
                             file=thb,
                             caption=(await get_caption(name)),
                             parse_mode="HTML",
@@ -263,10 +292,10 @@ async def geter(link, index=0):
                 )
                 if res:
                     append_name_in_memory(name, quality, in_memory=True)
-                    asyncio.ensure_future(further_work(msg_id, filename, quality))
+                    asyncio.create_task(further_work(msg_id, filename, quality))
     except Exception as error:
-        LOGS.exception(format_exc())
-        LOGS.exception(str(error))
+        LOGS.error(format_exc())
+        LOGS.error(str(error))
 
 
 @bot.on(events.callbackquery.CallbackQuery(data=re.compile("tas_(.*)")))
@@ -301,7 +330,7 @@ try:
 except KeyboardInterrupt:
     LOGS.info("Stopping The Bot...")
     try:
-        [os.rmdir(fold) for fold in ["Downloads", "thumbs", "encode"]]
+        [shutil.rmtree(fold) for fold in ["Downloads", "thumbs", "encode"]]
     except BaseException:
-        pass
+        LOGS.error(format_exc())
     exit()
