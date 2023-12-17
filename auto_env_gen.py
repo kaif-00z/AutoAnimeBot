@@ -141,7 +141,7 @@ async def auto_maker():
                 chat_id = await create_channel(client, ch_name)
                 await asyncio.sleep(3)
                 await client.edit_admin(
-                    chat_id,
+                    int(chat_id),
                     username,
                     post_messages=True,
                     edit_messages=True,
