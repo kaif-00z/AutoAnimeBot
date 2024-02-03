@@ -36,7 +36,7 @@ async def shu_msg():
             for i in xxx:
                 text += f'`[{i["time"]}]` -  [{(await get_english(i["title"]))}](https://subsplease.org/shows/{i["page"]})\n'
             mssg = await bot.send_message(Var.MAIN_CHANNEL, text)
-            await bot.pin_message(mssg.MAIN_CHANNEL_id, mssg.id, notify=True)
+            await mssg.pin(notify=True)
         except Exception as err:
             await reporter.report(str(err), error=True, log=True)
     POST_TRACKER.clear()
