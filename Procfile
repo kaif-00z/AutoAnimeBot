@@ -1,1 +1,1 @@
-worker: bash pkg.sh
+worker: bash run.sh
