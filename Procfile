@@ -1,1 +1,1 @@
-worker: bash run.sh
+worker: bash pkg.sh && bash run.sh bot
