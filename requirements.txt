@@ -4,7 +4,7 @@ aiohttp
 aiofiles
 apscheduler
 feedparser
-https://github.com/LonamiWebs/Telethon/archive/platy.zip
+https://github.com/New-dev0/Telethon/archive/platy.zip
 pyrogram
 tgcrypto
 git+https://github.com/kaif-00z/torrentp
