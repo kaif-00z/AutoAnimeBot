@@ -1,6 +1,6 @@
-## Todo
+## Description Of Latest Update
 
-- try to upgrade current torrent download method into better and faster method.
+- Fixed All Torrent Related Issue As Well As Stuck Issue Caused By It.
 
 ## Contributing
 

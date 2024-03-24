@@ -1,5 +1,5 @@
 #    This file is part of the AutoAnime distribution.
-#    Copyright (c) 2023 Kaif_00z
+#    Copyright (c) 2023-24 Kaif_00z
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ async def _restart(event):
     if event.sender_id != Var.OWNER:
         return
     await event.reply("`Restarting...`")
-    os.execl(sys.executable, sys.executable, "-m", "bot", "--samedb")
+    os.execl(sys.executable, sys.executable, "-m", "bot", "--samedb", "--no-notify")
 
 
 @bot.on(
