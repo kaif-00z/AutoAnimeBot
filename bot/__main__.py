@@ -180,8 +180,8 @@ async def further_work(msg_id, filename, quality):
 async def upload(torrent_link, name, compress=False):
     rename = ""
     try:
-        await download_magnet(torrent_link, "./Downloads")
-        dl = f"""Downloads/{name}"""
+        await download_magnet(torrent_link, "./downloads/")
+        dl = f"""downloads/{name}"""
         if os.path.exists(dl):
             if compress:
                 rename = await _rename(name)
@@ -223,7 +223,7 @@ async def upload(torrent_link, name, compress=False):
             if not pyro.is_connected:
                 try:
                     await pyro.connect()
-                    await asyncio.sleep(8)
+                    await asyncio.sleep(3)
                 except ConnectionError:
                     pass
             # async with pyro:
@@ -330,7 +330,7 @@ try:
 except KeyboardInterrupt:
     LOGS.info("Stopping The Bot...")
     try:
-        [shutil.rmtree(fold) for fold in ["Downloads", "thumbs", "encode"]]
+        [shutil.rmtree(fold) for fold in ["downloads", "thumbs", "encode"]]
     except BaseException:
         LOGS.error(format_exc())
     exit()

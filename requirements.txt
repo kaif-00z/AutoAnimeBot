@@ -7,7 +7,6 @@ feedparser
 https://github.com/New-dev0/Telethon/archive/platy.zip
 pyrogram==2.0.102
 tgcrypto
-git+https://github.com/kaif-00z/torrentp
 AnilistPython==0.1.3
 anitopy
 git+https://github.com/kaif-00z/html-telegraph-poster

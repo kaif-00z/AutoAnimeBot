@@ -59,7 +59,7 @@ def get_caption(name):
             desc = anime.get("desc").strip()
             return CAPTION.format(
                 anime.get("name_english").strip() or "",
-                desc if len(desc) < 763 else desc[:760] + "...",
+                desc if len(desc) < 300 else desc[:300] + "...",
             )
     except BaseException:
         return ""

@@ -88,8 +88,8 @@ if not os.path.isdir("encode/"):
     os.mkdir("encode/")
 if not os.path.isdir("thumbs/"):
     os.mkdir("thumbs/")
-if not os.path.isdir("Downloads/"):
-    os.mkdir("Downloads/")
+if not os.path.isdir("downloads/"):
+    os.mkdir("downloads/")
 
 try:
     LOGS.info("Trying to Connect With Telegram...")
