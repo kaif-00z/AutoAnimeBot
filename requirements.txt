@@ -1,5 +1,6 @@
 python-decouple
 redis
+lxml_html_clean
 aiohttp
 aiofiles
 apscheduler==3.10.1
