@@ -34,7 +34,7 @@ from .database import (
 )
 from .dts import shu_msg
 from .func import code, cover_dl, gen_ss_sam, mediainfo, run_async, stats
-from .rename import _rename, get_caption, get_cover, get_poster
+from .rename import _rename, get_caption, get_poster, get_cover
 
 
 @bot.on(
@@ -176,6 +176,9 @@ async def further_work(msg_id, filename, quality):
     except Exception as err:
         LOGS.error(str(err))
 
+@bot.on(events.callbackquery.CallbackQuery(data=re.compile("tas_(.*)")))
+async def _(e):
+    await stats(e)
 
 async def upload(torrent_link, name, compress=False):
     rename = ""
@@ -219,7 +222,7 @@ async def upload(torrent_link, name, compress=False):
                 await reporter.report(
                     "Successfully Renamed Now Going To Upload...", info=True, log=True
                 )
-            thumb = await cover_dl((await get_cover(name)))
+            thumb = await cover_dl((await get_poster(name)))
             if not pyro.is_connected:
                 try:
                     await pyro.connect()
@@ -256,9 +259,8 @@ def feedp(link, index=0):
         return None
 
 
-async def geter(link, index=0):
+async def geter(info, link):
     try:
-        info = await feedp(link, index)
         if not info:
             return
         name = info.title
@@ -273,20 +275,21 @@ async def geter(link, index=0):
                 )
                 try:
                     if quality == "1080":
-                        await asyncio.sleep(10)
-                    poster = await get_poster(name)
+                        await asyncio.sleep(8)
+                    poster = await get_cover(name)
+                    thb = None
                     if poster:
                         if (poster.split("/")[-1]) not in POST_TRACKER:
                             thb = await cover_dl(poster)
-                        await bot.send_file(
-                            Var.MAIN_CHANNEL,
-                            file=thb,
-                            caption=(await get_caption(name)),
-                            parse_mode="HTML",
-                        )
-                        POST_TRACKER.append(poster.split("/")[-1])
+                        if thb:
+                            await bot.send_file(
+                                Var.MAIN_CHANNEL,
+                                file=thb,
+                                caption=(await get_caption(name)),
+                            )
+                            POST_TRACKER.append(poster.split("/")[-1])
                 except BaseException:
-                    pass
+                    LOGS.exception(format_exc())
                 res, msg_id, filename = await upload(
                     magnet, name, compress=is_compress(from_memory=True)
                 )
@@ -297,24 +300,26 @@ async def geter(link, index=0):
         LOGS.error(format_exc())
         LOGS.error(str(error))
 
-
-@bot.on(events.callbackquery.CallbackQuery(data=re.compile("tas_(.*)")))
-async def _(e):
-    await stats(e)
-
+async def pre_syst(link1, link2, index=0):
+    info1 = await feedp(link1, index)
+    info2 = await feedp(link2, index)
+    await geter(info1, link1)
+    await geter(info2, link2)
 
 async def syst(link1, link2):  # work as webhook
     for i in count():
-        # await asyncio.gather(*[geter(link1, 1), geter(link2, 1)])
-        await asyncio.gather(*[geter(link1), geter(link2)])
+        await pre_syst(link1, link2, index=1)
+        await pre_syst(link1, link2, index=0)
 
-
-sch.add_job(shu_msg, "cron", hour=0, minute=30)  # 12:30 am IST
+async def post_syst(link1, link2):
+    asyncio.ensure_future(syst(link1, link2))
 
 LOGS.info("Auto Anime Bot Has Started...")
 
 # Scheduler Start
-sch.start()
+if Var.SEND_SCHEDULE:
+    sch.add_job(shu_msg, "cron", hour=0, minute=30)  # 12:30 am IST
+    sch.start()
 
 # notify ppl about the repo and dev
 bot.loop.run_until_complete(notify_about_me())
@@ -322,7 +327,7 @@ bot.loop.run_until_complete(notify_about_me())
 # Webhook for upload and other stuffs
 try:
     bot.loop.run_until_complete(
-        syst("https://subsplease.org/rss/?r=720", "https://subsplease.org/rss/?r=1080")
+        post_syst("https://subsplease.org/rss/?r=720", "https://subsplease.org/rss/?r=1080")
     )
 
     # loop

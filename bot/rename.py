@@ -13,69 +13,74 @@
 # License can be found in <
 # https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE > .
 
-import anitopy
-from AnilistPython import Anilist
+import anitopy, re, pytz
+from kitsu import AnimeInfo
+from datetime import datetime
 
-from .func import run_async
-
-anilist = Anilist()
+kitsu = AnimeInfo()
 
 CAPTION = """
-<strong>{}</strong>
-
-{}
+**〄 {} • {}
+━━━━━━━━━━━━━━━
+⬡ Quality: 720p, 1080p
+⬡ Audio: Japanese [English Subtitles]
+⬡ Genres: {}  
+━━━━━━━━━━━━━━━
+〣 Next Airing Episode: {}  
+〣 Next Airing Episode Date: {}  
+━━━━━━━━━━━━━━━**
+〣 #{}
 """
 
-
-@run_async
-def get_english(anime_name):
+async def get_english(name):
+    data = anitopy.parse(name)
+    anime_name = data.get("anime_title")
     try:
-        anime = anilist.get_anime(anime_name)
-        x = anime.get("name_english")
+        anime = await kitsu.search(get_proper_name_for_func(name))
+        x = anime.get("english_title")
         return x.strip() or anime_name
     except Exception as error:
         print(error)
         return anime_name.strip()
 
-
-@run_async
-def get_poster(name):
+async def get_poster(name):
     try:
         anime_name = get_proper_name_for_func(name)
         if anime_name:
-            anime_id = anilist.get_anime_id(anime_name)
-            return f"https://img.anili.st/media/{anime_id}"
+            anime_poster = await kitsu.search(anime_name)
+            return anime_poster.get("poster_img") or None
     except Exception as error:
         print(error)
         return None
 
-
-@run_async
-def get_caption(name):
+async def get_cover(name):
     try:
         anime_name = get_proper_name_for_func(name)
         if anime_name:
-            anime = anilist.get_anime(anime_name)
-            desc = anime.get("desc").strip()
+            anime_poster = await kitsu.search(anime_name)
+            if anime_poster.get("anilist_id"):
+                return anime_poster.get("anilist_poster")
+            return None
+    except Exception as error:
+        print(error)
+        return None
+
+async def get_caption(name):
+    try:
+        anime_name = get_proper_name_for_func(name)
+        if anime_name:
+            anime = await kitsu.search(anime_name)
+            next_ = anime.get('next_airing_ep', {})
             return CAPTION.format(
-                anime.get("name_english").strip() or "",
-                desc if len(desc) < 300 else desc[:300] + "...",
+                anime.get("english_title").strip() or "",
+                anime.get("type"),
+                ", ".join(anime.get("genres")),
+                next_.get("episode") or "N/A",
+                datetime.fromtimestamp(next_.get("airingAt"), tz=pytz.timezone("Asia/Kolkata")).strftime("%A, %B %d, %Y"),
+                "".join(re.split("[^a-zA-Z]*", anime.get("english_title") or ""))
             )
     except BaseException:
         return ""
-
-
-@run_async
-def get_cover(name):
-    try:
-        anime_name = get_proper_name_for_func(name)
-        if anime_name:
-            anime = anilist.get_anime(anime_name)
-            return anime.get("cover_image")
-    except Exception as error:
-        print(error)
-        return None
-
 
 def get_proper_name_for_func(name):
     try:
@@ -83,9 +88,7 @@ def get_proper_name_for_func(name):
         anime_name = data.get("anime_title")
         if anime_name and data.get("episode_number"):
             return (
-                f"{anime_name} S{data.get('anime_season')}"
-                if data.get("anime_season")
-                else anime_name
+                f"{anime_name} S{data.get('anime_season')} {data.get('episode_title')}" if data.get("anime_season") and data.get("episode_title") else f"{anime_name} S{data.get('anime_season')}" if data.get("anime_season") else anime_name 
             )
         return anime_name
     except BaseException:
@@ -98,7 +101,7 @@ async def _rename(name, og=None):
         anime_name = data.get("anime_title")
         if anime_name and data.get("episode_number"):
             return (
-                f"[S{data.get('anime_season') or 1}-{data.get('episode_number') or ''}] {(await get_english(anime_name))} [{data.get('video_resolution').replace('p', 'px264' if og else 'px265') or ''}].mkv".replace(
+                f"[S{data.get('anime_season') or 1}-{data.get('episode_number') or ''}] {(await get_english(name))} [{data.get('video_resolution').replace('p', 'px264' if og else 'px265') or ''}].mkv".replace(
                     "‘", ""
                 )
                 .replace("’", "")
@@ -106,7 +109,7 @@ async def _rename(name, og=None):
             )
         if anime_name:
             return (
-                f"{(await get_english(anime_name))} [{data.get('video_resolution').replace('p', 'px264' if og else 'px265') or ''}].mkv".replace(
+                f"{(await get_english(name))} [{data.get('video_resolution').replace('p', 'px264' if og else 'px265') or ''}].mkv".replace(
                     "‘", ""
                 )
                 .replace("’", "")

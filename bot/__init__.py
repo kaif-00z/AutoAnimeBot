@@ -48,8 +48,8 @@ LOGS.info(
     """
                         Auto Anime Bot
                 ©️ t.me/kAiF_00z (github.com/kaif-00z)
-                        v0.0.4 (original)
-                             (2023)
+                        v0.0.5 (original)
+                             (2023-24)
                        [All Rigth Reserved]
 
     """

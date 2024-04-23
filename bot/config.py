@@ -39,8 +39,7 @@ class Var:
     # Other Configs
 
     THUMB = config(
-        "THUMBNAIL", default="https://graph.org/file/37d9d0657d51e01a71f26.jpg"
+        "THUMBNAIL", default="https://graph.org/file/c41d5c4dc2269cddb3a26.jpg"
     )
     FFMPEG = config("FFMPEG", default="ffmpeg")
     SEND_SCHEDULE = config("SEND_SCHEDULE", default=False, cast=bool)
-    RESTART_EVERDAY = config("RESTART_EVERDAY", default=True, cast=bool)
