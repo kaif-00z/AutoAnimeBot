@@ -13,9 +13,13 @@
 # License can be found in <
 # https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE > .
 
-import anitopy, re, pytz
-from kitsu import AnimeInfo
+import re
 from datetime import datetime
+
+import anitopy
+import pytz
+
+from kitsu import AnimeInfo
 
 kitsu = AnimeInfo()
 
@@ -24,13 +28,14 @@ CAPTION = """
 ━━━━━━━━━━━━━━━
 ⬡ Quality: 720p, 1080p
 ⬡ Audio: Japanese [English Subtitles]
-⬡ Genres: {}  
+⬡ Genres: {}
 ━━━━━━━━━━━━━━━
-〣 Next Airing Episode: {}  
-〣 Next Airing Episode Date: {}  
+〣 Next Airing Episode: {}
+〣 Next Airing Episode Date: {}
 ━━━━━━━━━━━━━━━**
 〣 #{}
 """
+
 
 async def get_english(name):
     data = anitopy.parse(name)
@@ -43,6 +48,7 @@ async def get_english(name):
         print(error)
         return anime_name.strip()
 
+
 async def get_poster(name):
     try:
         anime_name = get_proper_name_for_func(name)
@@ -52,6 +58,7 @@ async def get_poster(name):
     except Exception as error:
         print(error)
         return None
+
 
 async def get_cover(name):
     try:
@@ -65,22 +72,26 @@ async def get_cover(name):
         print(error)
         return None
 
+
 async def get_caption(name):
     try:
         anime_name = get_proper_name_for_func(name)
         if anime_name:
             anime = await kitsu.search(anime_name)
-            next_ = anime.get('next_airing_ep', {})
+            next_ = anime.get("next_airing_ep", {})
             return CAPTION.format(
                 anime.get("english_title").strip() or "",
                 anime.get("type"),
                 ", ".join(anime.get("genres")),
                 next_.get("episode") or "N/A",
-                datetime.fromtimestamp(next_.get("airingAt"), tz=pytz.timezone("Asia/Kolkata")).strftime("%A, %B %d, %Y"),
-                "".join(re.split("[^a-zA-Z]*", anime.get("english_title") or ""))
+                datetime.fromtimestamp(
+                    next_.get("airingAt"), tz=pytz.timezone("Asia/Kolkata")
+                ).strftime("%A, %B %d, %Y"),
+                "".join(re.split("[^a-zA-Z]*", anime.get("english_title") or "")),
             )
     except BaseException:
         return ""
+
 
 def get_proper_name_for_func(name):
     try:
@@ -88,7 +99,13 @@ def get_proper_name_for_func(name):
         anime_name = data.get("anime_title")
         if anime_name and data.get("episode_number"):
             return (
-                f"{anime_name} S{data.get('anime_season')} {data.get('episode_title')}" if data.get("anime_season") and data.get("episode_title") else f"{anime_name} S{data.get('anime_season')}" if data.get("anime_season") else anime_name 
+                f"{anime_name} S{data.get('anime_season')} {data.get('episode_title')}"
+                if data.get("anime_season") and data.get("episode_title")
+                else (
+                    f"{anime_name} S{data.get('anime_season')}"
+                    if data.get("anime_season")
+                    else anime_name
+                )
             )
         return anime_name
     except BaseException:

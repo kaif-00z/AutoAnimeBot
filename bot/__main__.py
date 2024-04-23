@@ -34,7 +34,7 @@ from .database import (
 )
 from .dts import shu_msg
 from .func import code, cover_dl, gen_ss_sam, mediainfo, run_async, stats
-from .rename import _rename, get_caption, get_poster, get_cover
+from .rename import _rename, get_caption, get_cover, get_poster
 
 
 @bot.on(
@@ -176,9 +176,11 @@ async def further_work(msg_id, filename, quality):
     except Exception as err:
         LOGS.error(str(err))
 
+
 @bot.on(events.callbackquery.CallbackQuery(data=re.compile("tas_(.*)")))
 async def _(e):
     await stats(e)
+
 
 async def upload(torrent_link, name, compress=False):
     rename = ""
@@ -300,19 +302,23 @@ async def geter(info, link):
         LOGS.error(format_exc())
         LOGS.error(str(error))
 
+
 async def pre_syst(link1, link2, index=0):
     info1 = await feedp(link1, index)
     info2 = await feedp(link2, index)
     await geter(info1, link1)
     await geter(info2, link2)
 
+
 async def syst(link1, link2):  # work as webhook
     for i in count():
         await pre_syst(link1, link2, index=1)
         await pre_syst(link1, link2, index=0)
 
+
 async def post_syst(link1, link2):
     asyncio.ensure_future(syst(link1, link2))
+
 
 LOGS.info("Auto Anime Bot Has Started...")
 
@@ -327,7 +333,9 @@ bot.loop.run_until_complete(notify_about_me())
 # Webhook for upload and other stuffs
 try:
     bot.loop.run_until_complete(
-        post_syst("https://subsplease.org/rss/?r=720", "https://subsplease.org/rss/?r=1080")
+        post_syst(
+            "https://subsplease.org/rss/?r=720", "https://subsplease.org/rss/?r=1080"
+        )
     )
 
     # loop

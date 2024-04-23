@@ -14,9 +14,11 @@
 # https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE > .
 
 
-import json, aiohttp 
+import json
 
-from . import POST_TRACKER, Var, bot, os, reporter, sys
+import aiohttp
+
+from . import POST_TRACKER, Var, bot, reporter
 from .rename import get_english
 
 
