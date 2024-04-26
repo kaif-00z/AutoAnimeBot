@@ -323,9 +323,8 @@ async def post_syst(link1, link2):
 LOGS.info("Auto Anime Bot Has Started...")
 
 # Scheduler Start
-if Var.SEND_SCHEDULE:
-    sch.add_job(shu_msg, "cron", hour=0, minute=30)  # 12:30 am IST
-    sch.start()
+sch.add_job(shu_msg, "cron", hour=0, minute=30)  # 12:30 am IST
+sch.start()
 
 # notify ppl about the repo and dev
 bot.loop.run_until_complete(notify_about_me())
