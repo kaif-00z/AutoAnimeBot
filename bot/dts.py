@@ -15,7 +15,9 @@
 
 
 import json
-import os, sys
+import os
+import sys
+
 import aiohttp
 
 from . import POST_TRACKER, Var, bot, reporter
