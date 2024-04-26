@@ -45,6 +45,7 @@ def get_redis():
     if redis_uri and redis_pass:
         DATA["redis_uri"] = redis_uri
         DATA["redis_pass"] = redis_pass
+        return True
     else:
         DATA["redis_uri"] = ""
         DATA["redis_pass"] = ""
@@ -71,7 +72,7 @@ async def create_channel(client, title):
 def generate_env():
     txt = ENV.format(
         DATA["bot_token"],
-        DATA["Ongoing Anime 2023"],
+        DATA["Ongoing Anime 2024"],
         DATA["Ongoing Anime Logs"],
         DATA["Ongoing Anime Samples And SS"],
         DATA.get("redis_uri") or "",
