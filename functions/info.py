@@ -25,6 +25,7 @@ import pytz
 from libs.kitsu import RawAnimeInfo
 from libs.logger import LOGS
 
+
 class AnimeInfo:
     def __init__(self, name):
         self.kitsu = RawAnimeInfo()
@@ -53,7 +54,6 @@ class AnimeInfo:
             LOGS.error(str(error))
             return anime_name.strip()
 
-
     async def get_poster(self):
         try:
             if self.proper_name:
@@ -61,7 +61,6 @@ class AnimeInfo:
                 return anime_poster.get("poster_img") or None
         except Exception as error:
             LOGS.error(str(error))
-
 
     async def get_cover(self):
         try:
@@ -73,7 +72,6 @@ class AnimeInfo:
         except Exception as error:
             LOGS.error(str(error))
 
-
     async def get_caption(self):
         try:
             if self.proper_name:
@@ -84,9 +82,13 @@ class AnimeInfo:
                     anime.get("type"),
                     ", ".join(anime.get("genres")),
                     next_.get("episode") or "N/A",
-                    datetime.fromtimestamp(
-                        next_.get("airingAt"), tz=pytz.timezone("Asia/Kolkata")
-                    ).strftime("%A, %B %d, %Y") if next_.get("airingAt") else "N/A",
+                    (
+                        datetime.fromtimestamp(
+                            next_.get("airingAt"), tz=pytz.timezone("Asia/Kolkata")
+                        ).strftime("%A, %B %d, %Y")
+                        if next_.get("airingAt")
+                        else "N/A"
+                    ),
                     "".join(re.split("[^a-zA-Z]*", anime.get("english_title") or "")),
                 )
         except Exception as error:

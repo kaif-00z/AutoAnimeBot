@@ -16,10 +16,13 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-from telethon import TelegramClient, Button
+import asyncio
+import logging
+
+from telethon import Button, TelegramClient
 from telethon.errors.rpcerrorlist import FloodWaitError
+
 from functions.config import Var
-import logging, asyncio
 
 logging.basicConfig(
     format="%(asctime)s || %(name)s [%(levelname)s] : %(message)s",
@@ -34,34 +37,61 @@ LOGS = logging.getLogger("AutoAnimeBot")
 TelethonLogger = logging.getLogger("Telethon")
 TelethonLogger.setLevel(logging.INFO)
 
+LOGS.info(
+    """
+                        Auto Anime Bot
+                ©️ t.me/kAiF_00z (github.com/kaif-00z)
+                        v0.0.6 (original)
+                             (2023-24)
+                       [All Rigth Reserved]
+
+    """
+)
+
 
 class Reporter:
     def __init__(self, client: TelegramClient, file_name: str):
-        self.client : TelegramClient = client
+        self.client: TelegramClient = client
         self.file_name = file_name
         self.msg = None
 
     async def alert_new_file_founded(self):
         await self.awake()
-        msg = await self.client.send_message(Var.LOG_CHANNEL, f"**New Anime Released**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Downloading...`")
+        msg = await self.client.send_message(
+            Var.LOG_CHANNEL,
+            f"**New Anime Released**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Downloading...`",
+        )
         self.msg = msg
 
     async def started_compressing(self, btn):
-        self.msg = await self.msg.edit(f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Encoding...`", buttons=btn)
+        self.msg = await self.msg.edit(
+            f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Encoding...`",
+            buttons=btn,
+        )
 
     async def started_renaming(self):
-        self.msg = await self.msg.edit(f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Renaming...`", buttons=[[Button.inline("✒️", data="uwu")]])
+        self.msg = await self.msg.edit(
+            f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Renaming...`",
+            buttons=[[Button.inline("✒️", data="uwu")]],
+        )
 
     async def started_uploading(self):
-        self.msg = await self.msg.edit(f"**Successfully Encoded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Uploading...`", buttons=[])
+        self.msg = await self.msg.edit(
+            f"**Successfully Encoded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Uploading...`",
+            buttons=[],
+        )
 
     async def started_gen_ss(self):
-        self.msg = await self.msg.edit(f"**Successfully Uploaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Generating Sample And Screen Shot...`")
+        self.msg = await self.msg.edit(
+            f"**Successfully Uploaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Generating Sample And Screen Shot...`"
+        )
 
     async def all_done(self):
-        self.msg = await self.msg.edit(f"**Successfully Completed All Task Related To The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `DONE`")
+        self.msg = await self.msg.edit(
+            f"**Successfully Completed All Task Related To The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `DONE`"
+        )
 
-    async def awake(self): # in case
+    async def awake(self):  # in case
         if not self.client.is_connected():
             await self.client.connect()
 

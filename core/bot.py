@@ -20,17 +20,17 @@
 import sys
 from logging import Logger
 
-from telethon import TelegramClient, Button
+from pyrogram import Client
+from telethon import TelegramClient
 from telethon.errors import (
     AccessTokenExpiredError,
     AccessTokenInvalidError,
     ApiIdInvalidError,
     AuthKeyDuplicatedError,
 )
-from pyrogram import Client
 
 from functions.config import Var
-from libs.logger import TelethonLogger, LOGS
+from libs.logger import LOGS, TelethonLogger
 
 
 class Bot(TelegramClient):
@@ -63,9 +63,7 @@ class Bot(TelegramClient):
         self.run_in_loop(self.start_client(bot_token=bot_token or Var.BOT_TOKEN))
 
     def __repr__(self):
-        return "<AutoAnimeBot.Client :\n bot: {}\n>".format(
-            self._bot
-        )
+        return "<AutoAnimeBot.Client :\n bot: {}\n>".format(self._bot)
 
     async def start_client(self, **kwargs):
         """function to start client"""

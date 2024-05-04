@@ -16,17 +16,31 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-from core.bot import Bot, Var, Button, LOGS
+import asyncio
+import os
+import secrets
+from glob import glob
+from traceback import format_exc
+
+from telethon import Button
+
+from core.bot import LOGS, Bot, Var
+from database import DataBase
 from functions.info import AnimeInfo
 from functions.tools import Tools
 from libs.logger import Reporter
-from database import DataBase
-from glob import glob
-from traceback import format_exc
-import secrets, os, asyncio
+
 
 class Executors:
-    def __init__(self, bot: Bot, dB: DataBase, configurations: dict, input_file: str, info: AnimeInfo, reporter: Reporter):
+    def __init__(
+        self,
+        bot: Bot,
+        dB: DataBase,
+        configurations: dict,
+        input_file: str,
+        info: AnimeInfo,
+        reporter: Reporter,
+    ):
         self.is_original = configurations.get("original_upload")
         self.is_button = configurations.get("button_upload")
         self.anime_info = info
@@ -37,7 +51,7 @@ class Executors:
         self.reporter = reporter
         self.msg_id = None
         self.output_file = None
-    
+
     async def execute(self):
         try:
             rename = await self.anime_info.rename(self.is_original)
@@ -45,21 +59,33 @@ class Executors:
             thumb = await self.tools.cover_dl((await self.anime_info.get_poster()))
             if self.is_original:
                 await self.reporter.started_renaming()
-                succ, out = await self.tools.rename_file(self.input_file, self.output_file)
+                succ, out = await self.tools.rename_file(
+                    self.input_file, self.output_file
+                )
                 if not succ:
                     return False, out
             else:
                 await self.reporter.started_compressing(self.encode_progress())
                 succ, out = await self.tools.compress(self.input_file, self.output_file)
-                if not os.path.exists(self.output_file) or os.path.getsize(self.output_file) == 0:
+                if (
+                    not os.path.exists(self.output_file)
+                    or os.path.getsize(self.output_file) == 0
+                ):
                     return False, out
             await self.reporter.started_uploading()
             if self.is_button:
-                msg = await self.bot.upload_anime(self.output_file, rename , thumb or "thumb.jpg", is_button=True)
-                btn = Button.url(f"{self.anime_info.data.get('video_resolution')}", url=f"https://t.me/{((await self.bot.get_me()).username)}?start={msg.id}")
+                msg = await self.bot.upload_anime(
+                    self.output_file, rename, thumb or "thumb.jpg", is_button=True
+                )
+                btn = Button.url(
+                    f"{self.anime_info.data.get('video_resolution')}",
+                    url=f"https://t.me/{((await self.bot.get_me()).username)}?start={msg.id}",
+                )
                 self.msg_id = msg.id
                 return True, btn
-            msg = await self.bot.upload_anime(self.output_file, rename, thumb or "thumb.jpg")
+            msg = await self.bot.upload_anime(
+                self.output_file, rename, thumb or "thumb.jpg"
+            )
             self.msg_id = msg.id
             return True, []
         except BaseException:
@@ -73,7 +99,10 @@ class Executors:
         try:
             if self.msg_id:
                 await self.reporter.started_gen_ss()
-                msg = await self.bot.get_messages(Var.BACKUP_CHANNEL if self.is_button else Var.MAIN_CHANNEL, ids=self.msg_id)
+                msg = await self.bot.get_messages(
+                    Var.BACKUP_CHANNEL if self.is_button else Var.MAIN_CHANNEL,
+                    ids=self.msg_id,
+                )
                 btn = [
                     [],
                 ]
@@ -91,9 +120,15 @@ class Executors:
                 _hash = secrets.token_hex(nbytes=7)
                 ss_path, sp_path = await self.tools.gen_ss_sam(_hash, self.output_file)
                 if ss_path and sp_path:
-                    ss = await self.bot.send_message(Var.CLOUD_CHANNEL, file=glob(f"{ss_path}/*") or "assest/poster_not_found.jpg")
+                    ss = await self.bot.send_message(
+                        Var.CLOUD_CHANNEL,
+                        file=glob(f"{ss_path}/*") or "assest/poster_not_found.jpg",
+                    )
                     sp = await self.bot.send_message(
-                        Var.CLOUD_CHANNEL, file=sp_path, thumb="thumb.jpg", force_document=True
+                        Var.CLOUD_CHANNEL,
+                        file=sp_path,
+                        thumb="thumb.jpg",
+                        force_document=True,
                     )
                     self.db.store_items(_hash, [[i.id for i in ss], [sp.id]])
                     btn.append(

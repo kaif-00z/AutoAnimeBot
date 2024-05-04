@@ -16,9 +16,10 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
+from core.bot import Bot
 from database import DataBase
-from core.bot import Bot, Button, Var
-from telethon import events
+from telethon import Button
+
 
 class AdminUtils:
     def __init__(self, dB: DataBase, bot: Bot):
@@ -29,21 +30,23 @@ class AdminUtils:
         btn = [
             [
                 Button.inline("📜 LOGS", data="slog"),
-                Button.inline("♻️ Restart", data="sret")
+                Button.inline("♻️ Restart", data="sret"),
             ],
             [
                 Button.inline("🎞️ Encode [Toogle]", data="entg"),
             ],
-            [Button.inline("🔘 Button Upload [Toogle]", data="butg")]
+            [Button.inline("🔘 Button Upload [Toogle]", data="butg")],
         ]
         return btn
-    
+
     def back_btn(self):
         return [[Button.inline("🔙", data="bek")]]
 
     async def _logs(self, e):
         await e.delete()
-        await e.reply(file="AutoAnimeBot.log", thumb="thumb.jpg", buttons=self.back_btn())
+        await e.reply(
+            file="AutoAnimeBot.log", thumb="thumb.jpg", buttons=self.back_btn()
+        )
 
     async def _restart(self, e, schedule):
         await e.reply("`Restarting...`")
@@ -52,13 +55,19 @@ class AdminUtils:
     async def _encode_t(self, e):
         if self.db.is_original_upload():
             self.db.toggle_original_upload()
-            return await e.edit("`Successfully On The Compression`", buttons=self.back_btn())
+            return await e.edit(
+                "`Successfully On The Compression`", buttons=self.back_btn()
+            )
         self.db.toggle_original_upload()
-        return await e.edit("`Successfully Off The Compression`", buttons=self.back_btn())
-    
+        return await e.edit(
+            "`Successfully Off The Compression`", buttons=self.back_btn()
+        )
+
     async def _btn_t(self, e):
         if self.db.is_button_upload:
             self.db.toggle_button_upload()
-            return await e.edit("`Successfully On The Button Upload`", buttons=self.back_btn())
+            return await e.edit(
+                "`Successfully On The Button Upload`", buttons=self.back_btn()
+            )
         self.db.toggle_button_upload()
         return await e.edit("`Successfully Off The Upload`", buttons=self.back_btn())

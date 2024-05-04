@@ -16,8 +16,9 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-from AnilistPython import Anilist
 import aiohttp
+from AnilistPython import Anilist
+
 
 class RawAnimeInfo:
     def __init__(self):
@@ -64,7 +65,10 @@ class RawAnimeInfo:
                 for index in range(len(links)):
                     res_data = await self.re_searcher(links[index]["links"]["self"])
                     if "current" != res_data["data"]["attributes"]["status"]:
-                        if res_data["data"]["attributes"]["endDate"] or res_data["data"]["attributes"]["startDate"]:
+                        if (
+                            res_data["data"]["attributes"]["endDate"]
+                            or res_data["data"]["attributes"]["startDate"]
+                        ):
                             if "2024" not in (
                                 res_data["data"]["attributes"]["endDate"] or ""
                             ):
@@ -144,5 +148,5 @@ class RawAnimeInfo:
             "poster_img": data.get("banner_image"),
             "type": data.get("airing_format") or "TV",
             "runtime": 24,
-            "anilist_poster": f"https://img.anili.st/media/{_id}"
+            "anilist_poster": f"https://img.anili.st/media/{_id}",
         }

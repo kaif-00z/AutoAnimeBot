@@ -21,11 +21,13 @@ import json
 import os
 import sys
 
-from functions.tools import Tools
-from functions.info import AnimeInfo
-from libs.logger import LOGS, TelegramClient
-from functions.config import Var
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from functions.config import Var
+from functions.info import AnimeInfo
+from functions.tools import Tools
+from libs.logger import LOGS, TelegramClient
+
 
 class ScheduleTasks:
     def __init__(self, bot: TelegramClient):
@@ -38,7 +40,9 @@ class ScheduleTasks:
 
     async def anime_timing(self):
         try:
-            _res = await self.tools.async_searcher("https://subsplease.org/api/?f=schedule&h=true&tz=Asia/Kolkata")
+            _res = await self.tools.async_searcher(
+                "https://subsplease.org/api/?f=schedule&h=true&tz=Asia/Kolkata"
+            )
             xx = json.loads(_res)
             xxx = xx["schedule"]
             text = "**📆 Anime AirTime Today** `[IST]`\n\n"

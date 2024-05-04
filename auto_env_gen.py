@@ -139,7 +139,7 @@ async def auto_maker():
             "Ongoing Anime Logs",
             "Ongoing Anime 2024",
             "Ongoing Anime Samples And SS",
-            "Ongoing Anime Backup"
+            "Ongoing Anime Backup",
         ]:
             try:
                 chat_id = await create_channel(client, ch_name)

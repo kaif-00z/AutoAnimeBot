@@ -18,6 +18,7 @@
 
 import asyncio
 
+
 class Torrent:
     def __init__(self) -> None:
         self.cmd = """aria2c '''{link}''' -x 10 -j 10 --seed-time=0 -d '{path}'"""

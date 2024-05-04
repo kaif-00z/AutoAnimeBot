@@ -16,10 +16,13 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-from redis import Redis
-from libs.logger import LOGS
-from functions.config import Var
 from traceback import format_exc
+
+from redis import Redis
+
+from functions.config import Var
+from libs.logger import LOGS
+
 
 class DataBase:
     def __init__(self):

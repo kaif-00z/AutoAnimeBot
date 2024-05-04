@@ -21,16 +21,17 @@ import json
 import os
 import subprocess
 from pathlib import Path
+from traceback import format_exc
 
 import aiofiles
 import aiohttp
 from html_telegraph_poster import TelegraphPoster
-from traceback import format_exc
 
-from libs.logger import LOGS
 from functions.config import Var
+from libs.logger import LOGS
 
 OK = {}
+
 
 class Tools:
     def __init__(self):
@@ -175,7 +176,6 @@ class Tools:
         z = json.loads(out)
         p = z["media"]["track"][0]["Duration"]
         return int(p.split(".")[-2])
-
 
     def stdr(self, seconds: int) -> str:
         minutes, seconds = divmod(seconds, 60)
