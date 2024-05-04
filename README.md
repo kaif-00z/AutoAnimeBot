@@ -10,7 +10,11 @@
 
 ## Description Of Latest Update
 
-- Fixed All Torrent Related Issue As Well As Stuck Issue Caused By It.
+- ReWritten Whole Program (Fully OOPs Based)
+- Optimized Core
+- Added Heroku Support
+- Added Button Upload Support
+- Added Custom CRF Support
 
 ## Contributing
 
@@ -20,8 +24,12 @@
 ## How to deploy?
 <p><a href="https://youtu.be/n1yG6HabW28"> <img src="https://img.shields.io/badge/See%20Video-black?style=for-the-badge&logo=YouTube" width="160""/></a></p>
 
+### Fork Repo Then click on below button of ur fork repo.
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Developer Note
 
+- If Hosted On Heroku Then Encoding Of Per Episode Will Take Around 20mins.
 - If You Don't Have High End VPS like 8vcpu or 32GiB RAM So Don't Deploy This Bot.
 - You Can Customize FFMPEG Code If You Know What You Are Doing.
 
@@ -45,7 +53,7 @@
 
 ### OPTIONAL VARIABLES
 
-- `BACKUP_CHANNEL` - ID of Channel Where Anime Will Be Saved As BackUP.
+- `BACKUP_CHANNEL` - ID of Channel Where Anime Will Be Saved As BackUP if You Are Using Button Upload Option Then Make Sure To SET Backup Channel.
 
 - `THUMBNAIL` - JPG/PNG Link of Thumbnail FIle.
 
@@ -54,6 +62,8 @@
 - `SEND_SCHEDULE` - `True/False` Send Schedule of Upcoming Anime of that day at 00:30 **IST**, default is `False`.
 
 - `RESTART_EVERDAY` - `True/False` It Will Restart The Bot Everyday At 00:30 **IST**, default is `True`.
+
+- `CRF` - Less CRF == High Quality, More Size , More CRF == Low Quality, Less Size, CRF Range = 20-51.
 
 ## Deployment In VPS
 
@@ -67,13 +77,7 @@
 
 ## Commands
 
-- `/opt` - Its A Toggle Command Which Will enable and disable compression.
-
-- `/logs` - Its Will Give You Log File.
-
-- `/restart` - To Restart The Bot.
-
-- `/skipul <no.>` - Sometimes When Webhook Got 2 Anime in Same Time, it will skip one, you can use this command to upload that skipped anime. ex - `/skipul 1`.
+[![Comand](https://graph.org/file/82176674097989fae68d4.png)](https://github.com/kaif-00z/AutoAnimeBot/)
 
 **Uploading of Ongoing Animes Is Automatic**
 

@@ -1,1 +1,1 @@
-python3 -m bot --samedb
+python3 bot.py

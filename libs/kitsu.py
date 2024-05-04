@@ -16,11 +16,10 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-import aiohttp
 from AnilistPython import Anilist
+import aiohttp
 
-
-class AnimeInfo:
+class RawAnimeInfo:
     def __init__(self):
         self.anilist = Anilist()
 
@@ -31,7 +30,8 @@ class AnimeInfo:
         except BaseException:
             _raw_data = {}
         if not raw_data:
-            raise ValueError("Kitsu: Data Not Found")
+            data = self.alt_anilist(query)
+            return data
         data = {}
         data["anime_id"] = raw_data.get("id")
         data["english_title"] = raw_data.get("attributes", {}).get("titles", {}).get(
@@ -64,13 +64,14 @@ class AnimeInfo:
                 for index in range(len(links)):
                     res_data = await self.re_searcher(links[index]["links"]["self"])
                     if "current" != res_data["data"]["attributes"]["status"]:
-                        if "2024" not in (
-                            res_data["data"]["attributes"]["endDate"] or ""
-                        ):
+                        if res_data["data"]["attributes"]["endDate"] or res_data["data"]["attributes"]["startDate"]:
                             if "2024" not in (
-                                res_data["data"]["attributes"]["startDate"] or ""
+                                res_data["data"]["attributes"]["endDate"] or ""
                             ):
-                                continue
+                                if "2024" not in (
+                                    res_data["data"]["attributes"]["startDate"] or ""
+                                ):
+                                    continue
                     return res_data
             except BaseException:
                 raise ValueError("Kitsu: Search Link Not Found")
@@ -124,3 +125,24 @@ class AnimeInfo:
             }
         except BaseException:
             return {}
+
+    def alt_anilist(self, anime_name):
+        data = self.anilist.get_anime(anime_name)
+        _id = self.anilist.get_anime_id(anime_name)
+        return {
+            "anilist_id": _id,
+            "genres": data.get("genres"),
+            "next_airing_ep": data.get("next_airing_ep") or {},
+            "season": data.get("season"),
+            "starting_time": data.get("starting_time"),
+            "ending_time": data.get("ending_time"),
+            "score": data.get("average_score") or "N/A",
+            "english_title": data.get("name_english"),
+            "japanese_title": data.get("name_romaji"),
+            "description": data.get("desc"),
+            "total_eps": data.get("airing_episodes") or "N/A",
+            "poster_img": data.get("banner_image"),
+            "type": data.get("airing_format") or "TV",
+            "runtime": 24,
+            "anilist_poster": f"https://img.anili.st/media/{_id}"
+        }

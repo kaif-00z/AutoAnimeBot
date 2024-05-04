@@ -23,6 +23,7 @@ BOT_TOKEN={}
 MAIN_CHANNEL={}
 LOG_CHANNEL={}
 CLOUD_CHANNEL={}
+BACKUP_CHANNEL={}
 REDIS_URI={}
 REDIS_PASSWORD={}
 OWNER={}
@@ -75,6 +76,7 @@ def generate_env():
         DATA["Ongoing Anime 2024"],
         DATA["Ongoing Anime Logs"],
         DATA["Ongoing Anime Samples And SS"],
+        DATA["Ongoing Anime Backup"],
         DATA.get("redis_uri") or "",
         DATA.get("redis_pass") or "",
         DATA["owner_id"],
@@ -135,8 +137,9 @@ async def auto_maker():
         print("Creating Channels...")
         for ch_name in [
             "Ongoing Anime Logs",
-            "Ongoing Anime 2023",
+            "Ongoing Anime 2024",
             "Ongoing Anime Samples And SS",
+            "Ongoing Anime Backup"
         ]:
             try:
                 chat_id = await create_channel(client, ch_name)
