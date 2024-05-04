@@ -122,7 +122,7 @@ class Executors:
                 if ss_path and sp_path:
                     ss = await self.bot.send_message(
                         Var.CLOUD_CHANNEL,
-                        file=glob(f"{ss_path}/*") or "assest/poster_not_found.jpg",
+                        file=glob(f"{ss_path}/*") or ["assest/poster_not_found.jpg"],
                     )
                     sp = await self.bot.send_message(
                         Var.CLOUD_CHANNEL,

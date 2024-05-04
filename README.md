@@ -13,7 +13,7 @@
 - ReWritten Whole Program (Fully OOPs Based)
 - Optimized Core
 - Added Heroku Support
-- Added Button Upload Support
+- Added Button Upload Support (File Store)
 - Added Custom CRF Support
 
 ## Contributing
