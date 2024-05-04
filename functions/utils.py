@@ -16,9 +16,10 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
+from telethon import Button
+
 from core.bot import Bot
 from database import DataBase
-from telethon import Button
 
 
 class AdminUtils:
