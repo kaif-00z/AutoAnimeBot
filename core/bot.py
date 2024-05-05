@@ -28,6 +28,8 @@ from telethon.errors import (
     ApiIdInvalidError,
     AuthKeyDuplicatedError,
 )
+from telethon.errors.rpcerrorlist import UserNotParticipantError
+from telethon.tl.functions.channels import GetParticipantRequest
 
 from functions.config import Var
 from libs.logger import LOGS, TelethonLogger
@@ -114,6 +116,13 @@ class Bot(TelegramClient):
             caption=caption,
         )
         return post
+
+    async def is_joined(self, channel_id ,user_id):
+        try:
+            await self(GetParticipantRequest(channel=channel_id, participant=user_id))
+            return True
+        except UserNotParticipantError:
+            return False
 
     def run_in_loop(self, function):
         return self.loop.run_until_complete(function)

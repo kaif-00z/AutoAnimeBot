@@ -59,16 +59,20 @@ class SubsPlease:
         if not d1080 or not d720:
             return None
         for i in range(3, -1, -1):
-            f1080, f720 = d1080.entries[i], d720.entries[i]
-            a1080, a720 = (anitopy.parse(f1080.title)).get("anime_title"), (
-                anitopy.parse(f720.title)
-            ).get("anime_title")
-            if a1080 == a720:
-                if "[Batch]" in f1080.title or "[Batch]" in f720.title:
-                    continue
-                uid = self.digest(f1080.title + f720.title)
-                if not self.db.is_anime_uploaded(uid):
-                    return {"uid": uid, "1080p": f1080, "720p": f720}
+            try:
+                f1080, f720 = d1080.entries[i], d720.entries[i]
+                a1080, a720 = (anitopy.parse(f1080.title)).get("anime_title"), (
+                    anitopy.parse(f720.title)
+                ).get("anime_title")
+                if a1080 == a720:
+                    if "[Batch]" in f1080.title or "[Batch]" in f720.title:
+                        continue
+                    uid = self.digest(f1080.title + f720.title)
+                    if not self.db.is_anime_uploaded(uid):
+                        return {"uid": uid, "1080p": f1080, "720p": f720}
+            except BaseException:
+                LOGS.error(format_exc())
+                return None
 
     async def on_new_anime(self, function):
         for i in count():

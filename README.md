@@ -14,6 +14,7 @@
 - Optimized Core
 - Added Heroku Support
 - Added Button Upload Support (File Store)
+- <details><summary>Click Here To See How Button Upload Look.</summary><img src="https://graph.org/file/fbe1bf09ad2526f9386e5.jpg" alt="btnul"/></details>
 - Added Custom CRF Support
 
 ## Contributing
