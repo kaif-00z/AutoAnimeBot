@@ -117,7 +117,7 @@ class Bot(TelegramClient):
         )
         return post
 
-    async def is_joined(self, channel_id ,user_id):
+    async def is_joined(self, channel_id, user_id):
         try:
             await self(GetParticipantRequest(channel=channel_id, participant=user_id))
             return True
