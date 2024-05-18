@@ -22,29 +22,29 @@ from decouple import config
 class Var:
     # Telegram Credentials
 
-    API_ID = config("API_ID", default=6, cast=int)
-    API_HASH = config("API_HASH", default="eb06d4abfb49dc3eeb1aeb98ae0f581e")
-    BOT_TOKEN = config("BOT_TOKEN", default=None)
+    API_ID = config("API_ID", default=21310924, cast=int)
+    API_HASH = config("API_HASH", default="fa4c3f582286d969ab1d08449e9533e8")
+    BOT_TOKEN = config("BOT_TOKEN", default="6030047721:AAGRa6fQdMC8byhuYhDBimuU4C-xZ3JI7ic")
 
     # Database Credentials
 
-    REDIS_URI = config("REDIS_URI", default=None)
-    REDIS_PASS = config("REDIS_PASSWORD", default=None)
+    REDIS_URI = config("REDIS_URI", default="redis-10802.c330.asia-south1-1.gce.redns.redis-cloud.com:10802") 
+    REDIS_PASS = config("REDIS_PASSWORD", default="rOvg9VosqTpuE2bcX7sPVDAvuERbezEV")
 
     # Channels Ids
 
-    BACKUP_CHANNEL = config("BACKUP_CHANNEL", default=0, cast=int)
-    MAIN_CHANNEL = config("MAIN_CHANNEL", cast=int)
-    LOG_CHANNEL = config("LOG_CHANNEL", default=0, cast=int)
-    CLOUD_CHANNEL = config("CLOUD_CHANNEL", cast=int)
-    OWNER = config("OWNER", default=0, cast=int)
+    BACKUP_CHANNEL = config("BACKUP_CHANNEL", default=-1002106668069, cast=int)
+    MAIN_CHANNEL = config("MAIN_CHANNEL", default="-1002140884022", cast=int)
+    LOG_CHANNEL = config("LOG_CHANNEL", default=-"1002065149795", cast=int)
+    CLOUD_CHANNEL = config("CLOUD_CHANNEL", default="-1002065149795", cast=int)
+    OWNER = config("OWNER", default="6072442458", cast=int)
 
-    # Other Configs
+    # Other Configs 
 
     THUMB = config(
-        "THUMBNAIL", default="https://graph.org/file/ad1b25807b81cdf1dff65.jpg"
+        "THUMBNAIL", default="https://graph.org/file/4fa004087303b32a4f07d.jpg"
     )
     FFMPEG = config("FFMPEG", default="ffmpeg")
     CRF = config("CRF", default="27")
-    SEND_SCHEDULE = config("SEND_SCHEDULE", default=False, cast=bool)
-    RESTART_EVERDAY = config("RESTART_EVERDAY", default=True, cast=bool)
+    SEND_SCHEDULE = config("SEND_SCHEDULE", default=True, cast=bool)
+    RESTART_EVERDAY = config("RESTART_EVERDAY", default=False, cast=bool)
