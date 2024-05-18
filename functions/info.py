@@ -32,13 +32,16 @@ class AnimeInfo:
         self.CAPTION = """
 **〄 {} • {}
 ━━━━━━━━━━━━━━━
-⬡ Quality: 720p, 1080p
+⬡ Quality: 480p, 720p, 1080p
 ⬡ Audio: Japanese [English Subtitles]
 ⬡ Genres: {}
 ━━━━━━━━━━━━━━━
 〣 Next Airing Episode: {}
 〣 Next Airing Episode Date: {}
 ━━━━━━━━━━━━━━━**
+
+@Anime_Compass
+
 〣 #{}
 """
         self.proper_name = self.get_proper_name_for_func(name)
