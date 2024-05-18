@@ -111,11 +111,11 @@ class AnimeInfo:
                 )
         except Exception as e:
         # Handle exceptions here
-        pass    
+            pass    
   
             if anime_name:
                 return (
-                    f"{(await self.get_english())} [{self.data.get('video_resolution').replace('p', 'px264' if original else 'px265') or ''}].mkv".replace(
+                    f"[AC🧭][S{self.data.get('anime_season') or 1}-{self.data.get('episode_number') or ''}] {(await self.get_english())} [{self.data.get('video_resolution') or ''}] @Anime_Compass.mkv".replace(
                         "‘", ""
                     )
                     .replace("’", "")
