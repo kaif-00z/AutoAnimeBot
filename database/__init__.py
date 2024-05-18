@@ -64,7 +64,7 @@ class DataBase:
         return self.cache.get("OG_UPLOAD") or False
 
     def toggle_button_upload(self):
-        data = self.cache.get("BUTTON_UPLOAD") or False
+        data = self.cache.get("BUTTON_UPLOAD") or True
         if data:
             data = False
         else:
