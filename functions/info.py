@@ -30,7 +30,7 @@ class AnimeInfo:
     def __init__(self, name):
         self.kitsu = RawAnimeInfo()
         self.CAPTION = """
-⛩️ {} • TV • 🧭
+⛩️ {} • {} • 🧭
 
 ────────────────
 ───────
