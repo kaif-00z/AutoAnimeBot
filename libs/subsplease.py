@@ -45,9 +45,11 @@ class SubsPlease:
 
     def rss_feed_data(self):
         try:
-            return parse("https://subsplease.org/rss/?r=1080"), parse(
-                "https://subsplease.org/rss/?r=720"
-            ), parse("https://subsplease.org/rss/?r=sd")
+            return (
+                parse("https://subsplease.org/rss/?r=1080"),
+                parse("https://subsplease.org/rss/?r=720"),
+                parse("https://subsplease.org/rss/?r=sd"),
+            )
         except KeyboardInterrupt:
             self._exit()
         except BaseException:
@@ -61,11 +63,17 @@ class SubsPlease:
         for i in range(2, -1, -1):
             try:
                 f1080, f720, f480 = d1080.entries[i], d720.entries[i], d480.entries[i]
-                a1080, a720, a480 = (anitopy.parse(f1080.title)).get("anime_title"), (
-                    anitopy.parse(f720.title)
-                ).get("anime_title"), (anitopy.parse(f480.title)).get("anime_title")
+                a1080, a720, a480 = (
+                    (anitopy.parse(f1080.title)).get("anime_title"),
+                    (anitopy.parse(f720.title)).get("anime_title"),
+                    (anitopy.parse(f480.title)).get("anime_title"),
+                )
                 if a1080 == a720 == a480:
-                    if "[Batch]" in f1080.title or "[Batch]" in f720.title or "[Batch]" in f480.title:
+                    if (
+                        "[Batch]" in f1080.title
+                        or "[Batch]" in f720.title
+                        or "[Batch]" in f480.title
+                    ):
                         continue
                     uid = self.digest(f1080.title + f720.title + f480.title)
                     if not self.db.is_anime_uploaded(uid):
