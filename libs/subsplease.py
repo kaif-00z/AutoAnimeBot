@@ -47,29 +47,29 @@ class SubsPlease:
         try:
             return parse("https://subsplease.org/rss/?r=1080"), parse(
                 "https://subsplease.org/rss/?r=720"
-            )
+            ), parse("https://subsplease.org/rss/?r=sd")
         except KeyboardInterrupt:
             self._exit()
         except BaseException:
             LOGS.error(format_exc())
-            return None, None
+            return None, None, None
 
     def feed_optimizer(self):
-        d1080, d720 = self.rss_feed_data()
-        if not d1080 or not d720:
+        d1080, d720, d480 = self.rss_feed_data()
+        if not d1080 or not d720 or not d480:
             return None
-        for i in range(3, -1, -1):
+        for i in range(2, -1, -1):
             try:
-                f1080, f720 = d1080.entries[i], d720.entries[i]
-                a1080, a720 = (anitopy.parse(f1080.title)).get("anime_title"), (
+                f1080, f720, f480 = d1080.entries[i], d720.entries[i], d480.entries[i]
+                a1080, a720, a480 = (anitopy.parse(f1080.title)).get("anime_title"), (
                     anitopy.parse(f720.title)
-                ).get("anime_title")
-                if a1080 == a720:
-                    if "[Batch]" in f1080.title or "[Batch]" in f720.title:
+                ).get("anime_title"), (anitopy.parse(f480.title)).get("anime_title")
+                if a1080 == a720 == a480:
+                    if "[Batch]" in f1080.title or "[Batch]" in f720.title or "[Batch]" in f480.title:
                         continue
-                    uid = self.digest(f1080.title + f720.title)
+                    uid = self.digest(f1080.title + f720.title + f480.title)
                     if not self.db.is_anime_uploaded(uid):
-                        return {"uid": uid, "1080p": f1080, "720p": f720}
+                        return {"uid": uid, "1080p": f1080, "720p": f720, "480p": f480}
             except BaseException:
                 LOGS.error(format_exc())
                 return None

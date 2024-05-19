@@ -114,7 +114,7 @@ async def _(e):
 
 async def anime(data):
     try:
-        torr = [data.get("720p"), data.get("1080p")]
+        torr = [data.get("480p"), data.get("720p"), data.get("1080p")]
         poster = await tools._poster(bot, AnimeInfo(torr[0].title))
         btn = []
         for i in torr:
