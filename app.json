@@ -11,6 +11,6 @@
             "description": "Keep it True If You Want Anime Airing Time Else False.",
             "value": "True",
             "required": false
-        },
+        }
     }
 }
