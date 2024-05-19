@@ -30,22 +30,20 @@ class AnimeInfo:
     def __init__(self, name):
         self.kitsu = RawAnimeInfo()
         self.CAPTION = """
-**〄 {} • {} 🧭
+⛩️ {} • TV • 🧭
 
-━━━━━━━━━━━━━━━
+────────────────
+───────
+• Quality: 480p, 720p, 1080p
+• Audio: Japanese [English Subtitles]
+• Genres: {}
+• Status: Ongoing - 2024
+• Next Week Episode: {}
+────────────────
+───────
 
-⬡ Quality: 480p, 720p, 1080p
-⬡ Audio: Japanese [English Subtitles]
-⬡ Genres: {}
-━━━━━━━━━━━━━━━
-
-〣 Next Airing Episode: {}
-〣 Next Airing Episode Date: {}
-━━━━━━━━━━━━━━━**
-
-@Anime_Compass
-
-〣 #{}
+🍁 Uρᥣoᥲdᥱd Bყ : @Anime_Compass
+{}
 """
         self.proper_name = self.get_proper_name_for_func(name)
         self.name = name
