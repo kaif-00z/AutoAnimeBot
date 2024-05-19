@@ -30,12 +30,15 @@ class AnimeInfo:
     def __init__(self, name):
         self.kitsu = RawAnimeInfo()
         self.CAPTION = """
-**〄 {} • {}
+**〄 {} • {} 🧭
+
 ━━━━━━━━━━━━━━━
+
 ⬡ Quality: 480p, 720p, 1080p
 ⬡ Audio: Japanese [English Subtitles]
 ⬡ Genres: {}
 ━━━━━━━━━━━━━━━
+
 〣 Next Airing Episode: {}
 〣 Next Airing Episode Date: {}
 ━━━━━━━━━━━━━━━**
