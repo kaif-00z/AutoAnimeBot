@@ -34,11 +34,13 @@ class AnimeInfo:
 
 ────────────────
 ───────
+
 • Quality: 480p, 720p, 1080p
 • Audio: Japanese [English Subtitles]
 • Genres: {}
 • Status: Ongoing - 2024
 • Next Week Episode: {}
+
 ────────────────
 ───────
 
