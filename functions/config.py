@@ -24,7 +24,7 @@ class Var:
 
     API_ID = config("API_ID", default=21310924, cast=int)
     API_HASH = config("API_HASH", default="fa4c3f582286d969ab1d08449e9533e8")
-    BOT_TOKEN = config("BOT_TOKEN", default="6030047721:AAGRa6fQdMC8byhuYhDBimuU4C-xZ3JI7ic")
+    BOT_TOKEN = config("BOT_TOKEN", default="6830131735:AAFelIqb0CFQjdluupFfpXXpvPSs-HcF9w0")
 
     # Database Credentials
 
@@ -34,7 +34,7 @@ class Var:
     # Channels Ids
 
     BACKUP_CHANNEL = config("BACKUP_CHANNEL", default=-1002106668069, cast=int)
-    MAIN_CHANNEL = config("MAIN_CHANNEL", default="-1002140884022", cast=int)
+    MAIN_CHANNEL = config("MAIN_CHANNEL", default="-1002066884253", cast=int)
     LOG_CHANNEL = config("LOG_CHANNEL", default="-1002065149795", cast=int)
     CLOUD_CHANNEL = config("CLOUD_CHANNEL", default="-1002065149795", cast=int)
     OWNER = config("OWNER", default="6072442458", cast=int)
