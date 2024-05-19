@@ -42,8 +42,7 @@ class AnimeInfo:
 ────────────────
 ───────
 
-🍁 Uρᥣoᥲdᥱd Bყ : @Anime_Compass
-{}
+🍁 Uρᥣoᥲdᥱd Bყ : "@Anime_Compass"
 """
         self.proper_name = self.get_proper_name_for_func(name)
         self.name = name
