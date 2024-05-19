@@ -103,7 +103,7 @@ class Bot(TelegramClient):
         post = await self.pyro_client.send_document(
             Var.BACKUP_CHANNEL if is_button else Var.MAIN_CHANNEL,
             file,
-            caption=f"`{caption}`",
+            caption=f"{caption}",
             force_document=True,
             thumb=thumb or "thumb.jpg",
         )
