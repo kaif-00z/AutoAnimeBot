@@ -80,8 +80,8 @@ class AnimeInfo:
                 next_ = anime.get("next_airing_ep", {})
                 return self.CAPTION.format(
                     anime.get("english_title").strip() or self.data.get("anime_title"),
-                    self.data.get('anime_season') or 1,
-                    self.data.get('episode_number') or 'N/A',
+                    self.data.get("anime_season") or 1,
+                    self.data.get("episode_number") or "N/A",
                     next_.get("episode") or "N/A",
                     (
                         datetime.fromtimestamp(

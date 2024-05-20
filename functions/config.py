@@ -37,7 +37,7 @@ class Var:
     MAIN_CHANNEL = config("MAIN_CHANNEL", cast=int)
     LOG_CHANNEL = config("LOG_CHANNEL", cast=int)
     CLOUD_CHANNEL = config("CLOUD_CHANNEL", cast=int)
-    FORCESUB_CHANNEL =  config("FORCESUB_CHANNEL", default=0, cast=int)
+    FORCESUB_CHANNEL = config("FORCESUB_CHANNEL", default=0, cast=int)
     OWNER = config("OWNER", default=0, cast=int)
 
     # Other Configs

@@ -55,7 +55,17 @@ async def _start(event):
         if is_user_joined:
             pass
         else:
-            return await xnx.edit(f"**Please Join {Var.FORCESUB_CHANNEL_LINK} To Use This Bot**", buttons=[[Button.url("♻️ REFRESH", url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}")]])
+            return await xnx.edit(
+                f"**Please Join {Var.FORCESUB_CHANNEL_LINK} To Use This Bot**",
+                buttons=[
+                    [
+                        Button.url(
+                            "♻️ REFRESH",
+                            url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
+                        )
+                    ]
+                ],
+            )
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
