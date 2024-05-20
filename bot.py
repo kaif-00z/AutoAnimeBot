@@ -132,7 +132,7 @@ async def anime(data):
     try:
         torr = [data.get("480p"), data.get("720p"), data.get("1080p")]
         poster = await tools._poster(bot, AnimeInfo(torr[0].title))
-        btn = []
+        btn = [[]]
         for i in torr:
             try:
                 filename = f"downloads/{i.title}"
@@ -156,8 +156,8 @@ async def anime(data):
                         if len(btn) == 2:
                             btn.append([_btn])
                         else:
-                            btn.append(_btn)
-                        await poster.edit(buttons=[btn])
+                            btn[0].append(_btn)
+                        await poster.edit(buttons=btn)
                     asyncio.ensure_future(exe.further_work())
                     continue
                 await reporter.report_error(_btn, log=True)
