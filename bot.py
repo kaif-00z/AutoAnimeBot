@@ -61,7 +61,7 @@ async def _start(event):
             buttons.append(
                 Button.url(
                     "Join Channel",
-                    url=f"https://t.me/{((await bot.get_me()).username)}",
+                    url=f"https://t.me/Anime_Compass",
                 )
             )
         if not is_user_joined_2:
@@ -69,7 +69,7 @@ async def _start(event):
             buttons.append(
                 Button.url(
                     "Join Channel",
-                    url=f"https://t.me/{((await bot.get_me()).username)}",
+                    url=f"https://t.me/Ongoing_Compass",
                 )
             )
         return await xnx.edit(
