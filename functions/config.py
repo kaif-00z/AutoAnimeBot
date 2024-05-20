@@ -25,7 +25,10 @@ class Var:
     API_ID = config("API_ID", default=21310924, cast=int)
     API_HASH = config("API_HASH", default="fa4c3f582286d969ab1d08449e9533e8")
     BOT_TOKEN = config("BOT_TOKEN", default="6830131735:AAFelIqb0CFQjdluupFfpXXpvPSs-HcF9w0")
-
+    FORCESUB_CHANNEL = "-1001926897432"
+    FORCESUB_CHANNEL_2 = "-1002066884253"
+    FORCESUB_CHANNEL_LINK = "https://t.me/Anime_Compass"
+    FORCESUB_CHANNEL_LINK_2 = "https://t.me/Ongoing_Compass"
     # Database Credentials
 
     REDIS_URI = config("REDIS_URI", default="redis-10802.c330.asia-south1-1.gce.redns.redis-cloud.com:10802") 
