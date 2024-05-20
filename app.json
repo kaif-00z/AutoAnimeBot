@@ -57,6 +57,18 @@
             "value": ""
         },
 
+        "FORCESUB_CHANNEL": {
+            "description": "Channel ID For ForceSub",
+            "value": "",
+            "required": false
+        },
+
+        "FORCESUB_CHANNEL_LINK": {
+            "description": "Channel Link Of ForceSub",
+            "value": "",
+            "required": false
+        },
+
         "SEND_SCHEDULE": {
             "description": "Keep it True If You Want Anime Airing Time Else False.",
             "value": "True",

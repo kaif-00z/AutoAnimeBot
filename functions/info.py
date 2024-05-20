@@ -30,11 +30,12 @@ class AnimeInfo:
     def __init__(self, name):
         self.kitsu = RawAnimeInfo()
         self.CAPTION = """
-**〄 {} • {}
+**{}
 ━━━━━━━━━━━━━━━
-⬡ Quality: 720p, 1080p
-⬡ Audio: Japanese [English Subtitles]
-⬡ Genres: {}
+‣ Language : Japanese [English-Sub]
+‣ Quality : 480p, 720p, 1080p
+‣ Season : {}
+‣ Episode : {}
 ━━━━━━━━━━━━━━━
 〣 Next Airing Episode: {}
 〣 Next Airing Episode Date: {}
@@ -74,13 +75,13 @@ class AnimeInfo:
 
     async def get_caption(self):
         try:
-            if self.proper_name:
+            if self.proper_name or self.data:
                 anime = await self.kitsu.search(self.proper_name)
                 next_ = anime.get("next_airing_ep", {})
                 return self.CAPTION.format(
                     anime.get("english_title").strip() or self.data.get("anime_title"),
-                    anime.get("type"),
-                    ", ".join(anime.get("genres")),
+                    self.data.get('anime_season') or 1,
+                    self.data.get('episode_number') or 'N/A',
                     next_.get("episode") or "N/A",
                     (
                         datetime.fromtimestamp(
