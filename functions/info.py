@@ -40,7 +40,6 @@ class AnimeInfo:
 〣 Next Airing Episode: {}
 〣 Next Airing Episode Date: {}
 ━━━━━━━━━━━━━━━**
-〣 #{}
 """
         self.proper_name = self.get_proper_name_for_func(name)
         self.name = name
@@ -49,7 +48,7 @@ class AnimeInfo:
     async def get_english(self):
         anime_name = self.data.get("anime_title")
         try:
-            anime = await self.kitsu.search(self.proper_name)
+            anime = (await self.kitsu.search(self.proper_name)) or {}
             return anime.get("english_title").strip() or anime_name
         except Exception as error:
             LOGS.error(str(error))
@@ -76,7 +75,7 @@ class AnimeInfo:
     async def get_caption(self):
         try:
             if self.proper_name or self.data:
-                anime = await self.kitsu.search(self.proper_name)
+                anime = (await self.kitsu.search(self.proper_name)) or {}
                 next_ = anime.get("next_airing_ep", {})
                 return self.CAPTION.format(
                     anime.get("english_title").strip() or self.data.get("anime_title"),
@@ -89,8 +88,7 @@ class AnimeInfo:
                         ).strftime("%A, %B %d, %Y")
                         if next_.get("airingAt")
                         else "N/A"
-                    ),
-                    "".join(re.split("[^a-zA-Z]*", anime.get("english_title") or "")),
+                    )
                 )
         except Exception as error:
             LOGS.error(str(error))

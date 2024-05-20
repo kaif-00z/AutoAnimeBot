@@ -25,7 +25,7 @@ class RawAnimeInfo:
         self.anilist = Anilist()
 
     async def search(self, query: str):
-        raw_data = (await self.searcher(query)).get("data", {})
+        raw_data = ((await self.searcher(query)) or {}).get("data") or {}
         try:
             _raw_data = await self.search_anilist(raw_data.get("id"))
         except BaseException:
