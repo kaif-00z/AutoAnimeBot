@@ -30,19 +30,21 @@ class AnimeInfo:
     def __init__(self, name):
         self.kitsu = RawAnimeInfo()
         self.CAPTION = """
-⛩️ {} • {} • 🧭
-
-┏━━━━━━━✦✗✦━━━━━━━━┓
-
-• Quality: 480p, 720p, 1080p
-• Audio: Japanese [English Subtitles]
-• Genres: {}
-• Status: Ongoing - 2024
-• Next Week Episode: {}
-
-┗━━━━━━━✦✗✦━━━━━━━━┛
-
-🍁 Uρᥣoᥲdᥱd Bყ : @Anime_Compass 🧭
+⛩️ • {} • ⛩
+╭─━━━━━━━━─━━━━━━━━─╮
+⌬ Seasons: {} 
+⌬ Episode: {} 
+⌬ 𝘚𝘵𝘢𝘵𝘶𝘴: ongoing
+⌬ Audio: Japanese (Subtitled) 
+⌬ Quality: 480p, 720p, 1080p
+╰─━━━━━━━━─━━━━━━━━─╯
+╭─━━━━━━━━─━━━━━━━━─╮
+‣ Next Airing Episode: {}
+‣ Next Airing Episode Date: {}
+╰─━━━━━━━━─━━━━━━━━─╯
+╭─━━━━━━━━─━━━━━━━━─╮
+‣  ᴘᴏᴡᴇʀᴇᴅ ʙʏ ~ @Anime_Compass 🧭
+╰─━━━━━━━━─━━━━━━━━─╯
 """
         self.proper_name = self.get_proper_name_for_func(name)
         self.name = name
@@ -77,13 +79,13 @@ class AnimeInfo:
 
     async def get_caption(self):
         try:
-            if self.proper_name:
+            if self.proper_name or self.data:
                 anime = await self.kitsu.search(self.proper_name)
                 next_ = anime.get("next_airing_ep", {})
                 return self.CAPTION.format(
                     anime.get("english_title").strip() or self.data.get("anime_title"),
-                    anime.get("type"),
-                    ", ".join(anime.get("genres")),
+                    self.data.get("anime_season") or 1,
+                    self.data.get("episode_number") or "N/A",
                     next_.get("episode") or "N/A",
                     (
                         datetime.fromtimestamp(
@@ -102,20 +104,16 @@ class AnimeInfo:
         try:
             anime_name = self.data.get("anime_title")
             if anime_name and self.data.get("episode_number"):
-                 return (
-                    f"[AC🧭][S{self.data.get('anime_season') or 1}-{self.data.get('episode_number') or ''}] {(await self.get_english())} [{self.data.get('video_resolution') or ''}] @Anime_Compass.mkv".replace(
+                return (
+                    f"[S{self.data.get('anime_season') or 1}-{self.data.get('episode_number') or ''}] {(await self.get_english())} [{self.data.get('video_resolution').replace('p', 'px264' if original else 'px265') or ''}].mkv".replace(
                         "‘", ""
                     )
                     .replace("’", "")
                     .strip()
                 )
-        except Exception as e:
-        # Handle exceptions here
-            pass    
-  
             if anime_name:
                 return (
-                    f"[AC🧭][S{self.data.get('anime_season') or 1}-{self.data.get('episode_number') or ''}] {(await self.get_english())} [{self.data.get('video_resolution') or ''}] @Anime_Compass.mkv".replace(
+                    f"{(await self.get_english())} [{self.data.get('video_resolution').replace('p', 'px264' if original else 'px265') or ''}].mkv".replace(
                         "‘", ""
                     )
                     .replace("’", "")
