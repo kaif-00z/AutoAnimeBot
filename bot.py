@@ -57,7 +57,7 @@ async def _start(event):
         message = "**Please Join the Following Channels to Use This Bot:**\n"
         buttons = []
         if not is_user_joined:
-            message += f"- [Channel 1]({Var.FORCESUB_CHANNEL_LINK})\n"
+            message += f"- [Anime Compass]({Var.FORCESUB_CHANNEL_LINK})\n"
             buttons.append(
                 Button.url(
                     "Join Channel",
@@ -65,7 +65,7 @@ async def _start(event):
                 )
             )
         if not is_user_joined_2:
-            message += f"- [Channel 2]({Var.FORCESUB_CHANNEL_LINK_2})\n"
+            message += f"- [Ongoing Compass]({Var.FORCESUB_CHANNEL_LINK_2})\n"
             buttons.append(
                 Button.url(
                     "Join Channel",
