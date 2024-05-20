@@ -50,6 +50,32 @@ admin = AdminUtils(dB, bot)
 async def _start(event):
     msg_id = event.pattern_match.group(1)
     xnx = await event.reply("`Please Wait...`")
+    if Var.FORCESUB_CHANNEL and Var.FORCESUB_CHANNEL_LINK and Var.FORCESUB_CHANNEL_2 and Var.FORCESUB_CHANNEL_LINK_2:
+        is_user_joined = await bot.is_joined(Var.FORCESUB_CHANNEL, event.sender_id)
+        is_user_joined_2 = await bot.is_joined(Var.FORCESUB_CHANNEL_2, event.sender_id)
+    if not is_user_joined or not is_user_joined_2:
+        message = "**Please Join the Following Channels to Use This Bot:**\n"
+        buttons = []
+        if not is_user_joined:
+            message += f"- [Channel 1]({Var.FORCESUB_CHANNEL_LINK})\n"
+            buttons.append(
+                Button.url(
+                    "Join Channel",
+                    url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
+                )
+            )
+        if not is_user_joined_2:
+            message += f"- [Channel 2]({Var.FORCESUB_CHANNEL_LINK_2})\n"
+            buttons.append(
+                Button.url(
+                    "Join Channel",
+                    url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
+                )
+            )
+        return await xnx.edit(
+            message,
+            buttons=[buttons]
+        )
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
