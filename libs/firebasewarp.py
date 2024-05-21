@@ -47,8 +47,8 @@ class FireDB:
 
     def read_data(self, path):
         value = self.db.child(path).get()
-        if type(value) == list:
-            value = list(filter(lambda item: item is not None, value))
+        if type(value) == list: # isort: skip
+            value = list(filter(lambda item: item is not None, value)) # isort: skip
         return value
 
     def update_data(self, path, data):
