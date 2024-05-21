@@ -26,9 +26,9 @@ from libs.logger import LOGS
 class DataBase:
     def __init__(self):
         try:
-            LOGS.info("Trying Connect With Redis database")
+            LOGS.info("Trying Connect With Firebase Database")
             self.dB = FireDB(Var)
-            LOGS.info("Successfully Connected to Redis database")
+            LOGS.info("Successfully Connected to Firebase Database")
         except Exception as error:
             LOGS.exception(format_exc())
             LOGS.critical(str(error))
@@ -76,11 +76,11 @@ class DataBase:
     def get_anime_uploaded_list(self):
         return self.cache.get("ANIMES_UPLOADED") or []
 
-    def store_items(self, _hash, list):
+    def store_items(self, _hash, _list):
         data = self.cache.get("FILESTORE") or {}
-        data.update({_hash: list})
+        data.update({_hash: _list})
         self.cache["FILESTORE"] = data
-        self.dB.create_data(f"FILESTORE/{_hash}", data)
+        self.dB.create_data(f"FILESTORE/{_hash}", _list)
 
     def get_store_items(self, _hash):
         data = self.cache.get("FILESTORE") or {}
