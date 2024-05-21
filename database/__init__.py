@@ -44,14 +44,7 @@ class DataBase:
         self.cache = {}
         self.re_cache()
 
-    def ask_(db: Redis):
-        import sys 
     
-        if "--newdb" in sys.argv:
-            db.flushall()
-        elif "--samedb" in sys.argv or os.getenv("FLUSH_DATABASE", "").lower() == "y":
-            db.flushall()
-            LOGS.info("Successfully Flushed The Database!!!")
         
     def add_anime(self, name):
         data = self.cache.get("ANIMES_UPLOADED") or []
