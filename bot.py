@@ -34,7 +34,7 @@ from libs.subsplease import SubsPlease
 
 tools = Tools()
 tools.init_dir()
-bot = Bot(None)
+bot = Bot()
 dB = DataBase()
 subsplease = SubsPlease(dB)
 torrent = Torrent()
