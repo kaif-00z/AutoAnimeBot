@@ -73,12 +73,14 @@ async def _start(event):
                 )
             )
         buttons.append(
-            [
-                Button.url(
-                    "♻️ REFRESH",
-                    url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
-                )
-            ]
+            Button.url(
+                "♻️ REFRESH",
+                url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
+            )
+        )
+        return await xnx.edit(
+            message,
+            buttons=buttons
         )
         return await xnx.edit(
             message,
