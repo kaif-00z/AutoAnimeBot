@@ -163,7 +163,7 @@ async def anime(data):
                 result, _btn = await exe.execute()
                 if result:
                     if _btn:
-                        if len(btn) == 2:
+                        if len(btn) == 4:
                             btn.append([_btn])
                         else:
                             btn.append(_btn)
