@@ -51,8 +51,8 @@ async def _start(event):
     msg_id = event.pattern_match.group(1)
     xnx = await event.reply("`Please Wait...`")
     if Var.FORCESUB_CHANNEL and Var.FORCESUB_CHANNEL_LINK and Var.FORCESUB_CHANNEL_2 and Var.FORCESUB_CHANNEL_LINK_2:
-    is_user_joined = await bot.is_joined(Var.FORCESUB_CHANNEL, event.sender_id)
-    is_user_joined_2 = await bot.is_joined(Var.FORCESUB_CHANNEL_2, event.sender_id)
+        is_user_joined = await bot.is_joined(Var.FORCESUB_CHANNEL, event.sender_id)
+        is_user_joined_2 = await bot.is_joined(Var.FORCESUB_CHANNEL_2, event.sender_id)
     if not is_user_joined or not is_user_joined_2:
         message = "**Please Join the Following Channels to Use This Bot:**\n"
         buttons = []
