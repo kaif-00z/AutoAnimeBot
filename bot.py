@@ -80,7 +80,7 @@ async def _start(event):
         )
         return await xnx.edit(
             message,
-            buttons=buttons
+            buttons=[buttons]  # Wrap buttons list in another list to force end column
         )
         
     if msg_id:
