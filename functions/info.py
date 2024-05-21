@@ -32,14 +32,11 @@ class AnimeInfo:
         self.CAPTION = """
 **{}
 ━━━━━━━━━━━━━━━
-‣ Language : Japanese [English-Sub]
-‣ Quality : 480p, 720p, 1080p
-‣ Season : {}
-‣ Episode : {}
-━━━━━━━━━━━━━━━
-〣 Next Airing Episode: {}
-〣 Next Airing Episode Date: {}
-━━━━━━━━━━━━━━━**
+‣ Language:** `Japanese [ESub]`
+**‣ Quality:** `480p|720p|1080p`
+**‣ Season:** `{}`
+**‣ Episode:** `{}`
+**━━━━━━━━━━━━━━━**
 """
         self.proper_name = self.get_proper_name_for_func(name)
         self.name = name
@@ -76,19 +73,10 @@ class AnimeInfo:
         try:
             if self.proper_name or self.data:
                 anime = (await self.kitsu.search(self.proper_name)) or {}
-                next_ = anime.get("next_airing_ep") or {}
                 return self.CAPTION.format(
                     anime.get("english_title").strip() or self.data.get("anime_title"),
-                    self.data.get("anime_season") or 1,
-                    self.data.get("episode_number") or "N/A",
-                    next_.get("episode") or "N/A",
-                    (
-                        datetime.fromtimestamp(
-                            next_.get("airingAt"), tz=pytz.timezone("Asia/Kolkata")
-                        ).strftime("%A, %B %d, %Y")
-                        if next_.get("airingAt")
-                        else "N/A"
-                    ),
+                    str(self.data.get("anime_season") or 1).zfill(2),
+                    str(self.data.get("episode_number")).zfill(2) if self.data.get("episode_number") else "N/A",
                 )
         except BaseException:
             LOGS.error(str(format_exc()))
