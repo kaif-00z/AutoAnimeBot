@@ -58,15 +58,13 @@ async def _start(event):
             return await xnx.edit(
                 f"**Please Join The Following Channel To Use This Bot 🫡**",
                 buttons=[
-                    [
-                        Button.url("🚀 JOIN CHANNEL", url=Var.FORCESUB_CHANNEL_LINK)
-                    ],
+                    [Button.url("🚀 JOIN CHANNEL", url=Var.FORCESUB_CHANNEL_LINK)],
                     [
                         Button.url(
                             "♻️ REFRESH",
                             url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
                         )
-                    ]
+                    ],
                 ],
             )
     if msg_id:
