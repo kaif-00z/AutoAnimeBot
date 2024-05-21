@@ -70,8 +70,14 @@ async def _start(event):
                 Button.url(
                     "Join Channel",
                     url=f"https://t.me/Ongoing_Compass",
-                )
+                 )
             )
+        buttons.append(
+            [Button.url(
+                "♻️ REFRESH",
+                url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
+            )]
+        )
         return await xnx.edit(
             message,
             buttons=[buttons]
