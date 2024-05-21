@@ -28,8 +28,8 @@ class Var:
 
     # Database Credentials
 
-    REDIS_URI = config("REDIS_URI", default=None)
-    REDIS_PASS = config("REDIS_PASSWORD", default=None)
+    FIREBASE_URL = config("FIREBASE_URL", default=None)
+    FIREBASE_SERVICE_ACCOUNT_FILE = config("FIREBASE_SERVICE_ACCOUNT_FILE", default=None)
 
     # Channels Ids
 
