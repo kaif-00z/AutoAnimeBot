@@ -52,6 +52,8 @@ class AnimeInfo:
 
     async def get_english(self):
         anime_name = self.data.get("anime_title")
+    async def get_english(self):
+        anime_name = self.data.get("anime_title")
         try:
             anime = (await self.kitsu.search(self.proper_name)) or {}
             return anime.get("english_title").strip() or anime_name
@@ -93,12 +95,13 @@ class AnimeInfo:
                         ).strftime("%A, %B %d, %Y")
                         if next_.get("airingAt")
                         else "N/A"
-                    )
+                    ),
                 )
-            
         except Exception as error:
             LOGS.error(str(error))
             return ""
+            
+
 
     async def rename(self, original=False):
         try:
