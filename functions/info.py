@@ -32,15 +32,15 @@ class AnimeInfo:
         self.CAPTION = """
 ⛩️ • {} • ⛩
 ╭─━━━━━━━━─━━━━━━━━─╮
-⌬ Seasons: {} 
-⌬ Episode: {} 
-⌬ 𝘚𝘵𝘢𝘵𝘶𝘴: ongoing
-⌬ Audio: Japanese (Subtitled) 
-⌬ Quality: 480p, 720p, 1080p
+⌬ Seasons: `{}` 
+⌬ Episode: `{}`
+⌬ 𝘚𝘵𝘢𝘵𝘶𝘴: `Ongoing`
+⌬ Audio: `Japanese (Subtitled)` 
+⌬ Quality: `480p, 720p, 1080p`
 ╰─━━━━━━━━─━━━━━━━━─╯
 ╭─━━━━━━━━─━━━━━━━━─╮
-‣ Next Airing Episode: {}
-‣ Next Airing Episode Date: {}
+‣ Next Airing Episode: `{}`
+‣ Next Airing Episode Date: `{}`
 ╰─━━━━━━━━─━━━━━━━━─╯
 ╭─━━━━━━━━─━━━━━━━━─╮
 ‣  ᴘᴏᴡᴇʀᴇᴅ ʙʏ ~ @Anime_Compass 🧭
