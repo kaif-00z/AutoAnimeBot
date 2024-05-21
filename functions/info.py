@@ -16,11 +16,9 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-from datetime import datetime
 from traceback import format_exc
 
 import anitopy
-import pytz
 
 from libs.kitsu import RawAnimeInfo
 from libs.logger import LOGS
@@ -76,7 +74,11 @@ class AnimeInfo:
                 return self.CAPTION.format(
                     anime.get("english_title").strip() or self.data.get("anime_title"),
                     str(self.data.get("anime_season") or 1).zfill(2),
-                    str(self.data.get("episode_number")).zfill(2) if self.data.get("episode_number") else "N/A",
+                    (
+                        str(self.data.get("episode_number")).zfill(2)
+                        if self.data.get("episode_number")
+                        else "N/A"
+                    ),
                 )
         except BaseException:
             LOGS.error(str(format_exc()))
