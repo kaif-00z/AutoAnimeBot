@@ -78,10 +78,7 @@ async def _start(event):
                 url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
             )]
         )
-        return await xnx.edit(
-            message,
-            buttons=[buttons]
-        )
+        
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
