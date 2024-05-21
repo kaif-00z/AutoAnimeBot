@@ -17,6 +17,7 @@
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
 from datetime import datetime
+from traceback import format_exc
 
 import anitopy
 import pytz
@@ -49,8 +50,8 @@ class AnimeInfo:
         try:
             anime = (await self.kitsu.search(self.proper_name)) or {}
             return anime.get("english_title").strip() or anime_name
-        except Exception as error:
-            LOGS.error(str(error))
+        except BaseException:
+            LOGS.error(str(format_exc()))
             return anime_name.strip()
 
     async def get_poster(self):
@@ -58,8 +59,8 @@ class AnimeInfo:
             if self.proper_name:
                 anime_poster = await self.kitsu.search(self.proper_name)
                 return anime_poster.get("poster_img") or None
-        except Exception as error:
-            LOGS.error(str(error))
+        except BaseException:
+            LOGS.error(str(format_exc()))
 
     async def get_cover(self):
         try:
@@ -68,14 +69,14 @@ class AnimeInfo:
                 if anime_poster.get("anilist_id"):
                     return anime_poster.get("anilist_poster")
                 return None
-        except Exception as error:
-            LOGS.error(str(error))
+        except BaseException:
+            LOGS.error(str(format_exc()))
 
     async def get_caption(self):
         try:
             if self.proper_name or self.data:
                 anime = (await self.kitsu.search(self.proper_name)) or {}
-                next_ = anime.get("next_airing_ep", {})
+                next_ = anime.get("next_airing_ep") or {}
                 return self.CAPTION.format(
                     anime.get("english_title").strip() or self.data.get("anime_title"),
                     self.data.get("anime_season") or 1,
@@ -89,8 +90,8 @@ class AnimeInfo:
                         else "N/A"
                     ),
                 )
-        except Exception as error:
-            LOGS.error(str(error))
+        except BaseException:
+            LOGS.error(str(format_exc()))
             return ""
 
     async def rename(self, original=False):
