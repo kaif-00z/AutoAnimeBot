@@ -136,7 +136,16 @@ async def anime(data):
         poster = await tools._poster(bot, anime_info)
         if dB.is_separate_channel_upload():
             chat_info = await tools.get_chat_info(bot, anime_info, dB)
-            await poster.edit(buttons=[[Button.url(f"EPISODE {anime_info.data.get('episode_number', '')}".strip(), url=chat_info["invite_link"])]])
+            await poster.edit(
+                buttons=[
+                    [
+                        Button.url(
+                            f"EPISODE {anime_info.data.get('episode_number', '')}".strip(),
+                            url=chat_info["invite_link"],
+                        )
+                    ]
+                ]
+            )
             poster = await tools._poster(bot, anime_info, chat_info["chat_id"])
         btn = [[]]
         for i in torr:

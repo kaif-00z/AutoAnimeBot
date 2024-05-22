@@ -32,7 +32,11 @@ from telethon.errors import (
 )
 from telethon.errors.rpcerrorlist import UserNotParticipantError
 from telethon.sessions import StringSession
-from telethon.tl.functions.channels import CreateChannelRequest, GetParticipantRequest, EditPhotoRequest
+from telethon.tl.functions.channels import (
+    CreateChannelRequest,
+    EditPhotoRequest,
+    GetParticipantRequest,
+)
 from telethon.tl.functions.messages import ExportChatInviteRequest
 
 from functions.config import Var
@@ -164,11 +168,10 @@ class Bot(TelegramClient):
                 try:
                     await self.user_client(
                         EditPhotoRequest(
-                            chat_id,
-                            (await self.user_client.upload_file(logo))
+                            chat_id, (await self.user_client.upload_file(logo))
                         )
                     )
-                except:
+                except BaseException:
                     pass
             return chat_id
         except BaseException:
