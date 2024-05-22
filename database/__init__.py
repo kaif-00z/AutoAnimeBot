@@ -43,6 +43,18 @@ class DataBase:
             self.cache["ANIMES_UPLOADED"] = data
             self.dB.create_data("ANIMES_UPLOADED", data)
 
+    def toggle_separate_channel_upload(self):
+        data = self.cache.get("SEPARATE_CHANNEL_UPLOAD") or False
+        if data:
+            data = False
+        else:
+            data = True
+        self.cache["SEPARATE_CHANNEL_UPLOAD"] = data
+        self.dB.create_data("SEPARATE_CHANNEL_UPLOAD", data)
+
+    def is_separate_channel_upload(self):
+        return self.cache.get("SEPARATE_CHANNEL_UPLOAD") or False
+
     def toggle_original_upload(self):
         data = self.cache.get("OG_UPLOAD") or False
         if data:
@@ -72,6 +84,18 @@ class DataBase:
         if name in data:
             return True
         return False
+
+    def add_anime_channel_info(self, title, _data):
+        data = self.cache.get("ANIME_CHANNEL_INFO") or {}
+        data.update({title: _data})
+        self.cache["ANIME_CHANNEL_INFO"] = data
+        self.dB.create_data(f"ANIME_CHANNEL_INFO/{title}", _data)
+
+    def get_anime_channel_info(self, title):
+        data = self.cache.get("ANIME_CHANNEL_INFO") or {}
+        if data.get(title):
+            return data[title]
+        return {}
 
     def get_anime_uploaded_list(self):
         return self.cache.get("ANIMES_UPLOADED") or []

@@ -100,10 +100,22 @@ class Tools:
         except Exception as error:
             LOGS.error(str(error))
 
-    async def _poster(self, bot, anime_info):
+    async def _poster(self, bot, anime_info, channel_id=None):
         thumb = await self.cover_dl((await anime_info.get_cover()))
         caption = await anime_info.get_caption()
-        return await bot.upload_poster(thumb or "assest/poster_not_found.jpg", caption)
+        return await bot.upload_poster(thumb or "assest/poster_not_found.jpg", caption, channel_id if channel_id else None)
+
+    async def get_chat_info(self, bot, anime_info, dB):
+        try:
+            chat_info = dB.get_anime_channel_info(anime_info.proper_name)
+            if not chat_info:
+                chat_id = await bot.create_channel((await anime_info.get_english()), (await self.cover_dl((await anime_info.get_poster()))))
+                invite_link = await bot.generate_invite_link(chat_id)
+                chat_info = {"chat_id": chat_id, "invite_link": invite_link}
+                dB.add_anime_channel_info(anime_info.proper_name, chat_info)
+            return chat_info
+        except BaseException:
+            LOGS.error(str(format_exc()))
 
     def init_dir(self):
         if not os.path.exists("thumb.jpg"):

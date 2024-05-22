@@ -32,7 +32,7 @@ from telethon.errors import (
 )
 from telethon.errors.rpcerrorlist import UserNotParticipantError
 from telethon.sessions import StringSession
-from telethon.tl.functions.channels import CreateChannelRequest, GetParticipantRequest
+from telethon.tl.functions.channels import CreateChannelRequest, GetParticipantRequest, EditPhotoRequest
 from telethon.tl.functions.messages import ExportChatInviteRequest
 
 from functions.config import Var
@@ -98,10 +98,14 @@ class Bot(TelegramClient):
             )
             sys.exit()
         self.me = await self.get_me()
+        self.user_me = await self.user_client.get_me()
         if self.me.bot:
             me = f"@{self.me.username}"
+        if self.user_me.bot:
+            user_me = f"@{self.user_me.username}"
         if self._log_at:
             self.logger.info(f"Logged in as {me}")
+            self.logger.info(f"Logged in as {user_me}")
         self._bot = await self.is_bot()
 
     async def upload_anime(self, file, caption, thumb=None, is_button=False):
@@ -119,9 +123,9 @@ class Bot(TelegramClient):
         )
         return post
 
-    async def upload_poster(self, file, caption):
+    async def upload_poster(self, file, caption, channel_id=None):
         post = await self.send_file(
-            Var.MAIN_CHANNEL,
+            channel_id if channel_id else Var.MAIN_CHANNEL,
             file=file,
             caption=caption,
         )
@@ -134,7 +138,7 @@ class Bot(TelegramClient):
         except UserNotParticipantError:
             return False
 
-    async def create_channel(self, title: str):
+    async def create_channel(self, title: str, logo=None):
         try:
             r = await self.user_client(
                 CreateChannelRequest(
@@ -156,6 +160,16 @@ class Bot(TelegramClient):
                 pin_messages=True,
                 add_admins=True,
             )
+            if logo:
+                try:
+                    await self.user_client(
+                        EditPhotoRequest(
+                            chat_id,
+                            (await self.user_client.upload_file(logo))
+                        )
+                    )
+                except:
+                    pass
             return chat_id
         except BaseException:
             LOGS.error(format_exc())
@@ -173,10 +187,6 @@ class Bot(TelegramClient):
             return data.link
         except BaseException:
             LOGS.error(format_exc())
-
-    @property
-    def user_client(self):
-        return self.user_client
 
     def run_in_loop(self, function):
         return self.loop.run_until_complete(function)
