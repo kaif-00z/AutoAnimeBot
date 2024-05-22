@@ -75,7 +75,7 @@ class DataBase:
         self.dB.set("BUTTON_UPLOAD", str(data))
 
     def is_button_upload(self):
-        return self.cache.get("BUTTON_UPLOAD") or False
+        return self.cache.get("BUTTON_UPLOAD") or True
 
     def is_anime_uploaded(self, name):
         data = self.cache.get("ANIMES_UPLOADED") or []
