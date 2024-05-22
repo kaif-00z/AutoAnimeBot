@@ -41,7 +41,7 @@ class Var:
     LOG_CHANNEL = config("LOG_CHANNEL", default="-1002065149795", cast=int)
     CLOUD_CHANNEL = config("CLOUD_CHANNEL", default="-1002065149795", cast=int)
     OWNER = config("OWNER", default="6072442458", cast=int)
-
+    BUTTON_UPLOAD = True 
     # Other Configs 
 
     THUMB = config(
