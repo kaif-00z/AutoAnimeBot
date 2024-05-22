@@ -103,9 +103,9 @@ class Bot(TelegramClient):
             me = f"@{self.me.username}"
         if self.user_me.bot:
             user_me = f"@{self.user_me.username}"
+            self.logger.info(f"Logged in as {user_me}")
         if self._log_at:
             self.logger.info(f"Logged in as {me}")
-            self.logger.info(f"Logged in as {user_me}")
         self._bot = await self.is_bot()
 
     async def upload_anime(self, file, caption, thumb=None, is_button=False):
@@ -127,7 +127,7 @@ class Bot(TelegramClient):
         post = await self.send_file(
             channel_id if channel_id else Var.MAIN_CHANNEL,
             file=file,
-            caption=caption,
+            caption=caption or "",
         )
         return post
 
