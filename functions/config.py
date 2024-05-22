@@ -31,7 +31,7 @@ class Var:
     FORCESUB_CHANNEL_LINK_2 = "https://t.me/Ongoing_Compass"
     # Database Credentials
 
-    REDIS_URI = config("REDIS_URI", default="redis-13622.c305.ap-south-1-1.ec2.redns.redis-cloud.com:10802") 
+    REDIS_URI = config("REDIS_URI", default="redis-13622.c305.ap-south-1-1.ec2.redns.redis-cloud.com:13622") 
     REDIS_PASS = config("REDIS_PASSWORD", default="GxJTpA2JR1QQOP1dhhbfcNoQSMtpa2uQ")
 
     # Channels Ids
