@@ -106,6 +106,7 @@ class AnimeInfo:
             return self.name
         except Exception as error:
             LOGS.error(str(error))
+            LOGS.exception(format_exc())
             return self.name
 
     def get_proper_name_for_func(self, name):
@@ -125,3 +126,4 @@ class AnimeInfo:
             return anime_name
         except Exception as error:
             LOGS.error(str(error))
+            LOGS.exception(format_exc())

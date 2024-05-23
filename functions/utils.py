@@ -18,7 +18,7 @@
 
 from telethon import Button
 
-from core.bot import Bot
+from core.bot import Bot, Var
 from database import DataBase
 
 
@@ -37,6 +37,7 @@ class AdminUtils:
                 Button.inline("🎞️ Encode [Toogle]", data="entg"),
             ],
             [Button.inline("🔘 Button Upload [Toogle]", data="butg")],
+            [Button.inline("🗃️ Separate Channel Upload [Toogle]", data="scul")]
         ]
         return btn
 
@@ -65,10 +66,31 @@ class AdminUtils:
         )
 
     async def _btn_t(self, e):
-        if self.db.is_button_upload:
+        if self.db.is_button_upload():
             self.db.toggle_button_upload()
             return await e.edit(
-                "`Successfully On The Button Upload`", buttons=self.back_btn()
+                "`Successfully Off The Button Upload`", buttons=self.back_btn()
             )
         self.db.toggle_button_upload()
-        return await e.edit("`Successfully Off The Upload`", buttons=self.back_btn())
+        return await e.edit("`Successfully On The Upload`", buttons=self.back_btn())
+
+    async def _sep_c_t(self, e):
+        if Var.SESSION:
+            if self.db.is_button_upload():
+                if self.db.is_separate_channel_upload():
+                    self.db.toggle_separate_channel_upload()
+                    return await e.edit(
+                        "`Successfully Off The Separate Channel Upload`", buttons=self.back_btn()
+                    )
+                self.db.toggle_separate_channel_upload()
+                return await e.edit(
+                    "`Successfully On The Separate Channel Upload`", buttons=self.back_btn()
+                )
+            else:
+                return await e.edit(
+                    "`To Use The Separate Channel Upload First You Have To Enable Button Upload`", buttons=self.back_btn()
+                )
+        else:
+            return await e.edit(
+                "`To Use The Separate Channel Upload First You Have To Add SESSION Variable in The Bot", buttons=self.back_btn()
+            )

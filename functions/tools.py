@@ -77,6 +77,7 @@ class Tools:
                 await file.write(image)
             return fn
         except Exception as error:
+            LOGS.exception(format_exc())
             LOGS.error(str(error))
 
     async def mediainfo(self, file, bot):
@@ -98,6 +99,7 @@ class Tools:
             )
             return page.get("url")
         except Exception as error:
+            LOGS.exception(format_exc())
             LOGS.error(str(error))
 
     async def _poster(self, bot, anime_info, channel_id=None):
@@ -253,3 +255,4 @@ class Tools:
             return _hash, out
         except Exception as error:
             LOGS.error(str(error))
+            LOGS.exception(format_exc())

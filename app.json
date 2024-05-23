@@ -22,18 +22,24 @@
             "value": ""
         },
 
+        "SESSION": {
+            "description": "Telethon Session String",
+            "value": "",
+            "required": false
+        },
+
         "OWNER": {
             "description": "Get ur Id Of Telegram nd Paste Here.",
             "value": ""
         },
 
-        "REDIS_URI": {
-            "description": "Redis endpoint URL, from redislabs.com",
+        "FIREBASE_URL": {
+            "description": "Firebase endpoint URL, from Firebase Realtime Database",
             "value": ""
         },
 
-        "REDIS_PASSWORD": {
-            "description": "Redis endpoint password, from redislabs.com",
+        "FIREBASE_SERVICE_ACCOUNT_FILE": {
+            "description": "Firebase Service Account File Link, from Firebase Realtime Database",
             "value": ""
         },
 

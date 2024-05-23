@@ -102,14 +102,13 @@ class Bot(TelegramClient):
             )
             sys.exit()
         self.me = await self.get_me()
-        self.user_me = await self.user_client.get_me()
         if self.me.bot:
             me = f"@{self.me.username}"
-        if self.user_me.bot:
-            user_me = f"@{self.user_me.username}"
-            self.logger.info(f"Logged in as {user_me}")
         if self._log_at:
             self.logger.info(f"Logged in as {me}")
+            if self.user_client:
+                user_me = await self.user_client.get_me()
+                self.logger.info(f"Logged in as @{user_me.username}")
         self._bot = await self.is_bot()
 
     async def upload_anime(self, file, caption, thumb=None, is_button=False):
