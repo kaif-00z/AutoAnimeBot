@@ -44,7 +44,7 @@ class AnimeInfo:
         anime_name = self.data.get("anime_title")
         try:
             anime = (await self.kitsu.search(self.proper_name)) or {}
-            return anime.get("english_title").strip() or anime_name
+            return anime.get("english_title") or anime_name
         except BaseException:
             LOGS.error(str(format_exc()))
             return anime_name.strip()

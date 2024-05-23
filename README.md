@@ -14,7 +14,7 @@
 - <details><summary>Click Here To See How Separate Anime Channel Upload Look.</summary><img src="https://graph.org/file/a0636332545730a4d3d43.jpg" alt="sepul1"/><img src="https://graph.org/file/3eb0b86609469f385f4b5.jpg" alt="sepul2"/></details>
 - Added 480p Support
 - Added ForceSub
-- Hybrid Renamer Fixed
+- Modified Anime Searcher
 - Admin Panel Fixed
 - ReWritten Whole Program (Fully OOPs Based)
 - Optimized Core
