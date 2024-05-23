@@ -31,7 +31,7 @@ class RawAnimeInfo:
         except BaseException:
             _raw_data = {}
         if not raw_data:
-            data = self.alt_anilist(query)
+            data = {} # self.alt_anilist(query)
             return data
         data = {}
         data["anime_id"] = raw_data.get("id")
@@ -64,6 +64,8 @@ class RawAnimeInfo:
                 links = (await data.json())["data"]
                 for index in range(len(links)):
                     res_data = await self.re_searcher(links[index]["links"]["self"])
+                    if res_data["data"]["attributes"]["status"] == "tba":
+                        continue
                     if "current" != res_data["data"]["attributes"]["status"]:
                         if (
                             res_data["data"]["attributes"]["endDate"]
