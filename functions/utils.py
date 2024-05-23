@@ -68,7 +68,8 @@ class AdminUtils:
     async def _btn_t(self, e):
         if self.db.is_separate_channel_upload():
             return await e.edit(
-                "`You Can't On/Off The Button Upload When Seprate Channel Is Enabled`", buttons=self.back_btn()
+                "`You Can't On/Off The Button Upload When Seprate Channel Is Enabled`",
+                buttons=self.back_btn(),
             )
         if self.db.is_button_upload():
             self.db.toggle_button_upload()
