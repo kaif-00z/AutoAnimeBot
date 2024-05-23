@@ -50,7 +50,7 @@ class RawAnimeInfo:
         # data["score"] = raw_data.get("attributes", {}).get("averageRating") or "N/A"
         data["type"] = raw_data.get("attributes", {}).get("showType") or "TV"
         data["runtime"] = raw_data.get("attributes", {}).get("episodeLength") or 24
-        return {**data, **_raw_data}
+        return {**(data if data else {}), **(_raw_data if _raw_data else {})}
 
     async def searcher(
         self,
