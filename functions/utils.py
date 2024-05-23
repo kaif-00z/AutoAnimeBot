@@ -37,7 +37,7 @@ class AdminUtils:
                 Button.inline("🎞️ Encode [Toogle]", data="entg"),
             ],
             [Button.inline("🔘 Button Upload [Toogle]", data="butg")],
-            [Button.inline("🗃️ Separate Channel Upload [Toogle]", data="scul")]
+            [Button.inline("🗃️ Separate Channel Upload [Toogle]", data="scul")],
         ]
         return btn
 
@@ -84,17 +84,21 @@ class AdminUtils:
                 if self.db.is_separate_channel_upload():
                     self.db.toggle_separate_channel_upload()
                     return await e.edit(
-                        "`Successfully Off The Separate Channel Upload`", buttons=self.back_btn()
+                        "`Successfully Off The Separate Channel Upload`",
+                        buttons=self.back_btn(),
                     )
                 self.db.toggle_separate_channel_upload()
                 return await e.edit(
-                    "`Successfully On The Separate Channel Upload`", buttons=self.back_btn()
+                    "`Successfully On The Separate Channel Upload`",
+                    buttons=self.back_btn(),
                 )
             else:
                 return await e.edit(
-                    "`To Use The Separate Channel Upload First You Have To Enable Button Upload`", buttons=self.back_btn()
+                    "`To Use The Separate Channel Upload First You Have To Enable Button Upload`",
+                    buttons=self.back_btn(),
                 )
         else:
             return await e.edit(
-                "`To Use The Separate Channel Upload First You Have To Add SESSION Variable in The Bot", buttons=self.back_btn()
+                "`To Use The Separate Channel Upload First You Have To Add SESSION Variable in The Bot",
+                buttons=self.back_btn(),
             )
