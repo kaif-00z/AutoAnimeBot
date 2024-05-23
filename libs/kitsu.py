@@ -31,7 +31,7 @@ class RawAnimeInfo:
         except BaseException:
             _raw_data = {}
         if not raw_data:
-            data = {} # self.alt_anilist(query)
+            data = {}  # self.alt_anilist(query)
             return data
         data = {}
         data["anime_id"] = raw_data.get("id")
