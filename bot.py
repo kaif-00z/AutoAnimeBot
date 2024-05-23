@@ -153,6 +153,8 @@ async def anime(data):
             )
             poster = await tools._poster(bot, anime_info, chat_info["chat_id"])
         btn = [[]]
+        original_upload = dB.is_original_upload()
+        button_upload = dB.is_button_upload()
         for i in torr:
             try:
                 filename = f"downloads/{i.title}"
@@ -163,8 +165,8 @@ async def anime(data):
                     bot,
                     dB,
                     {
-                        "original_upload": dB.is_original_upload(),
-                        "button_upload": dB.is_button_upload(),
+                        "original_upload": original_upload,
+                        "button_upload": button_upload,
                     },
                     filename,
                     AnimeInfo(i.title),
