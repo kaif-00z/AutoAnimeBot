@@ -70,9 +70,8 @@ class AnimeInfo:
     async def get_caption(self):
         try:
             if self.proper_name or self.data:
-                anime = (await self.kitsu.search(self.proper_name)) or {}
                 return self.CAPTION.format(
-                    anime.get("english_title").strip() or self.data.get("anime_title"),
+                    (await self.get_english()),
                     str(self.data.get("anime_season") or 1).zfill(2),
                     (
                         str(self.data.get("episode_number")).zfill(2)
