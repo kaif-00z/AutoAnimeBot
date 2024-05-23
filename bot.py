@@ -123,6 +123,7 @@ async def _(e):
 async def _(e):
     await admin._btn_t(e)
 
+
 @bot.on(events.callbackquery.CallbackQuery(data="scul"))
 async def _(e):
     await admin._sep_c_t(e)
