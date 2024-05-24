@@ -111,3 +111,13 @@ class DataBase:
         if data.get(_hash):
             return data[_hash]
         return []
+
+    def add_broadcast_user(self, user_id):
+        data = self.cache.get("BROADCAST") or []
+        if user_id not in data:
+            data.append(int(user_id))
+            self.cache["BROADCAST"] = data
+            self.dB.create_data("BROADCAST", data)
+
+    def get_broadcast_user(self):
+        return self.cache.get("BROADCAST") or []

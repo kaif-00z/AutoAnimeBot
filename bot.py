@@ -48,8 +48,9 @@ admin = AdminUtils(dB, bot)
     )
 )
 async def _start(event):
-    msg_id = event.pattern_match.group(1)
     xnx = await event.reply("`Please Wait...`")
+    msg_id = event.pattern_match.group(1)
+    dB.add_broadcast_user(event.sender_id)
     if Var.FORCESUB_CHANNEL and Var.FORCESUB_CHANNEL_LINK:
         is_user_joined = await bot.is_joined(Var.FORCESUB_CHANNEL, event.sender_id)
         if is_user_joined:
@@ -128,6 +129,9 @@ async def _(e):
 async def _(e):
     await admin._sep_c_t(e)
 
+@bot.on(events.callbackquery.CallbackQuery(data="cast"))
+async def _(e):
+    await admin.broadcast_bt(e)
 
 @bot.on(events.callbackquery.CallbackQuery(data="bek"))
 async def _(e):

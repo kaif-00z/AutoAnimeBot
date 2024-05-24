@@ -16,9 +16,9 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-from telethon import Button
+from telethon import Button, events
 
-from core.bot import Bot, Var
+from core.bot import Bot, Var, asyncio
 from database import DataBase
 
 
@@ -38,6 +38,7 @@ class AdminUtils:
             ],
             [Button.inline("🔘 Button Upload [Toogle]", data="butg")],
             [Button.inline("🗃️ Separate Channel Upload [Toogle]", data="scul")],
+            [Button.inline("🔊 Broadcast", data="cast")]
         ]
         return btn
 
@@ -103,3 +104,30 @@ class AdminUtils:
                 "`To Use The Separate Channel Upload First You Have To Add SESSION Variable in The Bot",
                 buttons=self.back_btn(),
             )
+
+    async def broadcast_bt(self, e):
+        users = self.db.get_broadcast_user()
+        await e.edit("Please use his feature Responsibly⚠️")
+        await e.reply(
+            f"**Send a single Message To Broadcast😉**\n\n**There are** `{len(users)}` **Users Currently Using Me👉🏻**.\n\nSend /cancel to Cancel Process."
+        )
+        async with e.client.conversation(e.sender_id) as cv:
+            reply = cv.wait_event(events.NewMessage(from_users=e.sender_id))
+            repl = await reply
+            await e.delete()
+            if repl.text and repl.text.startswith("/cancel"):
+                return await repl.reply("`Broadcast Cancelled`")
+        sent = await repl.reply("`🗣️ Broadcasting Your Post...`")
+        done, er = 0, 0
+        for user in users:
+            try:
+                if repl.poll:
+                    await repl.forward_to(int(user))
+                else:
+                    await e.client.send_message(int(user), repl.message)
+                await asyncio.sleep(0.2)
+                done += 1
+            except BaseException as ex:
+                er += 1
+                print(ex)
+        await sent.edit(f"**Broadcast Completed To** `{done}` **Users.**\n**Error in** `{er}` **Users.**")
