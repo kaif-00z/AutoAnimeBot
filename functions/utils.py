@@ -38,7 +38,7 @@ class AdminUtils:
             ],
             [Button.inline("🔘 Button Upload [Toogle]", data="butg")],
             [Button.inline("🗃️ Separate Channel Upload [Toogle]", data="scul")],
-            [Button.inline("🔊 Broadcast", data="cast")]
+            [Button.inline("🔊 Broadcast", data="cast")],
         ]
         return btn
 
@@ -130,4 +130,6 @@ class AdminUtils:
             except BaseException as ex:
                 er += 1
                 print(ex)
-        await sent.edit(f"**Broadcast Completed To** `{done}` **Users.**\n**Error in** `{er}` **Users.**")
+        await sent.edit(
+            f"**Broadcast Completed To** `{done}` **Users.**\n**Error in** `{er}` **Users.**"
+        )
