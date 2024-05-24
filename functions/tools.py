@@ -77,6 +77,7 @@ class Tools:
                 await file.write(image)
             return fn
         except Exception as error:
+            LOGS.exception(format_exc())
             LOGS.error(str(error))
 
     async def mediainfo(self, file, bot):
@@ -98,12 +99,32 @@ class Tools:
             )
             return page.get("url")
         except Exception as error:
+            LOGS.exception(format_exc())
             LOGS.error(str(error))
 
-    async def _poster(self, bot, anime_info):
+    async def _poster(self, bot, anime_info, channel_id=None):
         thumb = await self.cover_dl((await anime_info.get_cover()))
         caption = await anime_info.get_caption()
-        return await bot.upload_poster(thumb or "assest/poster_not_found.jpg", caption)
+        return await bot.upload_poster(
+            thumb or "assest/poster_not_found.jpg",
+            caption,
+            channel_id if channel_id else None,
+        )
+
+    async def get_chat_info(self, bot, anime_info, dB):
+        try:
+            chat_info = dB.get_anime_channel_info(anime_info.proper_name)
+            if not chat_info:
+                chat_id = await bot.create_channel(
+                    (await anime_info.get_english()),
+                    (await self.cover_dl((await anime_info.get_poster()))),
+                )
+                invite_link = await bot.generate_invite_link(chat_id)
+                chat_info = {"chat_id": chat_id, "invite_link": invite_link}
+                dB.add_anime_channel_info(anime_info.proper_name, chat_info)
+            return chat_info
+        except BaseException:
+            LOGS.error(str(format_exc()))
 
     def init_dir(self):
         if not os.path.exists("thumb.jpg"):
@@ -143,7 +164,7 @@ class Tools:
         return True, out
 
     async def compress(self, dl, out):
-        cmd = f'''{Var.FFMPEG} -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -preset ultrafast -c:v libx265 -crf {Var.CRF} -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? """{out}""" -y'''
+        cmd = f'''{Var.FFMPEG} -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -map 0:v -map 0:a -map 0:s -c:v libx264 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf {Var.CRF} -c:a libopus -b:a 32k -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 2 -preset veryfast """{out}""" -y'''
         process = await asyncio.create_subprocess_shell(
             cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
@@ -234,3 +255,4 @@ class Tools:
             return _hash, out
         except Exception as error:
             LOGS.error(str(error))
+            LOGS.exception(format_exc())

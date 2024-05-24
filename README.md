@@ -10,11 +10,19 @@
 
 ## Description Of Latest Update
 
+- Added Separate Anime Channel Upload
+- <details><summary>Click Here To See How Separate Anime Channel Upload Look.</summary><img src="https://graph.org/file/a0636332545730a4d3d43.jpg" alt="sepul1"/><img src="https://graph.org/file/3eb0b86609469f385f4b5.jpg" alt="sepul2"/></details>
+- Added Button Upload Support (File Store)
+- <details><summary>Click Here To See How Button Upload Look.</summary><img src="https://graph.org/file/3e9abc9ec7de6a26fd1a1.jpg" alt="btnul"/></details>
+- Added ForceSub
+- Added 480p Support
+- Added Broadcast
+- Major Modification In FFMPEG Code.
+- Modified Anime Searcher
+- Admin Panel Fixed
 - ReWritten Whole Program (Fully OOPs Based)
 - Optimized Core
 - Added Heroku Support
-- Added Button Upload Support (File Store)
-- <details><summary>Click Here To See How Button Upload Look.</summary><img src="https://graph.org/file/fbe1bf09ad2526f9386e5.jpg" alt="btnul"/></details>
 - Added Custom CRF Support
 
 ## Contributing
@@ -40,9 +48,9 @@
 
 - `BOT_TOKEN` - Get This From @Botfather In Telegram.
 
-- `REDIS_URI` - Get This From redis.com
+- `FIREBASE_URL` - Get This From Firebase Realtime Database Console.
 
-- `REDIS_PASSWORD` - Get This From redis.com
+- `FIREBASE_SERVICE_ACCOUNT_FILE` - Get This From Firebase Realtime Database Console.
 
 - `MAIN_CHANNEL` - ID of Channel Where Anime Will Upload.
 
@@ -53,6 +61,8 @@
 - `OWNER` - ID of Owner.
 
 ### OPTIONAL VARIABLES
+
+- `SESSION` - Telethon Session String Of Your Telegram Account.
 
 - `BACKUP_CHANNEL` - ID of Channel Where Anime Will Be Saved As BackUP if You Are Using Button Upload Option Then Make Sure To SET Backup Channel.
 
@@ -78,7 +88,7 @@
 
 ## Commands
 
-[![Comand](https://graph.org/file/82176674097989fae68d4.png)](https://github.com/kaif-00z/AutoAnimeBot/)
+[![Comand](https://graph.org/file/ca8de14ba0b1d3b71af1f.jpg)](https://github.com/kaif-00z/AutoAnimeBot/)
 
 **Uploading of Ongoing Animes Is Automatic**
 

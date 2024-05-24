@@ -19,13 +19,16 @@ except ModuleNotFoundError:
 
 DATA = {}
 ENV = """
+API_ID={}
+API_HASH={}
 BOT_TOKEN={}
+SESSION={}
 MAIN_CHANNEL={}
 LOG_CHANNEL={}
 CLOUD_CHANNEL={}
 BACKUP_CHANNEL={}
-REDIS_URI={}
-REDIS_PASSWORD={}
+FIREBASE_URL={}
+FIREBASE_SERVICE_ACCOUNT_FILE={}
 OWNER={}
 """
 
@@ -35,21 +38,24 @@ async def generate_session_string():
     api_hash = input("Enter your API_HASH: ")
     if api_id and api_hash:
         async with TelegramClient(StringSession(), api_id, api_hash) as client:
+            DATA["api_id"] = api_id
+            DATA["api_hash"] = api_hash
+            DATA["session"] = str(client.session.save())
             return (str(client.session.save()), api_id, api_hash)
     print("API_ID and HASH Not Found!")
     sys.exit(1)
 
 
-def get_redis():
-    redis_uri = input("Enter your Redis URI: ")
-    redis_pass = input("Enter your Redis Password: ")
-    if redis_uri and redis_pass:
-        DATA["redis_uri"] = redis_uri
-        DATA["redis_pass"] = redis_pass
+def get_firebase():
+    uri = input("Enter your Firebase Realtime Database Url: ")
+    _pass = input("Enter your Firebase Realtime Database Service Account File Link: ")
+    if uri and _pass:
+        DATA["firebase_uri"] = uri
+        DATA["firebase_pass"] = _pass
         return True
     else:
-        DATA["redis_uri"] = ""
-        DATA["redis_pass"] = ""
+        DATA["firebase_uri"] = ""
+        DATA["firebase_pass"] = ""
         return False
 
 
@@ -72,13 +78,16 @@ async def create_channel(client, title):
 
 def generate_env():
     txt = ENV.format(
+        DATA["api_id"],
+        DATA["api_hash"],
         DATA["bot_token"],
+        DATA["session"],
         DATA["Ongoing Anime 2024"],
         DATA["Ongoing Anime Logs"],
         DATA["Ongoing Anime Samples And SS"],
         DATA["Ongoing Anime Backup"],
-        DATA.get("redis_uri") or "",
-        DATA.get("redis_pass") or "",
+        DATA.get("firebase_uri") or "",
+        DATA.get("firebase_pass") or "",
         DATA["owner_id"],
     )
     with open(".env", "w") as f:
@@ -160,10 +169,10 @@ async def auto_maker():
                 print(format_exc())
                 sys.exit(1)
         print("Succesfully Created Channel...")
-        db = get_redis()
+        db = get_firebase()
         if not db:
             print(
-                "Generating .env Without Redis URI and Password. Now You Have To Add it Manually!"
+                "Generating .env Without Firebase URI and Service Account. Now You Have To Add it Manually!"
             )
         generate_env()
 
