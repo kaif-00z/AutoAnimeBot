@@ -12,15 +12,17 @@
 
 - Added Separate Anime Channel Upload
 - <details><summary>Click Here To See How Separate Anime Channel Upload Look.</summary><img src="https://graph.org/file/a0636332545730a4d3d43.jpg" alt="sepul1"/><img src="https://graph.org/file/3eb0b86609469f385f4b5.jpg" alt="sepul2"/></details>
-- Added 480p Support
+- Added Button Upload Support (File Store)
+- <details><summary>Click Here To See How Button Upload Look.</summary><img src="https://graph.org/file/3e9abc9ec7de6a26fd1a1.jpg" alt="btnul"/></details>
 - Added ForceSub
+- Added 480p Support
+- Added Broadcast
+- Major Modification In FFMPEG Code.
 - Modified Anime Searcher
 - Admin Panel Fixed
 - ReWritten Whole Program (Fully OOPs Based)
 - Optimized Core
 - Added Heroku Support
-- Added Button Upload Support (File Store)
-- <details><summary>Click Here To See How Button Upload Look.</summary><img src="https://graph.org/file/3e9abc9ec7de6a26fd1a1.jpg" alt="btnul"/></details>
 - Added Custom CRF Support
 
 ## Contributing
