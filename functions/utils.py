@@ -107,9 +107,9 @@ class AdminUtils:
 
     async def broadcast_bt(self, e):
         users = self.db.get_broadcast_user()
-        await e.edit("Please use his feature Responsibly⚠️")
+        await e.edit("**Please Use This Feature Responsibly ⚠️**")
         await e.reply(
-            f"**Send a single Message To Broadcast😉**\n\n**There are** `{len(users)}` **Users Currently Using Me👉🏻**.\n\nSend /cancel to Cancel Process."
+            f"**Send a single Message To Broadcast 😉**\n\n**There are** `{len(users)}` **Users Currently Using Me👉🏻**.\n\nSend /cancel to Cancel Process."
         )
         async with e.client.conversation(e.sender_id) as cv:
             reply = cv.wait_event(events.NewMessage(from_users=e.sender_id))

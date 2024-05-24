@@ -80,8 +80,7 @@ async def _start(event):
                     await event.reply(file=[i for i in msg])
     else:
         if event.sender_id == Var.OWNER:
-            await xnx.delete()
-            return await event.reply(
+            return await xnx.edit(
                 "** <                ADMIN PANEL                 > **",
                 buttons=admin.admin_panel(),
             )

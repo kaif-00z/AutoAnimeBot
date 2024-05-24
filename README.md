@@ -86,7 +86,7 @@
 
 ## Commands
 
-[![Comand](https://graph.org/file/a13dfd6af22e3649f0ea8.jpg)](https://github.com/kaif-00z/AutoAnimeBot/)
+[![Comand](https://graph.org/file/ca8de14ba0b1d3b71af1f.jpg)](https://github.com/kaif-00z/AutoAnimeBot/)
 
 **Uploading of Ongoing Animes Is Automatic**
 
