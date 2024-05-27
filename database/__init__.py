@@ -44,7 +44,7 @@ class DataBase:
             self.dB.create_data("ANIMES_UPLOADED", data)
 
     def toggle_separate_channel_upload(self):
-        data = self.cache.get("SEPARATE_CHANNEL_UPLOAD") or True
+        data = self.cache.get("SEPARATE_CHANNEL_UPLOAD") or False
         if data:
             data = False
         else:
@@ -53,7 +53,7 @@ class DataBase:
         self.dB.create_data("SEPARATE_CHANNEL_UPLOAD", data)
 
     def is_separate_channel_upload(self):
-        return self.cache.get("SEPARATE_CHANNEL_UPLOAD") or True
+        return self.cache.get("SEPARATE_CHANNEL_UPLOAD") or False
 
     def toggle_original_upload(self):
         data = self.cache.get("OG_UPLOAD") or False
