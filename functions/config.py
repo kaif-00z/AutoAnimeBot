@@ -31,13 +31,13 @@ class Var:
     FORCESUB_CHANNEL_LINK_2 = "https://t.me/Ongoing_Compass"
     # Database Credentials
 
-    REDIS_URI = config("REDIS_URI", default="redis-10802.c330.asia-south1-1.gce.redns.redis-cloud.com:10802") 
-    REDIS_PASS = config("REDIS_PASSWORD", default="rOvg9VosqTpuE2bcX7sPVDAvuERbezEV")
-
-    # Channels Ids
+    FIREBASE_URL = config("FIREBASE_URL", default="https://something-b114c-default-rtdb.firebaseio.com")
+    FIREBASE_SERVICE_ACCOUNT_FILE = config(
+        "FIREBASE_SERVICE_ACCOUNT_FILE", default="https://github.com/Itzmepapa21/AutoAnimeBot/blob/main/something-b114c-firebase-adminsdk-9cvv1-da04c8b54f.json"
+    )
 
     BACKUP_CHANNEL = config("BACKUP_CHANNEL", default=-1002106668069, cast=int)
-    MAIN_CHANNEL = config("MAIN_CHANNEL", default="-1002066884253", cast=int)
+    MAIN_CHANNEL = config("MAIN_CHANNEL", default="-1001926897432", cast=int)
     LOG_CHANNEL = config("LOG_CHANNEL", default="-1002065149795", cast=int)
     CLOUD_CHANNEL = config("CLOUD_CHANNEL", default="-1002065149795", cast=int)
     OWNER = config("OWNER", default="6072442458", cast=int)
