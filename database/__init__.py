@@ -18,40 +18,42 @@
 
 from traceback import format_exc
 
-from redis import Redis
-
 from functions.config import Var
+from libs.firebasewarp import FireDB
 from libs.logger import LOGS
 
 
 class DataBase:
     def __init__(self):
         try:
-            LOGS.info("Trying Connect With Redis database")
-            redis_info = Var.REDIS_URI.split(":")
-            self.dB = Redis(
-                host=redis_info[0],
-                port=redis_info[1],
-                password=Var.REDIS_PASS,
-                charset="utf-8",
-                decode_responses=True,
-            )
-            LOGS.info("Successfully Connected to Redis database")
+            LOGS.info("Trying Connect With Firebase Database")
+            self.dB = FireDB(Var)
+            LOGS.info("Successfully Connected to Firebase Database")
         except Exception as error:
             LOGS.exception(format_exc())
             LOGS.critical(str(error))
             exit()
-        self.cache = {}
-        self.re_cache()
+        self.cache = self.dB.getall()
+        LOGS.info(f"Succesfully Sync Database!!!")
 
-    
-        
     def add_anime(self, name):
         data = self.cache.get("ANIMES_UPLOADED") or []
         if name not in data:
             data.append(name)
             self.cache["ANIMES_UPLOADED"] = data
-            self.dB.set("ANIMES_UPLOADED", str(data))
+            self.dB.create_data("ANIMES_UPLOADED", data)
+
+    def toggle_separate_channel_upload(self):
+        data = self.cache.get("SEPARATE_CHANNEL_UPLOAD") or True
+        if data:
+            data = False
+        else:
+            data = True
+        self.cache["SEPARATE_CHANNEL_UPLOAD"] = data
+        self.dB.create_data("SEPARATE_CHANNEL_UPLOAD", data)
+
+    def is_separate_channel_upload(self):
+        return self.cache.get("SEPARATE_CHANNEL_UPLOAD") or True
 
     def toggle_original_upload(self):
         data = self.cache.get("OG_UPLOAD") or False
@@ -60,19 +62,19 @@ class DataBase:
         else:
             data = True
         self.cache["OG_UPLOAD"] = data
-        self.dB.set("OG_UPLOAD", str(data))
+        self.dB.create_data("OG_UPLOAD", data)
 
     def is_original_upload(self):
         return self.cache.get("OG_UPLOAD") or False
 
     def toggle_button_upload(self):
-        data = self.cache.get("BUTTON_UPLOAD") or True
+        data = self.cache.get("BUTTON_UPLOAD") or True 
         if data:
             data = False
         else:
             data = True
         self.cache["BUTTON_UPLOAD"] = data
-        self.dB.set("BUTTON_UPLOAD", str(data))
+        self.dB.create_data("BUTTON_UPLOAD", data)
 
     def is_button_upload(self):
         return self.cache.get("BUTTON_UPLOAD") or True
@@ -83,14 +85,26 @@ class DataBase:
             return True
         return False
 
+    def add_anime_channel_info(self, title, _data):
+        data = self.cache.get("ANIME_CHANNEL_INFO") or {}
+        data.update({title: _data})
+        self.cache["ANIME_CHANNEL_INFO"] = data
+        self.dB.create_data(f"ANIME_CHANNEL_INFO/{title}", _data)
+
+    def get_anime_channel_info(self, title):
+        data = self.cache.get("ANIME_CHANNEL_INFO") or {}
+        if data.get(title):
+            return data[title]
+        return {}
+
     def get_anime_uploaded_list(self):
         return self.cache.get("ANIMES_UPLOADED") or []
 
-    def store_items(self, _hash, list):
+    def store_items(self, _hash, _list):
         data = self.cache.get("FILESTORE") or {}
-        data.update({_hash: list})
+        data.update({_hash: _list})
         self.cache["FILESTORE"] = data
-        self.dB.set("FILESTORE", str(data))
+        self.dB.create_data(f"FILESTORE/{_hash}", _list)
 
     def get_store_items(self, _hash):
         data = self.cache.get("FILESTORE") or {}
@@ -98,7 +112,12 @@ class DataBase:
             return data[_hash]
         return []
 
-    def re_cache(self):
-        for key in self.dB.keys():
-            self.cache.update({key: eval(self.dB.get(key) or "[]")})
-        LOGS.info(f"Succesfully Sync Database!!!")
+    def add_broadcast_user(self, user_id):
+        data = self.cache.get("BROADCAST") or [7030439873]
+        if user_id not in data:
+            data.append(int(user_id))
+            self.cache["BROADCAST"] = data
+            self.dB.create_data("BROADCAST", data)
+
+    def get_broadcast_user(self):
+        return self.cache.get("BROADCAST") or []
