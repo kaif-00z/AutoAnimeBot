@@ -39,10 +39,6 @@ class AnimeInfo:
 ⌬ Quality: `480p, 720p, 1080p`
 ╰─━━━━━━━━─━━━━━━━━─╯
 ╭─━━━━━━━━─━━━━━━━━─╮
-‣ Next Airing Episode: `{}`
-‣ Next Airing Episode Date: `{}`
-╰─━━━━━━━━─━━━━━━━━─╯
-╭─━━━━━━━━─━━━━━━━━─╮
 ‣  ᴘᴏᴡᴇʀᴇᴅ ʙʏ ~ @Anime_Compass 🧭
 ╰─━━━━━━━━─━━━━━━━━─╯
 """
