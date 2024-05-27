@@ -34,7 +34,7 @@ from libs.subsplease import SubsPlease
 
 tools = Tools()
 tools.init_dir()
-bot = Bot(None)
+bot = Bot()
 dB = DataBase()
 subsplease = SubsPlease(dB)
 torrent = Torrent()
@@ -48,8 +48,9 @@ admin = AdminUtils(dB, bot)
     )
 )
 async def _start(event):
-    msg_id = event.pattern_match.group(1)
     xnx = await event.reply("`Please Wait...`")
+    msg_id = event.pattern_match.group(1)
+    dB.add_broadcast_user(event.sender_id)
     if Var.FORCESUB_CHANNEL and Var.FORCESUB_CHANNEL_LINK and Var.FORCESUB_CHANNEL_2 and Var.FORCESUB_CHANNEL_LINK_2:
         is_user_joined = await bot.is_joined(Var.FORCESUB_CHANNEL, event.sender_id)
         is_user_joined_2 = await bot.is_joined(Var.FORCESUB_CHANNEL_2, event.sender_id)
@@ -78,11 +79,6 @@ async def _start(event):
                 url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
             )
         )
-        return await xnx.edit(
-            message,
-            buttons=[buttons]  # Wrap buttons list in another list to force end column
-        )
-        
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
@@ -95,8 +91,7 @@ async def _start(event):
                     await event.reply(file=[i for i in msg])
     else:
         if event.sender_id == Var.OWNER:
-            await xnx.delete()
-            return await event.reply(
+            return await xnx.edit(
                 "** <                ADMIN PANEL                 > **",
                 buttons=admin.admin_panel(),
             )
@@ -104,10 +99,10 @@ async def _start(event):
             f"**Enjoy Ongoing Anime's Best Encode 24/7 🫡**",
             buttons=[
                 [
-                    Button.url("👨‍💻 DEV", url="t.me/Mr_Bankaiiii"),
+                    Button.url("👨‍💻 DEV", url="t.me/Mr_bankaiiii"),
                     Button.url(
-                        "💖 Main Channel",
-                        url="T.me/Anime_Compass",
+                        "💖 Main channel",
+                        url="https://t.me/Anime_Compass",
                     ),
                 ]
             ],
@@ -140,6 +135,16 @@ async def _(e):
     await admin._btn_t(e)
 
 
+@bot.on(events.callbackquery.CallbackQuery(data="scul"))
+async def _(e):
+    await admin._sep_c_t(e)
+
+
+@bot.on(events.callbackquery.CallbackQuery(data="cast"))
+async def _(e):
+    await admin.broadcast_bt(e)
+
+
 @bot.on(events.callbackquery.CallbackQuery(data="bek"))
 async def _(e):
     await e.edit(buttons=admin.admin_panel())
@@ -148,8 +153,24 @@ async def _(e):
 async def anime(data):
     try:
         torr = [data.get("480p"), data.get("720p"), data.get("1080p")]
-        poster = await tools._poster(bot, AnimeInfo(torr[0].title))
+        anime_info = AnimeInfo(torr[0].title)
+        poster = await tools._poster(bot, anime_info)
+        if dB.is_separate_channel_upload():
+            chat_info = await tools.get_chat_info(bot, anime_info, dB)
+            await poster.edit(
+                buttons=[
+                    [
+                        Button.url(
+                            f"EPISODE {anime_info.data.get('episode_number', '')}".strip(),
+                            url=chat_info["invite_link"],
+                        )
+                    ]
+                ]
+            )
+            poster = await tools._poster(bot, anime_info, chat_info["chat_id"])
         btn = [[]]
+        original_upload = dB.is_original_upload()
+        button_upload = dB.is_button_upload()
         for i in torr:
             try:
                 filename = f"downloads/{i.title}"
@@ -160,8 +181,8 @@ async def anime(data):
                     bot,
                     dB,
                     {
-                        "original_upload": dB.is_original_upload(),
-                        "button_upload": dB.is_button_upload(),
+                        "original_upload": original_upload,
+                        "button_upload": button_upload,
                     },
                     filename,
                     AnimeInfo(i.title),
