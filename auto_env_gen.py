@@ -1,21 +1,12 @@
 import asyncio
-import os
 import random
 import sys
 from traceback import format_exc
 
-try:
-    from telethon import TelegramClient
-    from telethon.sessions import StringSession
-    from telethon.tl.functions.channels import CreateChannelRequest
-    from telethon.tl.functions.contacts import UnblockRequest
-except ModuleNotFoundError:
-    print("Downloading Telethon...")
-    os.system(f"{sys.executable} -m pip install telethon")
-    from telethon import TelegramClient
-    from telethon.sessions import StringSession
-    from telethon.tl.functions.channels import CreateChannelRequest
-    from telethon.tl.functions.contacts import UnblockRequest
+from telethon import TelegramClient
+from telethon.sessions import StringSession
+from telethon.tl.functions.channels import CreateChannelRequest
+from telethon.tl.functions.contacts import UnblockRequest
 
 DATA = {}
 ENV = """
