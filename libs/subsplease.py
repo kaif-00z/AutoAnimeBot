@@ -18,7 +18,7 @@
 
 import asyncio
 import hashlib
-import os
+import shutil
 from itertools import count
 from traceback import format_exc
 
@@ -38,7 +38,7 @@ class SubsPlease:
     def _exit(self):
         LOGS.info("Stopping The Bot...")
         try:
-            [os.system(f"rm -rf {fold}") for fold in ["downloads", "thumbs", "encode"]]
+            [shutil.rmtree(fold) for fold in ["downloads", "thumbs", "encode"]]
         except BaseException:
             LOGS.error(format_exc())
         exit()

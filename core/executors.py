@@ -17,7 +17,7 @@
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
 import asyncio
-import os
+import os, shutil
 import secrets
 from glob import glob
 from traceback import format_exc
@@ -142,8 +142,9 @@ class Executors:
                     await msg.edit(buttons=btn)
                     await self.reporter.all_done()
                     try:
-                        os.system(f"rm -rf {_hash}")
+                        shutil.rmtree(_hash)
                         os.remove(sp_path)
+                        os.remove(self.input_file)
                         os.remove(self.output_file)
                     except BaseException:
                         LOGS.error(str(format_exc()))
