@@ -17,8 +17,9 @@
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
 import asyncio
-import os, shutil
+import os
 import secrets
+import shutil
 from glob import glob
 from traceback import format_exc
 
