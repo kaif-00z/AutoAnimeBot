@@ -69,6 +69,8 @@ class Tools:
 
     async def cover_dl(self, link):
         try:
+            if not link:
+                return None
             image = await self.async_searcher(link, re_content=True)
             fn = f"thumbs/{link.split('/')[-1]}"
             if not fn.endswith((".jpg" or ".png")):
