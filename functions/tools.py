@@ -254,7 +254,8 @@ class Tools:
                         pass
         try:
             os.remove(_progress)
-        except: pass
+        except BaseException:
+            pass
         return True, _new_log_msg
 
     async def genss(self, file):

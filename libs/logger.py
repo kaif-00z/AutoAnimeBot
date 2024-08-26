@@ -20,7 +20,7 @@ import asyncio
 import logging
 from traceback import format_exc
 
-from telethon import Button, TelegramClient
+from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import FloodWaitError
 
 from functions.config import Var
@@ -90,7 +90,8 @@ class Reporter:
             self.msg = await self.msg.edit(
                 f"**Successfully Completed All Task Related To The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `DONE`"
             )
-        except: pass # ValueError Sometimes From telethon
+        except BaseException:
+            pass  # ValueError Sometimes From telethon
         if Var.LOG_ON_MAIN:
             await self.msg.delete()
 
