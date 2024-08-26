@@ -67,7 +67,9 @@ class Executors:
                     return False, out
             else:
                 _log_msg = await self.reporter.started_compressing()
-                succ, _new_msg = await self.tools.compress(self.input_file, self.output_file, _log_msg)
+                succ, _new_msg = await self.tools.compress(
+                    self.input_file, self.output_file, _log_msg
+                )
                 if not succ:
                     return False, _new_msg
                 self.reporter.msg = _new_msg

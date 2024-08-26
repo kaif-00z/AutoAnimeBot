@@ -16,11 +16,13 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-import asyncio, time, re, math
+import asyncio
 import json
+import math
 import os
+import re
 import subprocess
-from pathlib import Path
+import time
 from traceback import format_exc
 
 import aiofiles
@@ -191,13 +193,11 @@ class Tools:
             err = stderr.decode().strip() or None
             out = stdout.decode().strip()
             if not run_code and err:
-                if match := re.match("\/bin\/sh: (.*): ?(\w+): not found", err):
+                if match := re.match("\\/bin\\/sh: (.*): ?(\\w+): not found", err):
                     return out, f"{match.group(2).upper()}_NOT_FOUND"
             return out, err
 
-        _x, _y = await bash_(
-            f'mediainfo --fullscan """{dl}""" | grep "Frame count"'
-        )
+        _x, _y = await bash_(f'mediainfo --fullscan """{dl}""" | grep "Frame count"')
         if _y and _y.endswith("NOT_FOUND"):
             LOGS.error(f"ERROR: `{_y}`")
             return False
