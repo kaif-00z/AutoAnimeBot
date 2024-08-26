@@ -33,12 +33,10 @@ from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from functions.config import Var
 from libs.logger import LOGS
 
-OK = {}
-
 
 class Tools:
     def __init__(self):
-        self.ffmpeg_threads = int(os.cpu_count() or 0) + 3
+        self.ffmpeg_threads = int(os.cpu_count() or 0) + 2
 
     async def async_searcher(
         self,
@@ -140,15 +138,6 @@ class Tools:
             os.mkdir("thumbs/")
         if not os.path.isdir("downloads/"):
             os.mkdir("downloads/")
-
-    def code(self, data):
-        OK.update({len(OK): data})
-        return str(len(OK) - 1)
-
-    def decode(self, key):
-        if OK.get(int(key)):
-            return OK[int(key)]
-        return
 
     def hbs(self, size):
         if not size:

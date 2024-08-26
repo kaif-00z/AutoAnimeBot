@@ -16,6 +16,7 @@
 - <details><summary>Click Here To See How Button Upload Look.</summary><img src="https://graph.org/file/3e9abc9ec7de6a26fd1a1.jpg" alt="btnul"/></details>
 - Added Multi Thread Encoding
 - Added Progress Bar of Encoding
+- Added Option For Logs In Main Channel
 - Added ForceSub
 - Added 480p Support
 - Added Broadcast
