@@ -59,15 +59,14 @@ class Reporter:
     async def alert_new_file_founded(self):
         await self.awake()
         msg = await self.client.send_message(
-            Var.LOG_CHANNEL,
+            Var.MAIN_CHANNEL if Var.LOG_ON_MAIN else Var.LOG_CHANNEL,
             f"**New Anime Released**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Downloading...`",
         )
         self.msg = msg
 
-    async def started_compressing(self, btn):
+    async def started_compressing(self):
         self.msg = await self.msg.edit(
             f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Encoding...`",
-            buttons=btn,
         )
 
     async def started_renaming(self):
@@ -78,8 +77,7 @@ class Reporter:
 
     async def started_uploading(self):
         self.msg = await self.msg.edit(
-            f"**Successfully Encoded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Uploading...`",
-            buttons=[],
+            f"**Successfully Encoded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Uploading...`"
         )
 
     async def started_gen_ss(self):
@@ -91,6 +89,8 @@ class Reporter:
         self.msg = await self.msg.edit(
             f"**Successfully Completed All Task Related To The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `DONE`"
         )
+        if Var.LOG_ON_MAIN:
+            await self.msg.delete()
 
     async def awake(self):  # in case
         if not self.client.is_connected():

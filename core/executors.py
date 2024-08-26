@@ -66,13 +66,11 @@ class Executors:
                 if not succ:
                     return False, out
             else:
-                await self.reporter.started_compressing(self.encode_progress())
-                succ, out = await self.tools.compress(self.input_file, self.output_file)
-                if (
-                    not os.path.exists(self.output_file)
-                    or os.path.getsize(self.output_file) == 0
-                ):
-                    return False, out
+                _log_msg = await self.reporter.started_compressing()
+                succ, _new_msg = await self.tools.compress(self.input_file, self.output_file, _log_msg)
+                if not succ:
+                    return False, _new_msg
+                self.reporter.msg = _new_msg
             await self.reporter.started_uploading()
             if self.is_button:
                 msg = await self.bot.upload_anime(
@@ -151,7 +149,3 @@ class Executors:
                         LOGS.error(str(format_exc()))
         except BaseException:
             await self.reporter.report_error(str(format_exc()), log=True)
-
-    def encode_progress(self):
-        code = self.tools.code(f"{self.output_file};{self.input_file}")
-        return [[Button.inline("STATS", data=f"tas_{code}")]]

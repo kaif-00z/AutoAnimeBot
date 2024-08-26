@@ -99,11 +99,6 @@ async def _start(event):
     await xnx.delete()
 
 
-@bot.on(events.callbackquery.CallbackQuery(data=re.compile("tas_(.*)")))
-async def _(e):
-    await tools.stats(e)
-
-
 @bot.on(events.callbackquery.CallbackQuery(data="slog"))
 async def _(e):
     await admin._logs(e)

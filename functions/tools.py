@@ -16,7 +16,7 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-import asyncio
+import asyncio, time, re, math
 import json
 import os
 import subprocess
@@ -26,6 +26,7 @@ from traceback import format_exc
 import aiofiles
 import aiohttp
 from html_telegraph_poster import TelegraphPoster
+from telethon.errors.rpcerrorlist import MessageNotModifiedError
 
 from functions.config import Var
 from libs.logger import LOGS
@@ -158,6 +159,20 @@ class Tools:
             raised_to_pow += 1
         return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
 
+    def ts(milliseconds: int) -> str:
+        seconds, milliseconds = divmod(int(milliseconds), 1000)
+        minutes, seconds = divmod(seconds, 60)
+        hours, minutes = divmod(minutes, 60)
+        days, hours = divmod(hours, 24)
+        tmp = (
+            ((str(days) + "d:") if days else "")
+            + ((str(hours) + "h:") if hours else "")
+            + ((str(minutes) + "m:") if minutes else "")
+            + ((str(seconds) + "s:") if seconds else "")
+            + ((str(milliseconds) + "ms:") if milliseconds else "")
+        )
+        return tmp[:-1]
+
     async def rename_file(self, dl, out):
         try:
             os.rename(dl, out)
@@ -165,28 +180,79 @@ class Tools:
             return False, format_exc()
         return True, out
 
-    async def compress(self, dl, out):
-        cmd = f'''{Var.FFMPEG} -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -map 0:v -map 0:a -map 0:s -c:v libx264 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf {Var.CRF} -c:a libopus -b:a 32k -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 2 -preset veryfast """{out}""" -y'''
+    async def frame_counts(self, dl):
+        async def bash_(cmd, run_code=0):
+            process = await asyncio.create_subprocess_shell(
+                cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await process.communicate()
+            err = stderr.decode().strip() or None
+            out = stdout.decode().strip()
+            if not run_code and err:
+                if match := re.match("\/bin\/sh: (.*): ?(\w+): not found", err):
+                    return out, f"{match.group(2).upper()}_NOT_FOUND"
+            return out, err
+
+        _x, _y = await bash_(
+            f'mediainfo --fullscan """{dl}""" | grep "Frame count"'
+        )
+        if _y and _y.endswith("NOT_FOUND"):
+            LOGS.error(f"ERROR: `{_y}`")
+            return False
+        return _x.split(":")[1].split("\n")[0]
+
+    async def compress(self, dl, out, log_msg):
+        total_frames = self.frame_counts(dl)
+        if not total_frames:
+            return False, "Unable to Count The Frames!"
+        _progress = f"progress-{time.time()}.txt"
+        cmd = f'''{Var.FFMPEG} -hide_banner -loglevel quiet -progress """{_progress}""" -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -map 0:v -map 0:a -map 0:s -c:v libx264 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf {Var.CRF} -c:a libopus -b:a 32k -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 16 -preset veryfast """{out}""" -y'''
         process = await asyncio.create_subprocess_shell(
             cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
-        stdout, stderr = await process.communicate()
-        err = stderr.decode().strip()
-        if err:
-            return False, err
-        return True, out
-
-    async def stats(self, e):
-        try:
-            wah = e.pattern_match.group(1).decode("UTF-8")
-            ah = self.decode(wah)
-            out, dl = ah.split(";")
-            ot = self.hbs(int(Path(out).stat().st_size))
-            ov = self.hbs(int(Path(dl).stat().st_size))
-            ans = f"Downloaded:\n{ov}\n\nCompressing:\n{ot}"
-            await e.answer(ans, cache_time=0, alert=True)
-        except Exception as error:
-            await e.answer(f"Someting Went Wrong!\n{error}", cache_time=0, alert=True)
+        d_time = time.time()
+        while process.returncode != 0:
+            await asyncio.sleep(5)
+            with open(_progress, "r+") as fil:
+                text = fil.read()
+                frames = re.findall("frame=(\\d+)", text)
+                size = re.findall("total_size=(\\d+)", text)
+                speed = 0
+                if not os.path.exists(out) or os.path.getsize(out) == 0:
+                    return False, "Unable To Encode This Video!"
+                if len(frames):
+                    elapse = int(frames[-1])
+                if len(size):
+                    size = int(size[-1])
+                    per = elapse * 100 / int(total_frames)
+                    time_diff = time.time() - int(d_time)
+                    speed = round(elapse / time_diff, 2)
+                if int(speed) != 0:
+                    some_eta = ((int(total_frames) - elapse) / speed) * 1000
+                    text = f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{dl}```\n\n**STATUS:** \n"
+                    progress_str = "`[{0}{1}] {2}%\n\n`".format(
+                        "".join("●" for _ in range(math.floor(per / 5))),
+                        "".join("" for _ in range(20 - math.floor(per / 5))),
+                        round(per, 2),
+                    )
+                    e_size = f"{self.hbs(size)} of ~{self.hbs((size / per) * 100)}"
+                    eta = f"~{self.ts(some_eta)}"
+                    try:
+                        _new_log_msg = await log_msg.edit(
+                            text
+                            + progress_str
+                            + "`"
+                            + e_size
+                            + "`"
+                            + "\n\n`"
+                            + eta
+                            + "`"
+                        )
+                    except MessageNotModifiedError:
+                        pass
+        return True, _new_log_msg
 
     async def genss(self, file):
         process = subprocess.Popen(
