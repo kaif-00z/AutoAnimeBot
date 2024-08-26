@@ -182,8 +182,10 @@ async def anime(data):
                     asyncio.ensure_future(exe.further_work())
                     continue
                 await reporter.report_error(_btn, log=True)
+                await reporter.msg.delete()
             except BaseException:
                 await reporter.report_error(str(format_exc()), log=True)
+                await reporter.msg.delete()
     except BaseException:
         LOGS.error(str(format_exc()))
 

@@ -38,7 +38,7 @@ OK = {}
 
 class Tools:
     def __init__(self):
-        pass
+        self.ffmpeg_threads = int(os.cpu_count() or 0) + 3
 
     async def async_searcher(
         self,
@@ -161,7 +161,7 @@ class Tools:
             raised_to_pow += 1
         return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
 
-    def ts(milliseconds: int) -> str:
+    def ts(self, milliseconds: int) -> str:
         seconds, milliseconds = divmod(int(milliseconds), 1000)
         minutes, seconds = divmod(seconds, 60)
         hours, minutes = divmod(minutes, 60)
@@ -204,11 +204,11 @@ class Tools:
         return _x.split(":")[1].split("\n")[0]
 
     async def compress(self, dl, out, log_msg):
-        total_frames = self.frame_counts(dl)
+        total_frames = await self.frame_counts(dl)
         if not total_frames:
             return False, "Unable to Count The Frames!"
         _progress = f"progress-{time.time()}.txt"
-        cmd = f'''{Var.FFMPEG} -hide_banner -loglevel quiet -progress """{_progress}""" -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -map 0:v -map 0:a -map 0:s -c:v libx264 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf {Var.CRF} -c:a libopus -b:a 32k -ac 2 -ab 32k -vbr 2 -level 3.1 -threads 16 -preset veryfast """{out}""" -y'''
+        cmd = f'''{Var.FFMPEG} -hide_banner -loglevel quiet -progress """{_progress}""" -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -map 0:v -map 0:a -map 0:s -c:v libx264 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf {Var.CRF} -c:a libopus -b:a 32k -ac 2 -ab 32k -vbr 2 -level 3.1 -threads {self.ffmpeg_threads} -preset veryfast """{out}""" -y'''
         process = await asyncio.create_subprocess_shell(
             cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
@@ -231,7 +231,7 @@ class Tools:
                     speed = round(elapse / time_diff, 2)
                 if int(speed) != 0:
                     some_eta = ((int(total_frames) - elapse) / speed) * 1000
-                    text = f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{dl}```\n\n**STATUS:** \n"
+                    text = f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{dl.split('/')[-1]}```\n\n**STATUS:** \n"
                     progress_str = "`[{0}{1}] {2}%\n\n`".format(
                         "".join("●" for _ in range(math.floor(per / 5))),
                         "".join("" for _ in range(20 - math.floor(per / 5))),
@@ -252,6 +252,9 @@ class Tools:
                         )
                     except MessageNotModifiedError:
                         pass
+        try:
+            os.remove(_progress)
+        except: pass
         return True, _new_log_msg
 
     async def genss(self, file):

@@ -68,11 +68,11 @@ class Reporter:
         self.msg = await self.msg.edit(
             f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Encoding...`",
         )
+        return self.msg
 
     async def started_renaming(self):
         self.msg = await self.msg.edit(
             f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `Renaming...`",
-            buttons=[[Button.inline("✒️", data="uwu")]],
         )
 
     async def started_uploading(self):
@@ -86,9 +86,11 @@ class Reporter:
         )
 
     async def all_done(self):
-        self.msg = await self.msg.edit(
-            f"**Successfully Completed All Task Related To The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `DONE`"
-        )
+        try:
+            self.msg = await self.msg.edit(
+                f"**Successfully Completed All Task Related To The Anime**\n\n **File Name:** ```{self.file_name}```\n\n**STATUS:** `DONE`"
+            )
+        except: pass # ValueError Sometimes From telethon
         if Var.LOG_ON_MAIN:
             await self.msg.delete()
 
