@@ -36,9 +36,11 @@ class ScheduleTasks:
         if Var.SEND_SCHEDULE or Var.RESTART_EVERDAY:
             self.sch = AsyncIOScheduler(timezone="Asia/Kolkata")
             if Var.SEND_SCHEDULE:
-                self.sch.add_job(self.anime_timing, "cron", hour=0, minute=30) # 12:30 AM IST
+                self.sch.add_job(
+                    self.anime_timing, "cron", hour=0, minute=30
+                )  # 12:30 AM IST
             if Var.RESTART_EVERDAY:
-                self.sch.add_job(self.restart, "corn", hour=2, minute=1) # 2:01 AM IST
+                self.sch.add_job(self.restart, "corn", hour=2, minute=1)  # 2:01 AM IST
             self.sch.start()
 
     async def anime_timing(self):

@@ -16,7 +16,7 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-import asyncio, requests
+import asyncio
 import json
 import math
 import os
@@ -27,6 +27,7 @@ from traceback import format_exc
 
 import aiofiles
 import aiohttp
+import requests
 from html_telegraph_poster import TelegraphPoster
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 

@@ -1,5 +1,5 @@
-from traceback import format_exc
 import sys
+from traceback import format_exc
 
 import firebase_admin
 import requests

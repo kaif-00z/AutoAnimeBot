@@ -16,13 +16,13 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
+import sys
 from traceback import format_exc
 
 from functions.config import Var
 from libs.firebasewarp import FireDB
 from libs.logger import LOGS
 
-import sys
 
 class DataBase:
     def __init__(self):
