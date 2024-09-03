@@ -42,7 +42,7 @@ LOGS.info(
     """
                         Auto Anime Bot
                 ©️ t.me/kAiF_00z (github.com/kaif-00z)
-                        v0.0.7 (original)
+                        v0.0.8 (original)
                              (2023-24)
                        [All Rigth Reserved]
 

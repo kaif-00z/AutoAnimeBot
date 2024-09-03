@@ -16,7 +16,7 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-import asyncio
+import asyncio, requests
 import json
 import math
 import os
@@ -131,7 +131,9 @@ class Tools:
 
     def init_dir(self):
         if not os.path.exists("thumb.jpg"):
-            os.system(f"wget {Var.THUMB} -O thumb.jpg")
+            content = requests.get(Var.THUMB).content
+            with open("thumb.jpg", "wb") as f:
+                f.write(content)
         if not os.path.isdir("encode/"):
             os.mkdir("encode/")
         if not os.path.isdir("thumbs/"):

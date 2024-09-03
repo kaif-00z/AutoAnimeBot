@@ -90,17 +90,17 @@ class Bot(TelegramClient):
             await self.pyro_client.start()
         except ApiIdInvalidError:
             self.logger.critical("API ID and API_HASH combination does not match!")
-            sys.exit()
+            sys.exit(1)
         except (AuthKeyDuplicatedError, EOFError):
             if self._handle_error:
                 self.logger.critical("String session expired. Create new!")
-                return sys.exit()
+                sys.exit(1)
             self.logger.critical("String session expired.")
         except (AccessTokenExpiredError, AccessTokenInvalidError):
             self.logger.critical(
                 "Bot token is expired or invalid. Create new from @Botfather and add in BOT_TOKEN env variable!"
             )
-            sys.exit()
+            sys.exit(1)
         self.me = await self.get_me()
         if self.me.bot:
             me = f"@{self.me.username}"

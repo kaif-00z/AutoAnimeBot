@@ -22,6 +22,7 @@ from functions.config import Var
 from libs.firebasewarp import FireDB
 from libs.logger import LOGS
 
+import sys
 
 class DataBase:
     def __init__(self):
@@ -32,7 +33,7 @@ class DataBase:
         except Exception as error:
             LOGS.exception(format_exc())
             LOGS.critical(str(error))
-            exit()
+            sys.exit(1)
         self.cache = self.dB.getall()
         LOGS.info(f"Succesfully Sync Database!!!")
 

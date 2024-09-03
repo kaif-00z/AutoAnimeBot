@@ -33,9 +33,12 @@ class ScheduleTasks:
     def __init__(self, bot: TelegramClient):
         self.tools = Tools()
         self.bot = bot
-        if Var.SEND_SCHEDULE:
+        if Var.SEND_SCHEDULE or Var.RESTART_EVERDAY:
             self.sch = AsyncIOScheduler(timezone="Asia/Kolkata")
-            self.sch.add_job(self.anime_timing, "cron", hour=0, minute=30)
+            if Var.SEND_SCHEDULE:
+                self.sch.add_job(self.anime_timing, "cron", hour=0, minute=30) # 12:30 AM IST
+            if Var.RESTART_EVERDAY:
+                self.sch.add_job(self.restart, "corn", hour=2, minute=1) # 2:01 AM IST
             self.sch.start()
 
     async def anime_timing(self):
@@ -53,8 +56,6 @@ class ScheduleTasks:
             await mssg.pin(notify=True)
         except Exception as error:
             LOGS.error(str(error))
-        if Var.RESTART_EVERDAY:
-            self.restart()
 
     def restart(self):
         os.execl(sys.executable, sys.executable, "bot.py")

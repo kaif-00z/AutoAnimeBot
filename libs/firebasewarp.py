@@ -1,4 +1,5 @@
 from traceback import format_exc
+import sys
 
 import firebase_admin
 import requests
@@ -11,7 +12,7 @@ def firebase_auth(Var):
     if Var.FIREBASE_SERVICE_ACCOUNT_FILE and Var.FIREBASE_URL:
         if not Var.FIREBASE_SERVICE_ACCOUNT_FILE.startswith("https://"):
             LOGS.error("Firebase Service Account File Link is Wrong!")
-            exit()
+            sys.exit(1)
 
         service_acc = requests.get(Var.FIREBASE_SERVICE_ACCOUNT_FILE).json()
 
@@ -24,7 +25,7 @@ def firebase_auth(Var):
                 return db.reference()
             except BaseException:
                 LOGS.error(str(format_exc()))
-                exit()
+                sys.exit(1)
 
 
 class FireDB:
@@ -32,7 +33,7 @@ class FireDB:
         self.db = firebase_auth(Var)
         if not self.db:
             LOGS.info("Something Went Wrong With FireBase")
-            exit()
+            sys.exit(1)
 
     def getall(self):
         return self.db.get() or {}

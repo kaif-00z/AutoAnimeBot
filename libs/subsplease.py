@@ -16,7 +16,7 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-import asyncio
+import asyncio, sys
 import hashlib
 import shutil
 from itertools import count
@@ -41,7 +41,7 @@ class SubsPlease:
             [shutil.rmtree(fold) for fold in ["downloads", "thumbs", "encode"]]
         except BaseException:
             LOGS.error(format_exc())
-        exit()
+        sys.exit(0)
 
     def rss_feed_data(self):
         try:
