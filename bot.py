@@ -97,10 +97,9 @@ async def _start(event):
         )
     await xnx.delete()
 
+
 @bot.on(
-    events.NewMessage(
-        incoming=True, pattern="^/about", func=lambda e: e.is_private
-    )
+    events.NewMessage(incoming=True, pattern="^/about", func=lambda e: e.is_private)
 )
 async def _(e):
     await admin._about(e)

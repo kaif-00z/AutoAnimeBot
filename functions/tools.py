@@ -189,7 +189,9 @@ class Tools:
         return out, err
 
     async def frame_counts(self, dl):
-        _x, _y = await self.bash_(f'mediainfo --fullscan """{dl}""" | grep "Frame count"')
+        _x, _y = await self.bash_(
+            f'mediainfo --fullscan """{dl}""" | grep "Frame count"'
+        )
         if _y and _y.endswith("NOT_FOUND"):
             LOGS.error(f"ERROR: `{_y}`")
             return False

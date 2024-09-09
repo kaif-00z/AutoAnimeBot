@@ -16,15 +16,17 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-from telethon import Button, events, __version__ as _t_v
-from pyrogram import __version__ as _p_v
+import platform
 from datetime import datetime as dt
 
-from core.bot import Bot, Var, asyncio
-from functions.tools import Tools
-from database import DataBase
+from pyrogram import __version__ as _p_v
+from telethon import Button
+from telethon import __version__ as _t_v
+from telethon import events
 
-import platform
+from core.bot import Bot, Var, asyncio
+from database import DataBase
+from functions.tools import Tools
 
 ABOUT = """
 **⏱ Uptime** : `{}`
@@ -40,6 +42,7 @@ ABOUT = """
 
 ~ **Developer**  __@Kaif_00z __
 """
+
 
 class AdminUtils:
     def __init__(self, dB: DataBase, bot: Bot):
@@ -171,10 +174,6 @@ class AdminUtils:
             self.telethon_version,
             self.pyrogram_version,
             self.system,
-            "[OngoingAnimeBot](https://github.com/Kaif-00z/AutoAnimeBot)"
+            "[OngoingAnimeBot](https://github.com/Kaif-00z/AutoAnimeBot)",
         )
-        await e.reply(
-            text,
-            file="assest/about.jpg",
-            link_preview=False
-        )
+        await e.reply(text, file="assest/about.jpg", link_preview=False)

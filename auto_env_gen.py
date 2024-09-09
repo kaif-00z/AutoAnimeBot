@@ -24,6 +24,7 @@ FORCESUB_CHANNEL={}
 FORCESUB_CHANNEL_LINK={}
 """
 
+
 async def generate_session_string():
     api_id = int(input("Enter your API_ID: "))
     api_hash = input("Enter your API_HASH: ")
@@ -45,8 +46,11 @@ def get_mongo():
     DATA["mongo_srv"] = ""
     return False
 
+
 def get_forcesub():
-    fsub_id = input("Enter ID of Channel Where You Want ForceSub\nNOTE: Bot Is Admin In That Channel: ")
+    fsub_id = input(
+        "Enter ID of Channel Where You Want ForceSub\nNOTE: Bot Is Admin In That Channel: "
+    )
     fsub_link = input("Enter Invite Link From Which Subs Will Join The FSUB Channel: ")
     if fsub_id and fsub_link:
         DATA["fsub_id"] = fsub_id
@@ -55,6 +59,7 @@ def get_forcesub():
     DATA["fsub_link"] = ""
     DATA["fsub_id"] = ""
     return False
+
 
 async def create_channel(client, title):
     try:
@@ -86,7 +91,7 @@ def generate_env():
         DATA["mongo_srv"],
         DATA["owner_id"],
         DATA["fsub_id"],
-        DATA["fsub_link"]
+        DATA["fsub_link"],
     )
     with open(".env", "w") as f:
         f.write(txt.strip())
@@ -170,9 +175,7 @@ async def auto_maker():
         print("Now If You Wana Skip Upcoming Inputs You Can Just Press Enter!!")
         db = get_mongo()
         if not db:
-            print(
-                "Generating .env Without Mongo SRV. Now You Have To Add it Manually!"
-            )
+            print("Generating .env Without Mongo SRV. Now You Have To Add it Manually!")
         fsub = get_forcesub()
         if not fsub:
             print(

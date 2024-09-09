@@ -19,8 +19,9 @@
 import sys
 from traceback import format_exc
 
-from functions.config import Var
 from motor.motor_asyncio import AsyncIOMotorClient
+
+from functions.config import Var
 from libs.logger import LOGS
 
 
@@ -51,7 +52,9 @@ class DataBase:
             _data = False
         else:
             _data = True
-        await self.opts_db.update_one({"_id": "SEPARATE_CHANNEL_UPLOAD"}, {"$set" : {"switch": _data}}, upsert=True)
+        await self.opts_db.update_one(
+            {"_id": "SEPARATE_CHANNEL_UPLOAD"}, {"$set": {"switch": _data}}, upsert=True
+        )
 
     async def is_separate_channel_upload(self):
         data = await self.opts_db.find_one({"_id": "SEPARATE_CHANNEL_UPLOAD"})
@@ -63,7 +66,9 @@ class DataBase:
             _data = False
         else:
             _data = True
-        await self.opts_db.update_one({"_id": "OG_UPLOAD"}, {"$set" : {"switch": _data}}, upsert=True)
+        await self.opts_db.update_one(
+            {"_id": "OG_UPLOAD"}, {"$set": {"switch": _data}}, upsert=True
+        )
 
     async def is_original_upload(self):
         data = await self.opts_db.find_one({"_id": "OG_UPLOAD"})
@@ -75,7 +80,9 @@ class DataBase:
             _data = False
         else:
             _data = True
-        await self.opts_db.update_one({"_id": "BUTTON_UPLOAD"}, {"$set" : {"switch": _data}}, upsert=True)
+        await self.opts_db.update_one(
+            {"_id": "BUTTON_UPLOAD"}, {"$set": {"switch": _data}}, upsert=True
+        )
 
     async def is_button_upload(self):
         data = await self.opts_db.find_one({"_id": "BUTTON_UPLOAD"})
@@ -88,7 +95,9 @@ class DataBase:
         return False
 
     async def add_anime_channel_info(self, title, _data):
-        await self.channel_info_db.update_one({"_id": title}, {"$set" : {"data": _data}}, upsert=True)
+        await self.channel_info_db.update_one(
+            {"_id": title}, {"$set": {"data": _data}}, upsert=True
+        )
 
     async def get_anime_channel_info(self, title):
         data = await self.channel_info_db.find_one({"_id": title})
@@ -97,7 +106,10 @@ class DataBase:
         return {}
 
     async def store_items(self, _hash, _list):
-        await self.file_store_db.update_one({"_id": _hash}, {"$set" : {"data": _list}}, upsert=True) # in case
+        # in case
+        await self.file_store_db.update_one(
+            {"_id": _hash}, {"$set": {"data": _list}}, upsert=True
+        )
 
     async def get_store_items(self, _hash):
         data = await self.file_store_db.find_one({"_id": _hash})
