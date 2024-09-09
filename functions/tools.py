@@ -117,7 +117,7 @@ class Tools:
 
     async def get_chat_info(self, bot, anime_info, dB):
         try:
-            chat_info = dB.get_anime_channel_info(anime_info.proper_name)
+            chat_info = await dB.get_anime_channel_info(anime_info.proper_name)
             if not chat_info:
                 chat_id = await bot.create_channel(
                     (await anime_info.get_english()),
@@ -125,7 +125,7 @@ class Tools:
                 )
                 invite_link = await bot.generate_invite_link(chat_id)
                 chat_info = {"chat_id": chat_id, "invite_link": invite_link}
-                dB.add_anime_channel_info(anime_info.proper_name, chat_info)
+                await dB.add_anime_channel_info(anime_info.proper_name, chat_info)
             return chat_info
         except BaseException:
             LOGS.error(str(format_exc()))
@@ -174,22 +174,22 @@ class Tools:
             return False, format_exc()
         return True, out
 
-    async def frame_counts(self, dl):
-        async def bash_(cmd, run_code=0):
-            process = await asyncio.create_subprocess_shell(
-                cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-            )
-            stdout, stderr = await process.communicate()
-            err = stderr.decode().strip() or None
-            out = stdout.decode().strip()
-            if not run_code and err:
-                if match := re.match("\\/bin\\/sh: (.*): ?(\\w+): not found", err):
-                    return out, f"{match.group(2).upper()}_NOT_FOUND"
-            return out, err
+    async def bash_(self, cmd, run_code=0):
+        process = await asyncio.create_subprocess_shell(
+            cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await process.communicate()
+        err = stderr.decode().strip() or None
+        out = stdout.decode().strip()
+        if not run_code and err:
+            if match := re.match("\\/bin\\/sh: (.*): ?(\\w+): not found", err):
+                return out, f"{match.group(2).upper()}_NOT_FOUND"
+        return out, err
 
-        _x, _y = await bash_(f'mediainfo --fullscan """{dl}""" | grep "Frame count"')
+    async def frame_counts(self, dl):
+        _x, _y = await self.bash_(f'mediainfo --fullscan """{dl}""" | grep "Frame count"')
         if _y and _y.endswith("NOT_FOUND"):
             LOGS.error(f"ERROR: `{_y}`")
             return False

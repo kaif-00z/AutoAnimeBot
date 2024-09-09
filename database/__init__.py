@@ -20,105 +20,96 @@ import sys
 from traceback import format_exc
 
 from functions.config import Var
-from libs.firebasewarp import FireDB
+from motor.motor_asyncio import AsyncIOMotorClient
 from libs.logger import LOGS
 
 
 class DataBase:
     def __init__(self):
         try:
-            LOGS.info("Trying Connect With Firebase Database")
-            self.dB = FireDB(Var)
-            LOGS.info("Successfully Connected to Firebase Database")
+            LOGS.info("Trying To Connect With MongoDB")
+            self.client = AsyncIOMotorClient(Var.MONGO_SRV)
+            self.file_info_db = self.client["ONGOINGANIME"]["fileInfo"]
+            self.channel_info_db = self.client["ONGOINGANIME"]["animeChannelInfo"]
+            self.opts_db = self.client["ONGOINGANIME"]["opts"]
+            self.file_store_db = self.client["ONGOINGANIME"]["fileStore"]
+            self.broadcast_db = self.client["ONGOINGANIME"]["broadcastInfo"]
+            LOGS.info("Successfully Connected With MongoDB")
         except Exception as error:
             LOGS.exception(format_exc())
             LOGS.critical(str(error))
             sys.exit(1)
-        self.cache = self.dB.getall()
-        LOGS.info(f"Succesfully Sync Database!!!")
 
-    def add_anime(self, name):
-        data = self.cache.get("ANIMES_UPLOADED") or []
-        if name not in data:
-            data.append(name)
-            self.cache["ANIMES_UPLOADED"] = data
-            self.dB.create_data("ANIMES_UPLOADED", data)
+    async def add_anime(self, uid):
+        data = await self.file_info_db.find_one({"_id": uid})
+        if not data:
+            await self.file_info_db.insert_one({"_id": uid})
 
-    def toggle_separate_channel_upload(self):
-        data = self.cache.get("SEPARATE_CHANNEL_UPLOAD") or False
-        if data:
-            data = False
+    async def toggle_separate_channel_upload(self):
+        data = await self.opts_db.find_one({"_id": "SEPARATE_CHANNEL_UPLOAD"})
+        if (data or {}).get("switch"):
+            _data = False
         else:
-            data = True
-        self.cache["SEPARATE_CHANNEL_UPLOAD"] = data
-        self.dB.create_data("SEPARATE_CHANNEL_UPLOAD", data)
+            _data = True
+        await self.opts_db.update_one({"_id": "SEPARATE_CHANNEL_UPLOAD"}, {"$set" : {"switch": _data}}, upsert=True)
 
-    def is_separate_channel_upload(self):
-        return self.cache.get("SEPARATE_CHANNEL_UPLOAD") or False
+    async def is_separate_channel_upload(self):
+        data = await self.opts_db.find_one({"_id": "SEPARATE_CHANNEL_UPLOAD"})
+        return (data or {}).get("switch") or False
 
-    def toggle_original_upload(self):
-        data = self.cache.get("OG_UPLOAD") or False
-        if data:
-            data = False
+    async def toggle_original_upload(self):
+        data = await self.opts_db.find_one({"_id": "OG_UPLOAD"})
+        if (data or {}).get("switch"):
+            _data = False
         else:
-            data = True
-        self.cache["OG_UPLOAD"] = data
-        self.dB.create_data("OG_UPLOAD", data)
+            _data = True
+        await self.opts_db.update_one({"_id": "OG_UPLOAD"}, {"$set" : {"switch": _data}}, upsert=True)
 
-    def is_original_upload(self):
-        return self.cache.get("OG_UPLOAD") or False
+    async def is_original_upload(self):
+        data = await self.opts_db.find_one({"_id": "OG_UPLOAD"})
+        return (data or {}).get("switch") or False
 
-    def toggle_button_upload(self):
-        data = self.cache.get("BUTTON_UPLOAD") or False
-        if data:
-            data = False
+    async def toggle_button_upload(self):
+        data = await self.opts_db.find_one({"_id": "BUTTON_UPLOAD"})
+        if data and (data or {}).get("switch"):
+            _data = False
         else:
-            data = True
-        self.cache["BUTTON_UPLOAD"] = data
-        self.dB.create_data("BUTTON_UPLOAD", data)
+            _data = True
+        await self.opts_db.update_one({"_id": "BUTTON_UPLOAD"}, {"$set" : {"switch": _data}}, upsert=True)
 
-    def is_button_upload(self):
-        return self.cache.get("BUTTON_UPLOAD") or False
+    async def is_button_upload(self):
+        data = await self.opts_db.find_one({"_id": "BUTTON_UPLOAD"})
+        return (data or {}).get("switch") or False
 
-    def is_anime_uploaded(self, name):
-        data = self.cache.get("ANIMES_UPLOADED") or []
-        if name in data:
+    async def is_anime_uploaded(self, uid):
+        data = await self.file_info_db.find_one({"_id": uid})
+        if data:
             return True
         return False
 
-    def add_anime_channel_info(self, title, _data):
-        data = self.cache.get("ANIME_CHANNEL_INFO") or {}
-        data.update({title: _data})
-        self.cache["ANIME_CHANNEL_INFO"] = data
-        self.dB.create_data(f"ANIME_CHANNEL_INFO/{title}", _data)
+    async def add_anime_channel_info(self, title, _data):
+        await self.channel_info_db.update_one({"_id": title}, {"$set" : {"data": _data}}, upsert=True)
 
-    def get_anime_channel_info(self, title):
-        data = self.cache.get("ANIME_CHANNEL_INFO") or {}
-        if data.get(title):
-            return data[title]
+    async def get_anime_channel_info(self, title):
+        data = await self.channel_info_db.find_one({"_id": title})
+        if (data or {}).get(title):
+            return data["data"]
         return {}
 
-    def get_anime_uploaded_list(self):
-        return self.cache.get("ANIMES_UPLOADED") or []
+    async def store_items(self, _hash, _list):
+        await self.file_store_db.update_one({"_id": _hash}, {"$set" : {"data": _list}}, upsert=True) # in case
 
-    def store_items(self, _hash, _list):
-        data = self.cache.get("FILESTORE") or {}
-        data.update({_hash: _list})
-        self.cache["FILESTORE"] = data
-        self.dB.create_data(f"FILESTORE/{_hash}", _list)
-
-    def get_store_items(self, _hash):
-        data = self.cache.get("FILESTORE") or {}
-        if data.get(_hash):
-            return data[_hash]
+    async def get_store_items(self, _hash):
+        data = await self.file_store_db.find_one({"_id": _hash})
+        if (data or {}).get("data"):
+            return data["data"]
         return []
 
-    def add_broadcast_user(self, user_id):
-        data = self.cache.get("BROADCAST") or []
-        if user_id not in data:
-            data.append(int(user_id))
-            self.cache["BROADCAST"] = data
-            self.dB.create_data("BROADCAST", data)
+    async def add_broadcast_user(self, user_id):
+        data = await self.broadcast_db.find_one({"_id": user_id})
+        if not data:
+            await self.broadcast_db.insert_one({"_id": user_id})
 
-    def get_broadcast_user(self):
-        return self.cache.get("BROADCAST") or []
+    async def get_broadcast_user(self):
+        data = self.broadcast_db.find()
+        return [i["_id"] for i in (await data.to_list(length=None))]

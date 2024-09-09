@@ -131,7 +131,7 @@ class Executors:
                         thumb="thumb.jpg",
                         force_document=True,
                     )
-                    self.db.store_items(_hash, [[i.id for i in ss], [sp.id]])
+                    await self.db.store_items(_hash, [[i.id for i in ss], [sp.id]])
                     btn.append(
                         [
                             Button.url(

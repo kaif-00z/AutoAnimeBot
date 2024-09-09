@@ -49,7 +49,7 @@ admin = AdminUtils(dB, bot)
 async def _start(event):
     xnx = await event.reply("`Please Wait...`")
     msg_id = event.pattern_match.group(1)
-    dB.add_broadcast_user(event.sender_id)
+    await dB.add_broadcast_user(event.sender_id)
     if Var.FORCESUB_CHANNEL and Var.FORCESUB_CHANNEL_LINK:
         is_user_joined = await bot.is_joined(Var.FORCESUB_CHANNEL, event.sender_id)
         if is_user_joined:
@@ -72,7 +72,7 @@ async def _start(event):
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
             await event.reply(msg)
         else:
-            items = dB.get_store_items(msg_id)
+            items = await dB.get_store_items(msg_id)
             if items:
                 for id in items:
                     msg = await bot.get_messages(Var.CLOUD_CHANNEL, ids=id)
@@ -96,6 +96,14 @@ async def _start(event):
             ],
         )
     await xnx.delete()
+
+@bot.on(
+    events.NewMessage(
+        incoming=True, pattern="^/about", func=lambda e: e.is_private
+    )
+)
+async def _(e):
+    await admin._about(e)
 
 
 @bot.on(events.callbackquery.CallbackQuery(data="slog"))
@@ -138,7 +146,7 @@ async def anime(data):
         torr = [data.get("480p"), data.get("720p"), data.get("1080p")]
         anime_info = AnimeInfo(torr[0].title)
         poster = await tools._poster(bot, anime_info)
-        if dB.is_separate_channel_upload():
+        if await dB.is_separate_channel_upload():
             chat_info = await tools.get_chat_info(bot, anime_info, dB)
             await poster.edit(
                 buttons=[
@@ -152,8 +160,8 @@ async def anime(data):
             )
             poster = await tools._poster(bot, anime_info, chat_info["chat_id"])
         btn = [[]]
-        original_upload = dB.is_original_upload()
-        button_upload = dB.is_button_upload()
+        original_upload = await dB.is_original_upload()
+        button_upload = await dB.is_button_upload()
         for i in torr:
             try:
                 filename = f"downloads/{i.title}"

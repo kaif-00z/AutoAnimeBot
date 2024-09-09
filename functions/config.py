@@ -20,6 +20,10 @@ from decouple import config
 
 
 class Var:
+    # Version
+
+    __version__ = "v0.0.8"
+
     # Telegram Credentials
 
     API_ID = config("API_ID", default=6, cast=int)
@@ -29,10 +33,7 @@ class Var:
 
     # Database Credentials
 
-    FIREBASE_URL = config("FIREBASE_URL", default=None)
-    FIREBASE_SERVICE_ACCOUNT_FILE = config(
-        "FIREBASE_SERVICE_ACCOUNT_FILE", default=None
-    )
+    MONGO_SRV = config("MONGO_SRV", default=None)
 
     # Channels Ids
 

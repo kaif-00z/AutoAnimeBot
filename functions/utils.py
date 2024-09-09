@@ -16,16 +16,41 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-from telethon import Button, events
+from telethon import Button, events, __version__ as _t_v
+from pyrogram import __version__ as _p_v
+from datetime import datetime as dt
 
 from core.bot import Bot, Var, asyncio
+from functions.tools import Tools
 from database import DataBase
 
+import platform
+
+ABOUT = """
+**⏱ Uptime** : `{}`
+**💡 Version** : `{}`
+**👥 Users** : `{}`
+**🗃️ Documents** : `{}`
+
+• **🐍 Python**: `{}`
+• **✈️ Telethon**: `{}`
+• **🏔️ Pyrogram**: `{}`
+• **💻 Server**: `{}`
+• **📖 Source Code** : {}
+
+~ **Developer**  __@Kaif_00z __
+"""
 
 class AdminUtils:
     def __init__(self, dB: DataBase, bot: Bot):
         self.db = dB
         self.bot = bot
+        self.tools = Tools()
+        self.python_version = platform.python_version()
+        self.system = f"{platform.system()}-{platform.release()}"
+        self.telethon_version = _t_v
+        self.pyrogram_version = _p_v
+        self.started_at = dt.now()
 
     def admin_panel(self):
         btn = [
@@ -56,40 +81,40 @@ class AdminUtils:
         schedule.restart()
 
     async def _encode_t(self, e):
-        if self.db.is_original_upload():
-            self.db.toggle_original_upload()
+        if await self.db.is_original_upload():
+            await self.db.toggle_original_upload()
             return await e.edit(
                 "`Successfully On The Compression`", buttons=self.back_btn()
             )
-        self.db.toggle_original_upload()
+        await self.db.toggle_original_upload()
         return await e.edit(
             "`Successfully Off The Compression`", buttons=self.back_btn()
         )
 
     async def _btn_t(self, e):
-        if self.db.is_separate_channel_upload():
+        if await self.db.is_separate_channel_upload():
             return await e.edit(
                 "`You Can't On/Off The Button Upload When Seprate Channel Is Enabled`",
                 buttons=self.back_btn(),
             )
-        if self.db.is_button_upload():
-            self.db.toggle_button_upload()
+        if await self.db.is_button_upload():
+            await self.db.toggle_button_upload()
             return await e.edit(
                 "`Successfully Off The Button Upload`", buttons=self.back_btn()
             )
-        self.db.toggle_button_upload()
+        await self.db.toggle_button_upload()
         return await e.edit("`Successfully On The Upload`", buttons=self.back_btn())
 
     async def _sep_c_t(self, e):
         if Var.SESSION:
-            if self.db.is_button_upload():
-                if self.db.is_separate_channel_upload():
-                    self.db.toggle_separate_channel_upload()
+            if await self.db.is_button_upload():
+                if await self.db.is_separate_channel_upload():
+                    await self.db.toggle_separate_channel_upload()
                     return await e.edit(
                         "`Successfully Off The Separate Channel Upload`",
                         buttons=self.back_btn(),
                     )
-                self.db.toggle_separate_channel_upload()
+                await self.db.toggle_separate_channel_upload()
                 return await e.edit(
                     "`Successfully On The Separate Channel Upload`",
                     buttons=self.back_btn(),
@@ -106,7 +131,7 @@ class AdminUtils:
             )
 
     async def broadcast_bt(self, e):
-        users = self.db.get_broadcast_user()
+        users = await self.db.get_broadcast_user()
         await e.edit("**Please Use This Feature Responsibly ⚠️**")
         await e.reply(
             f"**Send a single Message To Broadcast 😉**\n\n**There are** `{len(users)}` **Users Currently Using Me👉🏻**.\n\nSend /cancel to Cancel Process."
@@ -132,4 +157,24 @@ class AdminUtils:
                 print(ex)
         await sent.edit(
             f"**Broadcast Completed To** `{done}` **Users.**\n**Error in** `{er}` **Users.**"
+        )
+
+    async def _about(self, e):
+        total_docs = await self.db.file_store_db.count_documents({})
+        total_users = await self.db.broadcast_db.count_documents({})
+        text = ABOUT.format(
+            self.tools.ts(int((dt.now() - self.started_at).seconds) * 1000),
+            Var.__version__,
+            total_users,
+            total_docs,
+            self.python_version,
+            self.telethon_version,
+            self.pyrogram_version,
+            self.system,
+            "[OngoingAnimeBot](https://github.com/Kaif-00z/AutoAnimeBot)"
+        )
+        await e.reply(
+            text,
+            file="assest/about.jpg",
+            link_preview=False
         )

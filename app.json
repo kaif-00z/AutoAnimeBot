@@ -33,18 +33,13 @@
             "value": ""
         },
 
-        "FIREBASE_URL": {
-            "description": "Firebase endpoint URL, from Firebase Realtime Database",
-            "value": ""
-        },
-
-        "FIREBASE_SERVICE_ACCOUNT_FILE": {
-            "description": "Firebase Service Account File Link, from Firebase Realtime Database",
+        "MONGO_SRV": {
+            "description": "Mongo SRV from mongo db.",
             "value": ""
         },
 
         "MAIN_CHANNEL": {
-            "description": "Your Main Channel",
+            "description": "ID of Your Main Channel.",
             "value": ""
         },
 

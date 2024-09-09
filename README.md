@@ -10,6 +10,12 @@
 
 ## Changelog Of Latest Update
 
+### v0.0.8
+- Shifted To Mongo Database.
+- Chnaged Hashing Algo To SHA256.
+- Added About Command.
+
+### v0.0.7
 - Added Separate Anime Channel Upload
 - <details><summary>Click Here To See How Separate Anime Channel Upload Look.</summary><img src="https://graph.org/file/a0636332545730a4d3d43.jpg" alt="sepul1"/><img src="https://graph.org/file/3eb0b86609469f385f4b5.jpg" alt="sepul2"/></details>
 - Added Button Upload Support (File Store)
@@ -51,9 +57,7 @@
 
 - `BOT_TOKEN` - Get This From @Botfather In Telegram.
 
-- `FIREBASE_URL` - Get This From Firebase Realtime Database Console.
-
-- `FIREBASE_SERVICE_ACCOUNT_FILE` - Get This From Firebase Realtime Database Console.
+- `MONGO_SRV` - Get This From mongodb.com .
 
 - `MAIN_CHANNEL` - ID of Channel Where Anime Will Upload.
 

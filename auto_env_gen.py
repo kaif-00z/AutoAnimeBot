@@ -18,11 +18,11 @@ MAIN_CHANNEL={}
 LOG_CHANNEL={}
 CLOUD_CHANNEL={}
 BACKUP_CHANNEL={}
-FIREBASE_URL={}
-FIREBASE_SERVICE_ACCOUNT_FILE={}
+MONGO_SRV={}
 OWNER={}
+FORCESUB_CHANNEL={}
+FORCESUB_CHANNEL_LINK={}
 """
-
 
 async def generate_session_string():
     api_id = int(input("Enter your API_ID: "))
@@ -37,18 +37,24 @@ async def generate_session_string():
     sys.exit(1)
 
 
-def get_firebase():
-    uri = input("Enter your Firebase Realtime Database Url: ")
-    _pass = input("Enter your Firebase Realtime Database Service Account File Link: ")
-    if uri and _pass:
-        DATA["firebase_uri"] = uri
-        DATA["firebase_pass"] = _pass
+def get_mongo():
+    srv = input("Enter your Mongo SRV: ")
+    if srv.strip():
+        DATA["mongo_srv"] = srv
         return True
-    else:
-        DATA["firebase_uri"] = ""
-        DATA["firebase_pass"] = ""
-        return False
+    DATA["mongo_srv"] = ""
+    return False
 
+def get_forcesub():
+    fsub_id = input("Enter ID of Channel Where You Want ForceSub\nNOTE: Bot Is Admin In That Channel: ")
+    fsub_link = input("Enter Invite Link From Which Subs Will Join The FSUB Channel: ")
+    if fsub_id and fsub_link:
+        DATA["fsub_id"] = fsub_id
+        DATA["fsub_link"] = fsub_link
+        return True
+    DATA["fsub_link"] = ""
+    DATA["fsub_id"] = ""
+    return False
 
 async def create_channel(client, title):
     try:
@@ -77,9 +83,10 @@ def generate_env():
         DATA["Ongoing Anime Logs"],
         DATA["Ongoing Anime Samples And SS"],
         DATA["Ongoing Anime Backup"],
-        DATA.get("firebase_uri") or "",
-        DATA.get("firebase_pass") or "",
+        DATA["mongo_srv"],
         DATA["owner_id"],
+        DATA["fsub_id"],
+        DATA["fsub_link"]
     )
     with open(".env", "w") as f:
         f.write(txt.strip())
@@ -160,11 +167,18 @@ async def auto_maker():
                 print(format_exc())
                 sys.exit(1)
         print("Succesfully Created Channel...")
-        db = get_firebase()
+        print("Now If You Wana Skip Upcoming Inputs You Can Just Press Enter!!")
+        db = get_mongo()
         if not db:
             print(
-                "Generating .env Without Firebase URI and Service Account. Now You Have To Add it Manually!"
+                "Generating .env Without Mongo SRV. Now You Have To Add it Manually!"
             )
+        fsub = get_forcesub()
+        if not fsub:
+            print(
+                "Generating .env Without FSUB Configs. Now You May Have To Add it Manually!"
+            )
+            print("NOTE: Fsub config is optional!!!")
         generate_env()
 
 

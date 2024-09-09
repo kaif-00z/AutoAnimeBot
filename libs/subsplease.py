@@ -34,7 +34,7 @@ class SubsPlease:
         self.db = dB
 
     def digest(self, string: str):
-        return hashlib.md5(string.encode()).hexdigest()
+        return hashlib.sha256(string.encode()).hexdigest()
 
     def _exit(self):
         LOGS.info("Stopping The Bot...")
@@ -57,7 +57,7 @@ class SubsPlease:
             LOGS.error(format_exc())
             return None, None, None
 
-    def feed_optimizer(self):
+    async def feed_optimizer(self):
         d1080, d720, d480 = self.rss_feed_data()
         if not d1080 or not d720 or not d480:
             return None
@@ -77,7 +77,7 @@ class SubsPlease:
                     ):
                         continue
                     uid = self.digest(f1080.title + f720.title + f480.title)
-                    if not self.db.is_anime_uploaded(uid):
+                    if not await self.db.is_anime_uploaded(uid):
                         return {"uid": uid, "1080p": f1080, "720p": f720, "480p": f480}
             except BaseException:
                 LOGS.error(format_exc())
@@ -85,8 +85,8 @@ class SubsPlease:
 
     async def on_new_anime(self, function):
         for i in count():
-            data = self.feed_optimizer()
+            data = await self.feed_optimizer()
             if data:
                 await function(data)
-                self.db.add_anime(data.get("uid"))
+                await self.db.add_anime(data.get("uid"))
             await asyncio.sleep(5)
