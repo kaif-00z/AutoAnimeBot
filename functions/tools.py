@@ -37,7 +37,10 @@ from libs.logger import LOGS
 
 class Tools:
     def __init__(self):
-        self.ffmpeg_threads = int(os.cpu_count() or 0) + 2
+        if Var.DEV_MODE:
+            self.ffmpeg_threads = int(os.cpu_count() or 0) + 2
+        else:
+            self.ffmpeg_threads = 2
 
     async def async_searcher(
         self,

@@ -55,3 +55,7 @@ class Var:
     RESTART_EVERDAY = config("RESTART_EVERDAY", default=True, cast=bool)
     LOG_ON_MAIN = config("LOG_ON_MAIN", default=False, cast=bool)
     FORCESUB_CHANNEL_LINK = config("FORCESUB_CHANNEL_LINK", default="", cast=str)
+
+    # Dev Configs
+
+    DEV_MODE = config("DEV_MODE", default=False, cast=bool)
