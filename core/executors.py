@@ -112,7 +112,7 @@ class Executors:
                     btn.append(
                         [
                             Button.url(
-                                "📜 MediaInfo",
+                                "Iɴғᴏ",
                                 url=link_info,
                             )
                         ]
@@ -135,7 +135,7 @@ class Executors:
                     btn.append(
                         [
                             Button.url(
-                                "📺 Sample & ScreenShots",
+                                "Sᴀᴍᴘʟᴇ & SS",
                                 url=f"https://t.me/{((await self.bot.get_me()).username)}?start={_hash}",
                             )
                         ]
