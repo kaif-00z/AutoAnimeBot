@@ -26,28 +26,28 @@ class Var:
 
     # Telegram Credentials
 
-    API_ID = config("API_ID", default=6, cast=int)
-    API_HASH = config("API_HASH", default="eb06d4abfb49dc3eeb1aeb98ae0f581e")
-    BOT_TOKEN = config("BOT_TOKEN", default=None)
-    SESSION = config("SESSION", default=None)
+    API_ID = config("API_ID", cast=int)
+    API_HASH = config("API_HASH")
+    BOT_TOKEN = config("BOT_TOKEN")
+    SESSION = config("SESSION")
 
     # Database Credentials
 
-    MONGO_SRV = config("MONGO_SRV", default=None)
+    MONGO_SRV = config("MONGO_SRV")
 
     # Channels Ids
 
-    BACKUP_CHANNEL = config("BACKUP_CHANNEL", default=0, cast=int)
-    MAIN_CHANNEL = config("MAIN_CHANNEL", cast=int)
-    LOG_CHANNEL = config("LOG_CHANNEL", cast=int)
-    CLOUD_CHANNEL = config("CLOUD_CHANNEL", cast=int)
-    FORCESUB_CHANNEL = config("FORCESUB_CHANNEL", default=0, cast=int)
-    OWNER = config("OWNER", default=0, cast=int)
+    BACKUP_CHANNEL = config("BACKUP_CHANNEL")
+    MAIN_CHANNEL = config("MAIN_CHANNEL")
+    LOG_CHANNEL = config("LOG_CHANNEL")
+    CLOUD_CHANNEL = config("CLOUD_CHANNEL")
+    FORCESUB_CHANNEL = config("FORCESUB_CHANNEL")
+    OWNER = config("OWNER", cast=int)
 
     # Other Configs
 
     THUMB = config(
-        "THUMBNAIL", default="https://graph.org/file/ad1b25807b81cdf1dff65.jpg"
+        "THUMBNAIL", default="https://envs.sh/Ys6.jpg"
     )
     FFMPEG = config("FFMPEG", default="ffmpeg")
     CRF = config("CRF", default="27")
