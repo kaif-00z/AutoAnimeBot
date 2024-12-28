@@ -15,7 +15,7 @@
 
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
-
+import asyncio
 from traceback import format_exc
 
 from telethon import Button, events
@@ -39,6 +39,23 @@ subsplease = SubsPlease(dB)
 torrent = Torrent()
 schedule = ScheduleTasks(bot)
 admin = AdminUtils(dB, bot)
+
+
+routes = web.RouteTableDef()
+
+@routes.get("/", allow_head=True)
+async def root_route_handler(request):
+    return web.json_response({"name": "DARKXSIDE78"})
+
+async def web_server():
+    web_app = web.Application(client_max_size=30000000)
+    web_app.add_routes(routes)
+
+    runner = web.AppRunner(web_app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", 8080)  # Listen on all interfaces at port 8080
+    print("Web server running on http://0.0.0.0:8080/")
+    await site.start()
 
 
 @bot.on(
@@ -196,8 +213,12 @@ async def anime(data):
     except BaseException:
         LOGS.error(str(format_exc()))
 
+async def main():
+    web_server_task = asyncio.create_task(web_server())
+    await asyncio.gather(web_server_task)
 
 try:
+    asyncio.run(main())
     bot.loop.run_until_complete(subsplease.on_new_anime(anime))
     bot.run()
 except KeyboardInterrupt:
