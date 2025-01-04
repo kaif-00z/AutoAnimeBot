@@ -73,8 +73,15 @@ class RawAnimeInfo:
                         ):
                             if "2025" not in (
                                 res_data["data"]["attributes"]["endDate"] or ""
-                            ) :
-                                if all(year not in (res_data["data"]["attributes"]["startDate"] or "") for year in ["2024", "2025"]):
+                            ):
+                                if all(
+                                    year
+                                    not in (
+                                        res_data["data"]["attributes"]["startDate"]
+                                        or ""
+                                    )
+                                    for year in ["2024", "2025"]
+                                ):
                                     continue
                     return res_data
             except BaseException:
