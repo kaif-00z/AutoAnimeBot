@@ -1,5 +1,5 @@
 #    This file is part of the AutoAnime distribution.
-#    Copyright (c) 2024 Kaif_00z
+#    Copyright (c) 2025 Kaif_00z
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -205,7 +205,7 @@ class Tools:
         if not total_frames:
             return False, "Unable to Count The Frames!"
         _progress = f"progress-{time.time()}.txt"
-        cmd = f'''{Var.FFMPEG} -hide_banner -loglevel quiet -progress """{_progress}""" -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -map 0:v -map 0:a -map 0:s -c:v libx264 -x265-params 'bframes=8:psy-rd=1:ref=3:aq-mode=3:aq-strength=0.8:deblock=1,1' -pix_fmt yuv420p -crf {Var.CRF} -c:a libopus -b:a 32k -ac 2 -ab 32k -vbr 2 -level 3.1 -threads {self.ffmpeg_threads} -preset veryfast """{out}""" -y'''
+        cmd = f'''{Var.FFMPEG} -hide_banner -loglevel quiet -progress """{_progress}""" -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -preset ultrafast -c:v libx265 -crf {Var.CRF} -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? -threads {self.ffmpeg_threads} """{out}""" -y'''
         process = await asyncio.create_subprocess_shell(
             cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
