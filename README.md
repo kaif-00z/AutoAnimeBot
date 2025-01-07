@@ -1,18 +1,26 @@
 [![Stars](https://img.shields.io/github/stars/kaif-00z/AutoAnimeBot?style=flat-square&color=yellow)](https://github.com/kaif-00z/AutoAnimeBot/stargazers)
 [![Forks](https://img.shields.io/github/forks/kaif-00z/AutoAnimeBot?style=flat-square&color=orange)](https://github.com/kaif-00z/AutoAnimeBotfork)
 [![Python](https://img.shields.io/badge/Python-v3.10.4-blue)](https://www.python.org/)
-[![CodeFactor](https://www.codefactor.io/repository/github/kaif-00z/autoanimebot/badge/main)](https://www.codefactor.io/repository/github/kaif-00z/autoanimebot/overview/main)
+[![CodeFactor](https://www.codefactor.io/repository/github/kaif-00z/autoanimebot/badge)](https://www.codefactor.io/repository/github/kaif-00z/autoanimebot)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/kaif-00z/AutoAnimeBot/graphs/commit-activity)
 [![Contributors](https://img.shields.io/github/contributors/kaif-00z/AutoAnimeBot?style=flat-square&color=green)](https://github.com/kaif-00z/AutoAnimeBot/graphs/contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](https://github.com/kaif-00z/AutoAnimeBot/blob/main/LICENSE)   
 [![Sparkline](https://stars.medv.io/kaif-00z/AutoAnimeBot.svg)](https://stars.medv.io/kaif-00z/AutoAnimeBot)
 
+## Developer Note
+
+- __This repository is not intended or supported for deployment on KOYEB.__
+- If Hosted On Heroku Then Make Sure You Are Using Premium Dynos Or Any Above then basic dynos.
+- If You Don't Have High End VPS like 8vcpu or 32GiB RAM So Don't Deploy This Bot.
+- You Can Customize FFMPEG Code If You Know What You Are Doing.
+- __Ensure that you have adhered to this developer note before reporting any errors.__
+
 ## Changelog Of Latest Update
 
 ### v0.0.8
 - Shifted To Mongo Database.
-- Chnaged Hashing Algo To SHA256.
+- Changed Hashing Algo To SHA256.
 - Added About Command.
 
 ### v0.0.7
@@ -91,13 +99,13 @@
 
 ## Deployment In VPS
 
-`git clone https://github.com/kaif-00z/AutoAnimeBot.git`
+- `git clone https://github.com/kaif-00z/AutoAnimeBot.git`
 
-`nano .env` configure env as per [this](https://github.com/kaif-00z/AutoAnimeBot/blob/main/.sample.env) or  using [this](https://github.com/kaif-00z/AutoAnimeBot/blob/main/auto_env_gen.py).
+- `nano .env` configure env as per [this](https://github.com/kaif-00z/AutoAnimeBot/blob/main/.sample.env) or  using [this](https://github.com/kaif-00z/AutoAnimeBot/blob/main/auto_env_gen.py).
 
-`bash pkg.sh`
+- `sudo docker build . -t ongoing` (make sure to install docker first using `sudo apt install docker.io`)
 
-`bash run.sh`
+- `sudo docker run ongoing`
 
 ## Commands
 
