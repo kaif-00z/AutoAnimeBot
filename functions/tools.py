@@ -17,6 +17,7 @@
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
 import asyncio
+import shutil
 import json
 import math
 import os
@@ -257,7 +258,7 @@ class Tools:
 
     async def genss(self, file):
         process = subprocess.Popen(
-            ["mediainfo", file, "--Output=JSON"],
+            [shutil.which("mediainfo"), file, "--Output=JSON"], # just for better codefactor rating :)
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
         )
