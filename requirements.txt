@@ -1,6 +1,5 @@
 python-decouple
-motor[srv]==3.6.0
-pymongo==4.9.2
+motor[srv]==3.2.0
 dnspython
 lxml_html_clean
 aiohttp
