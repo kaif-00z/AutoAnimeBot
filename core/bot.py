@@ -22,7 +22,7 @@ import sys
 from logging import Logger
 from traceback import format_exc
 
-from pyrogram import Client
+from pyrogram import Client, utils
 from telethon import TelegramClient
 from telethon.errors import (
     AccessTokenExpiredError,
@@ -61,6 +61,7 @@ class Bot(TelegramClient):
         kwargs["api_id"] = api_id or Var.API_ID
         kwargs["api_hash"] = api_hash or Var.API_HASH
         kwargs["base_logger"] = TelethonLogger
+        utils.MIN_CHANNEL_ID = -1009147483647
         super().__init__(None, **kwargs)
         self.pyro_client = Client(
             name="pekka",
