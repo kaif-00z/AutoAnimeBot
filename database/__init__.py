@@ -125,3 +125,16 @@ class DataBase:
     async def get_broadcast_user(self):
         data = self.broadcast_db.find()
         return [i["_id"] for i in (await data.to_list(length=None))]
+
+    async def toggle_ss_upload(self):
+        data = await self.opts_db.find_one({"_id": "SS_UPLOAD"})
+        _new = not (data or {}).get("switch", False)
+        await self.opts_db.update_one(
+            {"_id": "SS_UPLOAD"},
+            {"$set": {"switch": _new}},
+            upsert=True,
+        )
+
+    async def is_ss_upload(self):
+        data = await self.opts_db.find_one({"_id": "SS_UPLOAD"})
+        return (data or {}).get("switch", False)
