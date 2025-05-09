@@ -18,10 +18,13 @@
 
 ## Changelog Of Latest Update
 
+
+
 ### v0.0.8
 - Shifted To Mongo Database.
 - Changed Hashing Algo To SHA256.
 - Added About Command.
+- Added SS & MediaInfo On/Off
 
 ### v0.0.7
 - Added Separate Anime Channel Upload

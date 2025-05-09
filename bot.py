@@ -119,6 +119,10 @@ async def _(e):
 async def _(e):
     await admin._encode_t(e)
 
+@bot.on(events.callbackquery.CallbackQuery(data="sstg"))
+async def _(e):
+    await admin._ss_t(e)
+
 
 @bot.on(events.callbackquery.CallbackQuery(data="butg"))
 async def _(e):
