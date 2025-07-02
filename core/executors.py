@@ -16,7 +16,6 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-import asyncio
 import os
 import secrets
 import shutil

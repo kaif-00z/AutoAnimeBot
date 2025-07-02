@@ -153,7 +153,10 @@ async def _(e):
 
 @bot.on(events.callbackquery.CallbackQuery(data="bek"))
 async def _(e):
-    await e.edit("** <                ADMIN PANEL                 > **",buttons=admin.admin_panel())
+    await e.edit(
+        "** <                ADMIN PANEL                 > **",
+        buttons=admin.admin_panel(),
+    )
 
 
 async def anime(data):

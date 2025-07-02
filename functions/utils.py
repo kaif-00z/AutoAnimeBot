@@ -112,10 +112,16 @@ class AdminUtils:
     async def _ss_t(self, e):
         if await self.db.is_ss_upload():
             await self.db.toggle_ss_upload()
-            await e.edit("`Successfully DISABLED Screenshot & Mediainfo Upload`", buttons=self.back_btn())
+            await e.edit(
+                "`Successfully DISABLED Screenshot & Mediainfo Upload`",
+                buttons=self.back_btn(),
+            )
         else:
             await self.db.toggle_ss_upload()
-            await e.edit("`Successfully ENABLED Screenshot & Mediainfo Upload`", buttons=self.back_btn())
+            await e.edit(
+                "`Successfully ENABLED Screenshot & Mediainfo Upload`",
+                buttons=self.back_btn(),
+            )
 
     async def _sep_c_t(self, e):
         if Var.SESSION:
