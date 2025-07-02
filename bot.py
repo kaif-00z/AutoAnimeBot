@@ -17,7 +17,9 @@
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
 from traceback import format_exc
+
 from telethon import Button, events
+
 from core.bot import Bot
 from core.executors import Executors
 from database import DataBase
@@ -129,6 +131,7 @@ async def _(e):
 @bot.on(events.callbackquery.CallbackQuery(data="entg"))
 async def _(e):
     await admin._encode_t(e)
+
 
 @bot.on(events.callbackquery.CallbackQuery(data="sstg"))
 async def _(e):

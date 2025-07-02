@@ -191,9 +191,10 @@ class Bot(TelegramClient):
         except BaseException:
             LOGS.error(format_exc())
 
-    async def delete_after(self, messages, seconds: int=600): # 10 min
+    async def delete_after(self, messages, seconds: int = 600):  # 10 min
         await asyncio.sleep(seconds)
-        await asyncio.gather(*[msg.delete() for msg in messages]) # maybe floodwait?
+        # maybe floodwait?
+        await asyncio.gather(*[msg.delete() for msg in messages])
         # for msg in messages:
         #     try:
         #         await msg.delete()

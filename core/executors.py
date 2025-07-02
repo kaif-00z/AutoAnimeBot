@@ -135,12 +135,14 @@ class Executors:
                     force_document=True,
                 )
                 await self.db.store_items(_hash, [[i.id for i in ss_msgs], [sp_msg.id]])
-                btns.append([
-                    Button.url(
-                        "📺 Sample & ScreenShots",
-                        url=f"https://t.me/{((await self.bot.get_me()).username)}?start={_hash}",
-                    )
-                ])
+                btns.append(
+                    [
+                        Button.url(
+                            "📺 Sample & ScreenShots",
+                            url=f"https://t.me/{((await self.bot.get_me()).username)}?start={_hash}",
+                        )
+                    ]
+                )
 
             await msg.edit(buttons=btns)
             await self.reporter.all_done()
@@ -150,9 +152,9 @@ class Executors:
 
         finally:
             try:
-                if 'ss_path' in locals() and os.path.isdir(ss_path):
+                if "ss_path" in locals() and os.path.isdir(ss_path):
                     shutil.rmtree(ss_path)
-                if 'sp_path' in locals() and os.path.exists(sp_path):
+                if "sp_path" in locals() and os.path.exists(sp_path):
                     os.remove(sp_path)
                 if os.path.exists(self.input_file):
                     os.remove(self.input_file)

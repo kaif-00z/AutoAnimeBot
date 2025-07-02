@@ -117,7 +117,6 @@ class AdminUtils:
             await self.db.toggle_ss_upload()
             await e.edit("`SS ENABLED`", buttons=self.back_btn())
 
-
     async def _sep_c_t(self, e):
         if Var.SESSION:
             if await self.db.is_button_upload():
