@@ -119,7 +119,7 @@ class DataBase:
 
     async def toggle_ss_upload(self):
         data = await self.opts_db.find_one({"_id": "SS_UPLOAD"})
-        _new = not (data or {}).get("switch", False)
+        _new = not (data or {}).get("switch", True)
         await self.opts_db.update_one(
             {"_id": "SS_UPLOAD"},
             {"$set": {"switch": _new}},

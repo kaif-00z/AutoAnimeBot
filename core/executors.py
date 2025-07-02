@@ -97,16 +97,10 @@ class Executors:
             await self.reporter.report_error(str(format_exc()), log=True)
             return False, str(format_exc())
 
-    def run_further_work(self):
-        asyncio.run(self.further_work())
-
     async def further_work(self):
-        if not self.msg_id:
-            return
 
         if not await self.db.is_ss_upload():
-            await self.reporter.all_done()
-            return
+            return await self.reporter.all_done()
 
         try:
             await self.reporter.started_gen_ss()

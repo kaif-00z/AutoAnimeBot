@@ -1,3 +1,6 @@
+# Adapted & Modded From Ultroid (github.com/TeamUltroid/Ultroid)
+# Credits Ultroid Devs & kaif-00z
+
 import asyncio
 import random
 import sys
@@ -20,8 +23,6 @@ CLOUD_CHANNEL={}
 BACKUP_CHANNEL={}
 MONGO_SRV={}
 OWNER={}
-FORCESUB_CHANNEL={}
-FORCESUB_CHANNEL_LINK={}
 """
 
 
@@ -90,9 +91,9 @@ def generate_env():
         DATA["Ongoing Anime Backup"],
         DATA["mongo_srv"],
         DATA["owner_id"],
-        DATA["fsub_id"],
-        DATA["fsub_link"],
     )
+    if DATA.get("fsub_id") and DATA.get("fsub_id"):
+        txt += f"\nFORCESUB_CHANNEL={DATA['fsub_id']}\nFORCESUB_CHANNEL_LINK={DATA['fsub_link']}"
     with open(".env", "w") as f:
         f.write(txt.strip())
     print("Succesfully Generated .env File Don't Forget To Save It! For Future Uses.")
@@ -149,7 +150,7 @@ async def auto_maker():
         print("Creating Channels...")
         for ch_name in [
             "Ongoing Anime Logs",
-            "Ongoing Anime 2024",
+            "Ongoing Anime 2025",
             "Ongoing Anime Samples And SS",
             "Ongoing Anime Backup",
         ]:
@@ -177,11 +178,11 @@ async def auto_maker():
         if not db:
             print("Generating .env Without Mongo SRV. Now You Have To Add it Manually!")
         fsub = get_forcesub()
+        print("NOTE: Fsub config is optional!!!")
         if not fsub:
             print(
                 "Generating .env Without FSUB Configs. Now You May Have To Add it Manually!"
             )
-            print("NOTE: Fsub config is optional!!!")
         generate_env()
 
 

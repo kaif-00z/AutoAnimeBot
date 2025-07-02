@@ -72,14 +72,14 @@ async def _start(event):
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
             sent_msg = await event.reply(msg.text, file=msg.media)
             notice = await event.reply(
-                "⚠️ **Important Notice:**\n\nThis file will be automatically deleted after 10 minutes.\nPlease save or forward it immediately."
+                "⚠️ **Important Notice:**\n\n```This file will be automatically deleted after 10 minutes.```\n__Please save or forward it immediately.__"
             )
             asyncio.create_task(bot.delete_after([notice, sent_msg]))
         else:
             items = await dB.get_store_items(msg_id)
             if items:
                 notice = await event.reply(
-                    "⚠️ **Important Notice:**\n\nThese files will be automatically deleted after 10 minutes.\nPlease save or forward them immediately."
+                    "⚠️ **Important Notice:**\n\n```These files will be automatically deleted after 10 minutes.```\n__Please save or forward them immediately.__"
                 )
                 sent_messages = [notice]
                 for id in items:
@@ -153,7 +153,7 @@ async def _(e):
 
 @bot.on(events.callbackquery.CallbackQuery(data="bek"))
 async def _(e):
-    await e.edit(buttons=admin.admin_panel())
+    await e.edit("** <                ADMIN PANEL                 > **",buttons=admin.admin_panel())
 
 
 async def anime(data):
@@ -202,7 +202,7 @@ async def anime(data):
                         else:
                             btn[0].append(_btn)
                         await poster.edit(buttons=btn)
-                    asyncio.ensure_future(exe.further_work())
+                    asyncio.create_task(exe.further_work())
                     continue
                 await reporter.report_error(_btn, log=True)
                 await reporter.msg.delete()
