@@ -17,9 +17,7 @@
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
 from traceback import format_exc
-
 from telethon import Button, events
-
 from core.bot import Bot
 from core.executors import Executors
 from database import DataBase
@@ -70,13 +68,26 @@ async def _start(event):
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
-            await event.reply(msg)
+            await xnx.delete()
+            sent_msg = await event.reply(msg.text, file=msg.media)
+            notice = await event.reply(
+                "⚠️ **Important Notice:**\n\nThis file will be automatically deleted after 10 minutes.\nPlease save or forward it immediately."
+            )
+            asyncio.create_task(bot.delete_after([notice, sent_msg]))
         else:
             items = await dB.get_store_items(msg_id)
             if items:
+                await xnx.delete()
+                notice = await event.reply(
+                    "⚠️ **Important Notice:**\n\nThese files will be automatically deleted after 10 minutes.\nPlease save or forward them immediately."
+                )
+                sent_messages = [notice]
                 for id in items:
                     msg = await bot.get_messages(Var.CLOUD_CHANNEL, ids=id)
-                    await event.reply(file=[i for i in msg])
+                    if msg:
+                        sent = await event.reply(msg.text, file=msg.media)
+                        sent_messages.append(sent)
+                asyncio.create_task(bot.delete_after(sent_messages))
     else:
         if event.sender_id == Var.OWNER:
             return await xnx.edit(
