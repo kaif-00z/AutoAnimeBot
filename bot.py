@@ -16,20 +16,27 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
+import asyncio
 from traceback import format_exc
-
 from telethon import Button, events
-
 from core.bot import Bot
 from core.executors import Executors
 from database import DataBase
 from functions.info import AnimeInfo
 from functions.schedule import ScheduleTasks, Var
-from functions.tools import Tools, asyncio
+from functions.tools import Tools
 from functions.utils import AdminUtils
 from libs.ariawarp import Torrent
 from libs.logger import LOGS, Reporter
 from libs.subsplease import SubsPlease
+
+async def delete_after(seconds, *messages):
+    await asyncio.sleep(seconds)
+    for msg in messages:
+        try:
+            await msg.delete()
+        except Exception:
+            pass
 
 tools = Tools()
 tools.init_dir()
@@ -58,10 +65,10 @@ async def _start(event):
             return await xnx.edit(
                 f"**Please Join The Following Channel To Use This Bot 🫡**",
                 buttons=[
-                    [Button.url("🚀 JOIN CHANNEL", url=Var.FORCESUB_CHANNEL_LINK)],
+                    [Button.url("🚀 𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹", url=Var.FORCESUB_CHANNEL_LINK)],
                     [
                         Button.url(
-                            "♻️ REFRESH",
+                            "♻️ 𝗥𝗲𝗳𝗿𝗲𝘀𝗵",
                             url=f"https://t.me/{((await bot.get_me()).username)}?start={msg_id}",
                         )
                     ],
@@ -70,13 +77,26 @@ async def _start(event):
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
-            await event.reply(msg)
+            await xnx.delete()
+            sent_msg = await event.reply(msg.text, file=msg.media)
+            notice = await event.reply(
+                "⚠️ **Important Notice:**\n\nThis file will be automatically deleted after 10 minutes.\nPlease save or forward it immediately."
+            )
+            asyncio.create_task(delete_after(600, notice, sent_msg))
         else:
             items = await dB.get_store_items(msg_id)
             if items:
+                await xnx.delete()
+                notice = await event.reply(
+                    "⚠️ **Important Notice:**\n\nThese files will be automatically deleted after 10 minutes.\nPlease save or forward them immediately."
+                )
+                sent_messages = [notice]
                 for id in items:
                     msg = await bot.get_messages(Var.CLOUD_CHANNEL, ids=id)
-                    await event.reply(file=[i for i in msg])
+                    if msg:
+                        sent = await event.reply(msg.text, file=msg.media)
+                        sent_messages.append(sent)
+                asyncio.create_task(delete_after(600, *sent_messages))
     else:
         if event.sender_id == Var.OWNER:
             return await xnx.edit(
