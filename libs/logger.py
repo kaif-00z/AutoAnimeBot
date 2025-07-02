@@ -40,11 +40,11 @@ TelethonLogger.setLevel(logging.INFO)
 
 LOGS.info(
     f"""
-                        Auto Anime Bot
+                            Auto Anime Bot
                 ©️ t.me/kAiF_00z (github.com/kaif-00z)
                         {Var.__version__} (original)
                              (2023-25)
-                       [All Rigth Reserved]
+                        [All Rigths Reserved]
 
     """
 )

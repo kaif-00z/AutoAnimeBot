@@ -1,6 +1,6 @@
 [![Stars](https://img.shields.io/github/stars/kaif-00z/AutoAnimeBot?style=flat-square&color=yellow)](https://github.com/kaif-00z/AutoAnimeBot/stargazers)
 [![Forks](https://img.shields.io/github/forks/kaif-00z/AutoAnimeBot?style=flat-square&color=orange)](https://github.com/kaif-00z/AutoAnimeBotfork)
-[![Python](https://img.shields.io/badge/Python-v3.10.4-blue)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-v3.12.3-blue)](https://www.python.org/)
 [![CodeFactor](https://www.codefactor.io/repository/github/kaif-00z/autoanimebot/badge)](https://www.codefactor.io/repository/github/kaif-00z/autoanimebot)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/kaif-00z/AutoAnimeBot/graphs/commit-activity)
 [![Contributors](https://img.shields.io/github/contributors/kaif-00z/AutoAnimeBot?style=flat-square&color=green)](https://github.com/kaif-00z/AutoAnimeBot/graphs/contributors)
@@ -12,18 +12,17 @@
 
 - __This repository is not intended or supported for deployment on KOYEB.__
 - If Hosted On Heroku Then Make Sure You Are Using Premium Dynos Or Any Above then basic dynos.
-- If You Don't Have High End VPS like 8vcpu or 32GiB RAM So Don't Deploy This Bot.
+- If You Don't Have High End VPS like **8vcpu or 32GiB RAM** So Don't Deploy This Bot.
 - You Can Customize FFMPEG Code If You Know What You Are Doing.
 - __Ensure that you have adhered to this developer note before reporting any errors.__
 
 ## Changelog Of Latest Update
 
-### v0.0.8
+### v0.1
 - Shifted To Mongo Database.
 - Changed Hashing Algo To SHA256.
 - Added About Command.
-
-### v0.0.7
+- Added SS & MediaInfo On/Off
 - Added Separate Anime Channel Upload
 - <details><summary>Click Here To See How Separate Anime Channel Upload Look.</summary><img src="https://graph.org/file/a0636332545730a4d3d43.jpg" alt="sepul1"/><img src="https://graph.org/file/3eb0b86609469f385f4b5.jpg" alt="sepul2"/></details>
 - Added Button Upload Support (File Store)
@@ -109,13 +108,13 @@
 
 ## Commands
 
-[![Comand](https://graph.org/file/ca8de14ba0b1d3b71af1f.jpg)](https://github.com/kaif-00z/AutoAnimeBot/)
+[![Comand](https://files.catbox.moe/utcf3f.jpg)](https://github.com/kaif-00z/AutoAnimeBot/)
 
 **Uploading of Ongoing Animes Is Automatic**
 
-## About
+<!-- ## About
 
-- This Bot Is Currently Running In [This Channel](https://t.me/+q_OBZiXjkBFkYzk0) .
+- This Bot Is Currently Running In [This Channel](https://t.me/+q_OBZiXjkBFkYzk0) . -->
 
 ## Donate
 

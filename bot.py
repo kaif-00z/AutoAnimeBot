@@ -70,13 +70,24 @@ async def _start(event):
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
-            await event.reply(msg)
+            sent_msg = await event.reply(msg.text, file=msg.media)
+            notice = await event.reply(
+                "⚠️ **Important Notice:**\n\n```This file will be automatically deleted after 10 minutes.```\n__Please save or forward it immediately.__"
+            )
+            asyncio.create_task(bot.delete_after([notice, sent_msg]))
         else:
             items = await dB.get_store_items(msg_id)
             if items:
+                notice = await event.reply(
+                    "⚠️ **Important Notice:**\n\n```These files will be automatically deleted after 10 minutes.```\n__Please save or forward them immediately.__"
+                )
+                sent_messages = [notice]
                 for id in items:
                     msg = await bot.get_messages(Var.CLOUD_CHANNEL, ids=id)
-                    await event.reply(file=[i for i in msg])
+                    if msg:
+                        sent = await event.reply(msg.text, file=msg.media)
+                        sent_messages.append(sent)
+                asyncio.create_task(bot.delete_after(sent_messages))
     else:
         if event.sender_id == Var.OWNER:
             return await xnx.edit(
@@ -120,6 +131,11 @@ async def _(e):
     await admin._encode_t(e)
 
 
+@bot.on(events.callbackquery.CallbackQuery(data="sstg"))
+async def _(e):
+    await admin._ss_t(e)
+
+
 @bot.on(events.callbackquery.CallbackQuery(data="butg"))
 async def _(e):
     await admin._btn_t(e)
@@ -137,7 +153,10 @@ async def _(e):
 
 @bot.on(events.callbackquery.CallbackQuery(data="bek"))
 async def _(e):
-    await e.edit(buttons=admin.admin_panel())
+    await e.edit(
+        "** <                ADMIN PANEL                 > **",
+        buttons=admin.admin_panel(),
+    )
 
 
 async def anime(data):
@@ -186,7 +205,7 @@ async def anime(data):
                         else:
                             btn[0].append(_btn)
                         await poster.edit(buttons=btn)
-                    asyncio.ensure_future(exe.further_work())
+                    asyncio.create_task(exe.further_work())
                     continue
                 await reporter.report_error(_btn, log=True)
                 await reporter.msg.delete()

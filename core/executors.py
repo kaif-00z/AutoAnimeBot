@@ -16,7 +16,6 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
-import asyncio
 import os
 import secrets
 import shutil
@@ -58,6 +57,7 @@ class Executors:
             rename = await self.anime_info.rename(self.is_original)
             self.output_file = f"encode/{rename}"
             thumb = await self.tools.cover_dl((await self.anime_info.get_poster()))
+
             if self.is_original:
                 await self.reporter.started_renaming()
                 succ, out = await self.tools.rename_file(
@@ -73,6 +73,7 @@ class Executors:
                 if not succ:
                     return False, _new_msg
                 self.reporter.msg = _new_msg
+
             await self.reporter.started_uploading()
             if self.is_button:
                 msg = await self.bot.upload_anime(
@@ -84,70 +85,73 @@ class Executors:
                 )
                 self.msg_id = msg.id
                 return True, btn
+
             msg = await self.bot.upload_anime(
                 self.output_file, rename, thumb or "thumb.jpg"
             )
             self.msg_id = msg.id
             return True, []
+
         except BaseException:
             await self.reporter.report_error(str(format_exc()), log=True)
             return False, str(format_exc())
 
-    def run_further_work(self):
-        asyncio.run(self.further_work())
-
     async def further_work(self):
+
+        if not await self.db.is_ss_upload():
+            return await self.reporter.all_done()
+
         try:
-            if self.msg_id:
-                await self.reporter.started_gen_ss()
-                msg = await self.bot.get_messages(
-                    Var.BACKUP_CHANNEL if self.is_button else Var.MAIN_CHANNEL,
-                    ids=self.msg_id,
+            await self.reporter.started_gen_ss()
+            msg = await self.bot.get_messages(
+                Var.BACKUP_CHANNEL if self.is_button else Var.MAIN_CHANNEL,
+                ids=self.msg_id,
+            )
+            btns = [[]]
+
+            link_info = await self.tools.mediainfo(self.output_file, self.bot)
+            if link_info:
+                btns.append([Button.url("📜 MediaInfo", url=link_info)])
+
+            _hash = secrets.token_hex(nbytes=7)
+            ss_path, sp_path = await self.tools.gen_ss_sam(_hash, self.output_file)
+            if ss_path and sp_path:
+                ss_files = glob(f"{ss_path}/*") or ["assest/poster_not_found.jpg"]
+                ss_msgs = await self.bot.send_message(
+                    Var.CLOUD_CHANNEL,
+                    file=ss_files,
                 )
-                btn = [
-                    [],
-                ]
-                link_info = await self.tools.mediainfo(self.output_file, self.bot)
-                if link_info:
-                    btn.append(
-                        [
-                            Button.url(
-                                "📜 MediaInfo",
-                                url=link_info,
-                            )
-                        ]
-                    )
-                    await msg.edit(buttons=btn)
-                _hash = secrets.token_hex(nbytes=7)
-                ss_path, sp_path = await self.tools.gen_ss_sam(_hash, self.output_file)
-                if ss_path and sp_path:
-                    ss = await self.bot.send_message(
-                        Var.CLOUD_CHANNEL,
-                        file=glob(f"{ss_path}/*") or ["assest/poster_not_found.jpg"],
-                    )
-                    sp = await self.bot.send_message(
-                        Var.CLOUD_CHANNEL,
-                        file=sp_path,
-                        thumb="thumb.jpg",
-                        force_document=True,
-                    )
-                    await self.db.store_items(_hash, [[i.id for i in ss], [sp.id]])
-                    btn.append(
-                        [
-                            Button.url(
-                                "📺 Sample & ScreenShots",
-                                url=f"https://t.me/{((await self.bot.get_me()).username)}?start={_hash}",
-                            )
-                        ]
-                    )
-                    await msg.edit(buttons=btn)
-                    await self.reporter.all_done()
-                    try:
-                        shutil.rmtree(_hash)
-                        os.remove(sp_path)
-                        os.remove(self.input_file)
-                        os.remove(self.output_file)
-                    except BaseException:
-                        LOGS.error(str(format_exc()))
+                sp_msg = await self.bot.send_message(
+                    Var.CLOUD_CHANNEL,
+                    file=sp_path,
+                    thumb="thumb.jpg",
+                    force_document=True,
+                )
+                await self.db.store_items(_hash, [[i.id for i in ss_msgs], [sp_msg.id]])
+                btns.append(
+                    [
+                        Button.url(
+                            "📺 Sample & ScreenShots",
+                            url=f"https://t.me/{((await self.bot.get_me()).username)}?start={_hash}",
+                        )
+                    ]
+                )
+
+            await msg.edit(buttons=btns)
+            await self.reporter.all_done()
+
         except BaseException:
             await self.reporter.report_error(str(format_exc()), log=True)
+
+        finally:
+            try:
+                if "ss_path" in locals() and os.path.isdir(ss_path):
+                    shutil.rmtree(ss_path)
+                if "sp_path" in locals() and os.path.exists(sp_path):
+                    os.remove(sp_path)
+                if os.path.exists(self.input_file):
+                    os.remove(self.input_file)
+                if os.path.exists(self.output_file):
+                    os.remove(self.output_file)
+            except Exception:
+                LOGS.error(str(format_exc()))

@@ -63,6 +63,7 @@ class AdminUtils:
             ],
             [
                 Button.inline("🎞️ Encode [Toogle]", data="entg"),
+                Button.inline("📸 SS [Toggle]", data="sstg"),
             ],
             [Button.inline("🔘 Button Upload [Toogle]", data="butg")],
             [Button.inline("🗃️ Separate Channel Upload [Toogle]", data="scul")],
@@ -107,6 +108,20 @@ class AdminUtils:
             )
         await self.db.toggle_button_upload()
         return await e.edit("`Successfully On The Upload`", buttons=self.back_btn())
+
+    async def _ss_t(self, e):
+        if await self.db.is_ss_upload():
+            await self.db.toggle_ss_upload()
+            await e.edit(
+                "`Successfully DISABLED Screenshot & Mediainfo Upload`",
+                buttons=self.back_btn(),
+            )
+        else:
+            await self.db.toggle_ss_upload()
+            await e.edit(
+                "`Successfully ENABLED Screenshot & Mediainfo Upload`",
+                buttons=self.back_btn(),
+            )
 
     async def _sep_c_t(self, e):
         if Var.SESSION:

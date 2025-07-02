@@ -48,45 +48,36 @@ class DataBase:
 
     async def toggle_separate_channel_upload(self):
         data = await self.opts_db.find_one({"_id": "SEPARATE_CHANNEL_UPLOAD"})
-        if (data or {}).get("switch"):
-            _data = False
-        else:
-            _data = True
+        _data = not (data or {}).get("switch", False)
         await self.opts_db.update_one(
             {"_id": "SEPARATE_CHANNEL_UPLOAD"}, {"$set": {"switch": _data}}, upsert=True
         )
 
     async def is_separate_channel_upload(self):
         data = await self.opts_db.find_one({"_id": "SEPARATE_CHANNEL_UPLOAD"})
-        return (data or {}).get("switch") or False
+        return (data or {}).get("switch", False)
 
     async def toggle_original_upload(self):
         data = await self.opts_db.find_one({"_id": "OG_UPLOAD"})
-        if (data or {}).get("switch"):
-            _data = False
-        else:
-            _data = True
+        _data = not (data or {}).get("switch", False)
         await self.opts_db.update_one(
             {"_id": "OG_UPLOAD"}, {"$set": {"switch": _data}}, upsert=True
         )
 
     async def is_original_upload(self):
         data = await self.opts_db.find_one({"_id": "OG_UPLOAD"})
-        return (data or {}).get("switch") or False
+        return (data or {}).get("switch", False)
 
     async def toggle_button_upload(self):
         data = await self.opts_db.find_one({"_id": "BUTTON_UPLOAD"})
-        if data and (data or {}).get("switch"):
-            _data = False
-        else:
-            _data = True
+        _data = not (data or {}).get("switch", False)
         await self.opts_db.update_one(
             {"_id": "BUTTON_UPLOAD"}, {"$set": {"switch": _data}}, upsert=True
         )
 
     async def is_button_upload(self):
         data = await self.opts_db.find_one({"_id": "BUTTON_UPLOAD"})
-        return (data or {}).get("switch") or False
+        return (data or {}).get("switch", False)
 
     async def is_anime_uploaded(self, uid):
         data = await self.file_info_db.find_one({"_id": uid})
@@ -125,3 +116,16 @@ class DataBase:
     async def get_broadcast_user(self):
         data = self.broadcast_db.find()
         return [i["_id"] for i in (await data.to_list(length=None))]
+
+    async def toggle_ss_upload(self):
+        data = await self.opts_db.find_one({"_id": "SS_UPLOAD"})
+        _new = not (data or {}).get("switch", True)
+        await self.opts_db.update_one(
+            {"_id": "SS_UPLOAD"},
+            {"$set": {"switch": _new}},
+            upsert=True,
+        )
+
+    async def is_ss_upload(self):
+        data = await self.opts_db.find_one({"_id": "SS_UPLOAD"})
+        return (data or {}).get("switch", True)
