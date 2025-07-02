@@ -70,7 +70,6 @@ async def _start(event):
     if msg_id:
         if msg_id.isdigit():
             msg = await bot.get_messages(Var.BACKUP_CHANNEL, ids=int(msg_id))
-            await xnx.delete()
             sent_msg = await event.reply(msg.text, file=msg.media)
             notice = await event.reply(
                 "⚠️ **Important Notice:**\n\nThis file will be automatically deleted after 10 minutes.\nPlease save or forward it immediately."
@@ -79,7 +78,6 @@ async def _start(event):
         else:
             items = await dB.get_store_items(msg_id)
             if items:
-                await xnx.delete()
                 notice = await event.reply(
                     "⚠️ **Important Notice:**\n\nThese files will be automatically deleted after 10 minutes.\nPlease save or forward them immediately."
                 )
