@@ -46,11 +46,13 @@ class SubsPlease:
 
     def rss_feed_data(self):
         try:
-            return (
-                parse("https://subsplease.org/rss/?r=1080"),
-                parse("https://subsplease.org/rss/?r=720"),
-                parse("https://subsplease.org/rss/?r=sd"),
+            loop = asyncio.get_event_loop()
+            d1080, d720, d480 = await asyncio.gather(
+                loop.run_in_executor(None, parse, "https://subsplease.org/rss/?r=1080"),
+                loop.run_in_executor(None, parse, "https://subsplease.org/rss/?r=720"),
+                loop.run_in_executor(None, parse, "https://subsplease.org/rss/?r=sd"),
             )
+            return d1080, d720, d480
         except KeyboardInterrupt:
             self._exit()
         except BaseException:
@@ -58,7 +60,7 @@ class SubsPlease:
             return None, None, None
 
     async def feed_optimizer(self):
-        d1080, d720, d480 = self.rss_feed_data()
+        d1080, d720, d480 = await self.rss_feed_data()
         if not d1080 or not d720 or not d480:
             return None
         for i in range(2, -1, -1):
@@ -85,8 +87,13 @@ class SubsPlease:
 
     async def on_new_anime(self, function):
         for i in count():
-            data = await self.feed_optimizer()
-            if data:
-                await function(data)
-                await self.db.add_anime(data.get("uid"))
+            try:
+                data = await self.feed_optimizer()
+                if data:
+                    await function(data)
+                    await self.db.add_anime(data.get("uid"))
+            except KeyboardInterrupt:
+                self._exit()
+            except Exception:
+                LOGS.error(f"[RSS Loop] Error in cycle {i}: {format_exc()}")
             await asyncio.sleep(5)

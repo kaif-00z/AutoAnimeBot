@@ -62,7 +62,14 @@ class Bot(TelegramClient):
         kwargs["api_hash"] = api_hash or Var.API_HASH
         kwargs["base_logger"] = TelethonLogger
         utils.MIN_CHANNEL_ID = -1009147483647
-        super().__init__(None, **kwargs)
+        super().__init__(
+            None,
+            connection_retries=10,
+            retry_delay=5,
+            auto_reconnect=True,
+            flood_sleep_threshold=60,
+            **kwargs,
+        )
         self.pyro_client = Client(
             name="pekka",
             api_id=kwargs["api_id"],
@@ -116,8 +123,12 @@ class Bot(TelegramClient):
         if not self.pyro_client.is_connected:
             try:
                 await self.pyro_client.connect()
-            except ConnectionError:
-                pass
+            except Exception:
+                try:
+                    await self.pyro_client.stop()
+                except Exception:
+                    pass
+                await self.pyro_client.start()
         post = await self.pyro_client.send_document(
             Var.BACKUP_CHANNEL if is_button else Var.MAIN_CHANNEL,
             file,
