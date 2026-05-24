@@ -150,7 +150,7 @@ async def auto_maker():
         print("Creating Channels...")
         for ch_name in [
             "Ongoing Anime Logs",
-            "Ongoing Anime 2025",
+            "Ongoing Anime 2026",
             "Ongoing Anime Samples And SS",
             "Ongoing Anime Backup",
         ]:
