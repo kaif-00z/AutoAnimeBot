@@ -213,7 +213,7 @@ class Tools:
         d_time = time.time()
         while process.returncode != 0:
             await asyncio.sleep(5)
-                
+
             # ffmpeg init is slow in low end server so, hehe :)
             if (time.time() - d_time) > 60:
                 if not os.path.exists(out) or os.path.getsize(out) == 0:
@@ -221,11 +221,14 @@ class Tools:
                         process.kill()
                     except Exception:
                         pass
-                    return False, "Unable To Encode This Video (Process timed out with 0-byte output file)!"
-                
+                    return (
+                        False,
+                        "Unable To Encode This Video (Process timed out with 0-byte output file)!",
+                    )
+
             if not os.path.exists(_progress):
                 continue
-                
+
             try:
                 with open(_progress, "r") as fil:
                     text = fil.read()
@@ -235,7 +238,7 @@ class Tools:
             frames = re.findall("frame=(\\d+)", text)
             size = re.findall("total_size=(\\d+)", text)
             speed = 0
-            
+
             if len(frames):
                 elapse = int(frames[-1])
             if len(size):
@@ -255,14 +258,7 @@ class Tools:
                 eta = f"~{self.ts(some_eta)}"
                 try:
                     _new_log_msg = await log_msg.edit(
-                        text
-                        + progress_str
-                        + "`"
-                        + e_size
-                        + "`"
-                        + "\n\n`"
-                        + eta
-                        + "`"
+                        text + progress_str + "`" + e_size + "`" + "\n\n`" + eta + "`"
                     )
                 except MessageNotModifiedError:
                     pass
@@ -282,17 +278,17 @@ class Tools:
             stdout, stderr = process.communicate()
             out = stdout.decode().strip()
             z = json.loads(out)
-            
+
             tracks = z.get("media", {}).get("track")
             if not tracks:
                 tracks = []
-            
+
             duration_str = None
             for track in tracks:
                 if track and "Duration" in track:
                     duration_str = str(track["Duration"])
                     break
-            
+
             if duration_str:
                 try:
                     return int(float(duration_str))
@@ -308,10 +304,13 @@ class Tools:
                 proc = subprocess.Popen(
                     [
                         shutil.which("ffprobe"),
-                        "-v", "error",
-                        "-show_entries", "format=duration",
-                        "-of", "default=noprint_wrappers=1:nokey=1",
-                        file
+                        "-v",
+                        "error",
+                        "-show_entries",
+                        "format=duration",
+                        "-of",
+                        "default=noprint_wrappers=1:nokey=1",
+                        file,
                     ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
@@ -324,8 +323,8 @@ class Tools:
                 pass
         except Exception as e:
             LOGS.error(f"[genss] Error parsing duration: {e}")
-            
-        return 1140 # assume 19 min playback duration
+
+        return 1140  # assume 19 min playback duration
 
     def stdr(self, seconds: int) -> str:
         minutes, seconds = divmod(seconds, 60)
