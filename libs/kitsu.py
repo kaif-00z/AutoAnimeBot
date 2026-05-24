@@ -71,7 +71,7 @@ class RawAnimeInfo:
                             res_data["data"]["attributes"]["endDate"]
                             or res_data["data"]["attributes"]["startDate"]
                         ):
-                            if "2025" not in (
+                            if "2026" not in (
                                 res_data["data"]["attributes"]["endDate"] or ""
                             ):
                                 if all(
@@ -80,7 +80,7 @@ class RawAnimeInfo:
                                         res_data["data"]["attributes"]["startDate"]
                                         or ""
                                     )
-                                    for year in ["2024", "2025"]
+                                    for year in ["2024", "2025", "2026"]
                                 ):
                                     continue
                     return res_data
