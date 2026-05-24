@@ -213,43 +213,59 @@ class Tools:
         d_time = time.time()
         while process.returncode != 0:
             await asyncio.sleep(5)
-            with open(_progress, "r+") as fil:
-                text = fil.read()
-                frames = re.findall("frame=(\\d+)", text)
-                size = re.findall("total_size=(\\d+)", text)
-                speed = 0
+                
+            # ffmpeg init is slow in low end server so, hehe :)
+            if (time.time() - d_time) > 60:
                 if not os.path.exists(out) or os.path.getsize(out) == 0:
-                    return False, "Unable To Encode This Video!"
-                if len(frames):
-                    elapse = int(frames[-1])
-                if len(size):
-                    size = int(size[-1])
-                    per = elapse * 100 / int(total_frames)
-                    time_diff = time.time() - int(d_time)
-                    speed = round(elapse / time_diff, 2)
-                if int(speed) != 0:
-                    some_eta = ((int(total_frames) - elapse) / speed) * 1000
-                    text = f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{dl.split('/')[-1]}```\n\n**STATUS:** \n"
-                    progress_str = "`[{0}{1}] {2}%\n\n`".format(
-                        "".join("●" for _ in range(math.floor(per / 5))),
-                        "".join("" for _ in range(20 - math.floor(per / 5))),
-                        round(per, 2),
-                    )
-                    e_size = f"{self.hbs(size)} of ~{self.hbs((size / per) * 100)}"
-                    eta = f"~{self.ts(some_eta)}"
                     try:
-                        _new_log_msg = await log_msg.edit(
-                            text
-                            + progress_str
-                            + "`"
-                            + e_size
-                            + "`"
-                            + "\n\n`"
-                            + eta
-                            + "`"
-                        )
-                    except MessageNotModifiedError:
+                        process.kill()
+                    except Exception:
                         pass
+                    return False, "Unable To Encode This Video (Process timed out with 0-byte output file)!"
+                
+            if not os.path.exists(_progress):
+                continue
+                
+            try:
+                with open(_progress, "r") as fil:
+                    text = fil.read()
+            except Exception:
+                continue
+
+            frames = re.findall("frame=(\\d+)", text)
+            size = re.findall("total_size=(\\d+)", text)
+            speed = 0
+            
+            if len(frames):
+                elapse = int(frames[-1])
+            if len(size):
+                size = int(size[-1])
+                per = elapse * 100 / int(total_frames)
+                time_diff = time.time() - int(d_time)
+                speed = round(elapse / time_diff, 2)
+            if int(speed) != 0:
+                some_eta = ((int(total_frames) - elapse) / speed) * 1000
+                text = f"**Successfully Downloaded The Anime**\n\n **File Name:** ```{dl.split('/')[-1]}```\n\n**STATUS:** \n"
+                progress_str = "`[{0}{1}] {2}%\n\n`".format(
+                    "".join("●" for _ in range(math.floor(per / 5))),
+                    "".join("" for _ in range(20 - math.floor(per / 5))),
+                    round(per, 2),
+                )
+                e_size = f"{self.hbs(size)} of ~{self.hbs((size / per) * 100)}"
+                eta = f"~{self.ts(some_eta)}"
+                try:
+                    _new_log_msg = await log_msg.edit(
+                        text
+                        + progress_str
+                        + "`"
+                        + e_size
+                        + "`"
+                        + "\n\n`"
+                        + eta
+                        + "`"
+                    )
+                except MessageNotModifiedError:
+                    pass
         try:
             os.remove(_progress)
         except BaseException:
@@ -257,17 +273,59 @@ class Tools:
         return True, _new_log_msg
 
     async def genss(self, file):
-        process = subprocess.Popen(
-            # just for better codefactor rating :)
-            [shutil.which("mediainfo"), file, "--Output=JSON"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-        )
-        stdout, stderr = process.communicate()
-        out = stdout.decode().strip()
-        z = json.loads(out)
-        p = z["media"]["track"][0]["Duration"]
-        return int(p.split(".")[-2])
+        try:
+            process = subprocess.Popen(
+                [shutil.which("mediainfo"), file, "--Output=JSON"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+            )
+            stdout, stderr = process.communicate()
+            out = stdout.decode().strip()
+            z = json.loads(out)
+            
+            tracks = z.get("media", {}).get("track")
+            if not tracks:
+                tracks = []
+            
+            duration_str = None
+            for track in tracks:
+                if track and "Duration" in track:
+                    duration_str = str(track["Duration"])
+                    break
+            
+            if duration_str:
+                try:
+                    return int(float(duration_str))
+                except Exception:
+                    pass
+                if "." in duration_str:
+                    try:
+                        return int(duration_str.split(".")[0])
+                    except Exception:
+                        pass
+
+            try:
+                proc = subprocess.Popen(
+                    [
+                        shutil.which("ffprobe"),
+                        "-v", "error",
+                        "-show_entries", "format=duration",
+                        "-of", "default=noprint_wrappers=1:nokey=1",
+                        file
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                )
+                stdout, _ = proc.communicate()
+                f_dur = stdout.decode().strip()
+                if f_dur:
+                    return int(float(f_dur))
+            except Exception:
+                pass
+        except Exception as e:
+            LOGS.error(f"[genss] Error parsing duration: {e}")
+            
+        return 1140 # assume 19 min playback duration
 
     def stdr(self, seconds: int) -> str:
         minutes, seconds = divmod(seconds, 60)
