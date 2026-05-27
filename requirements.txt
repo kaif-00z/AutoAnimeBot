@@ -6,7 +6,7 @@ aiohttp
 aiofiles
 apscheduler==3.10.1
 feedparser
-telethon==1.40.0
+telethon
 pyrofork==2.3.67
 tgcrypto
 AnilistPython==0.1.3
