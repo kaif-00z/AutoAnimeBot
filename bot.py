@@ -185,7 +185,7 @@ async def anime(data):
                 filename = f"downloads/{i.title}"
                 reporter = Reporter(bot, i.title)
                 await reporter.alert_new_file_founded()
-                await torrent.download_magnet(i.link, "./downloads/")
+                await torrent.download_magnet(i.link, "./downloads/", reporter)
                 exe = Executors(
                     bot,
                     dB,
