@@ -190,13 +190,41 @@ class Tools:
         return out, err
 
     async def frame_counts(self, dl):
-        _x, _y = await self.bash_(
-            f'mediainfo --fullscan """{dl}""" | grep "Frame count"'
-        )
-        if _y and _y.endswith("NOT_FOUND"):
-            LOGS.error(f"ERROR: `{_y}`")
-            return False
-        return _x.split(":")[1].split("\n")[0]
+        try:
+            _x, _y = await self.bash_(
+                f'mediainfo --fullscan """{dl}""" | grep "Frame count"'
+            )
+            if _y and _y.endswith("NOT_FOUND"):
+                LOGS.error(f"ERROR: `{_y}`")
+            elif _x and ":" in _x:
+                try:
+                    count_str = _x.split(":")[1].strip().split("\n")[0].strip()
+                    count_str = re.sub(r"\D", "", count_str)
+                    if count_str.isdigit():
+                        return int(count_str)
+                except Exception:
+                    pass
+        except Exception as e:
+            LOGS.error(f"mediainfo frame count failed: {e}")
+
+        try:
+            _x, _ = await self.bash_(
+                f'ffprobe -v error -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 """{dl}"""'
+            )
+            _x = _x.strip()
+            if _x.isdigit():
+                return int(_x)
+        except Exception:
+            pass
+
+        try:
+            duration = await self.genss(dl)
+            if duration and duration > 0:
+                return int(duration * 23.976)
+        except Exception:
+            pass
+
+        return 27000
 
     async def compress(self, dl, out, log_msg):
         total_frames = await self.frame_counts(dl)
