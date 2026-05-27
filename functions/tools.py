@@ -17,6 +17,7 @@
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
 import asyncio
+import hashlib
 import json
 import math
 import os
@@ -24,7 +25,6 @@ import re
 import shutil
 import subprocess
 import time
-import hashlib
 from traceback import format_exc
 
 import aiofiles
@@ -78,7 +78,9 @@ class Tools:
             image = await self.async_searcher(link, re_content=True)
             clean_link = link.split("?")[0]
             filename = clean_link.split("/")[-1]
-            if len(filename) > 30 or not filename.lower().endswith((".jpg", ".png", ".jpeg")):
+            if len(filename) > 30 or not filename.lower().endswith(
+                (".jpg", ".png", ".jpeg")
+            ):
                 filename = hashlib.md5(link.encode()).hexdigest() + ".jpg"
             fn = f"thumbs/{filename}"
             async with aiofiles.open(fn, "wb") as file:
