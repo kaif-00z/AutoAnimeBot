@@ -25,8 +25,15 @@ import aiohttp
 from AnilistPython import Anilist
 
 ORDINALS = {
-    2: "2nd", 3: "3rd", 4: "4th", 5: "5th", 6: "6th",
-    7: "7th", 8: "8th", 9: "9th", 10: "10th",
+    2: "2nd",
+    3: "3rd",
+    4: "4th",
+    5: "5th",
+    6: "6th",
+    7: "7th",
+    8: "8th",
+    9: "9th",
+    10: "10th",
 }
 
 
@@ -164,18 +171,22 @@ class RawAnimeInfo:
                     if not is_relevant(attrs):
                         continue
                     titles = attrs.get("titles", {})
-                    candidates = list(filter(None, [
-                        titles.get("en"),
-                        titles.get("en_jp"),
-                        titles.get("ja_jp"),
-                        attrs.get("canonicalTitle"),
-                        *(attrs.get("abbreviatedTitles") or []),
-                    ]))
+                    candidates = list(
+                        filter(
+                            None,
+                            [
+                                titles.get("en"),
+                                titles.get("en_jp"),
+                                titles.get("ja_jp"),
+                                attrs.get("canonicalTitle"),
+                                *(attrs.get("abbreviatedTitles") or []),
+                            ],
+                        )
+                    )
                     if not candidates:
                         continue
-                    score = (
-                        max(similarity(base_query, t) for t in candidates)
-                        + max(season_bonus(t, season_num) for t in candidates)
+                    score = max(similarity(base_query, t) for t in candidates) + max(
+                        season_bonus(t, season_num) for t in candidates
                     )
                     if score > best_score:
                         best_score = score
