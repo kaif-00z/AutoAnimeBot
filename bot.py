@@ -82,7 +82,7 @@ async def _start(event):
                 for id in items:
                     msg = await bot.get_messages(Var.CLOUD_CHANNEL, ids=id)
                     if msg:
-                       await event.reply(file=[i for i in msg])
+                        await event.reply(file=[i for i in msg])
     else:
         if event.sender_id == Var.OWNER:
             return await xnx.edit(
