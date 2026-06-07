@@ -16,6 +16,7 @@
 # if you are using this following code then don't forgot to give proper
 # credit to t.me/kAiF_00z (github.com/kaif-00z)
 
+import re
 from traceback import format_exc
 
 import anitopy
@@ -83,30 +84,37 @@ class AnimeInfo:
             LOGS.error(str(format_exc()))
             return ""
 
+    @staticmethod
+    def _sanitize_filename(name):
+        # Characters unsafe for filenames: \ / : * ? " < > |
+        return re.sub(r'[\\/:*?"<>|]', " ", name).strip()
+
     async def rename(self, original=False):
         try:
             anime_name = self.data.get("anime_title")
             if anime_name and self.data.get("episode_number"):
-                return (
+                name = (
                     f"[S{self.data.get('anime_season') or 1}-{self.data.get('episode_number') or ''}] {(await self.get_english())} [{self.data.get('video_resolution')}].mkv".replace(
                         "‘", ""
                     )
                     .replace("’", "")
                     .strip()
                 )
+                return self._sanitize_filename(name)
             if anime_name:
-                return (
+                name = (
                     f"{(await self.get_english())} [{self.data.get('video_resolution')}].mkv".replace(
                         "‘", ""
                     )
                     .replace("’", "")
                     .strip()
                 )
-            return self.name
+                return self._sanitize_filename(name)
+            return self._sanitize_filename(self.name)
         except Exception as error:
             LOGS.error(str(error))
             LOGS.exception(format_exc())
-            return self.name
+            return self._sanitize_filename(self.name)
 
     def get_proper_name_for_func(self, name):
         try:
