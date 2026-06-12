@@ -56,7 +56,3 @@ class Var:
     LOG_ON_MAIN = config("LOG_ON_MAIN", default=False, cast=bool)
     FORCESUB_CHANNEL_LINK = config("FORCESUB_CHANNEL_LINK", default="", cast=str)
     DELETE_FILES_FROM_PMS = config("DELETE_FILES_FROM_PMS", default=True, cast=bool)
-
-    # Dev Configs
-
-    DEV_MODE = config("DEV_MODE", default=False, cast=bool)
