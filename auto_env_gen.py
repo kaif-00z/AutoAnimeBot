@@ -85,7 +85,7 @@ def generate_env():
         DATA["api_hash"],
         DATA["bot_token"],
         DATA["session"],
-        DATA["Ongoing Anime 2024"],
+        DATA["Ongoing Anime 2026"],
         DATA["Ongoing Anime Logs"],
         DATA["Ongoing Anime Samples And SS"],
         DATA["Ongoing Anime Backup"],

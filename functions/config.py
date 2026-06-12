@@ -22,7 +22,7 @@ from decouple import config
 class Var:
     # Version
 
-    __version__ = "v0.1@stable.july"
+    __version__ = "v0.2"
 
     # Telegram Credentials
 
