@@ -57,7 +57,9 @@ class Torrent:
 
                     per = int(per_match.group(1)) if per_match else 0
                     if size_match:
-                        size_info = f"{size_match.group(1)} / {size_match.group(2)}"
+                        size_info = f"{
+                            size_match.group(1)} / {
+                            size_match.group(2)}"
                     else:
                         size_info = "Unknown"
                     speed_info = (

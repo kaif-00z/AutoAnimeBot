@@ -93,7 +93,9 @@ def generate_env():
         DATA["owner_id"],
     )
     if DATA.get("fsub_id") and DATA.get("fsub_id"):
-        txt += f"\nFORCESUB_CHANNEL={DATA['fsub_id']}\nFORCESUB_CHANNEL_LINK={DATA['fsub_link']}"
+        txt += f"\nFORCESUB_CHANNEL={
+            DATA['fsub_id']}\nFORCESUB_CHANNEL_LINK={
+            DATA['fsub_link']}"
     with open(".env", "w") as f:
         f.write(txt.strip())
     print("Succesfully Generated .env File Don't Forget To Save It! For Future Uses.")
