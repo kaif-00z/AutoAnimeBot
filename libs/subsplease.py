@@ -44,7 +44,7 @@ class SubsPlease:
             LOGS.error(format_exc())
         sys.exit(0)
 
-    def rss_feed_data(self):
+    async def rss_feed_data(self):
         try:
             loop = asyncio.get_event_loop()
             d1080, d720, d480 = await asyncio.gather(
