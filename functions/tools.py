@@ -238,7 +238,7 @@ class Tools:
         _progress = f"progress-{time.time()}.txt"
         cmd = f'''{
             Var.FFMPEG} -hide_banner -loglevel quiet -progress """{_progress}""" -i """{dl}""" -metadata "Encoded By"="https://github.com/kaif-00z/AutoAnimeBot/" -preset ultrafast -c:v libx265 -crf {
-            Var.CRF} -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? """{out}""" -y'''
+            Var.CRF} -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -map 0:v -c:a aac -map 0:a -c:s copy -map 0:s? """{out}""" -y'''
         process = await asyncio.create_subprocess_shell(
             cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
